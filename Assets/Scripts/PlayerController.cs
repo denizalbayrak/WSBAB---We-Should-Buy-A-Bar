@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     public float speed = 5f;
     public float rotationSpeed = 720f; // Derece cinsinden dönüþ hýzý
 
+    private Animator animator; // Animator referansý
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -19,6 +21,12 @@ public class PlayerController : MonoBehaviour
 
         moveAction.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         moveAction.canceled += ctx => moveInput = Vector2.zero;
+
+        animator = GetComponent<Animator>(); // Animator bileþenini al
+        if (animator == null)
+        {
+            Debug.LogError("Animator component is missing on the player!");
+        }
     }
 
     private void OnEnable()
@@ -47,6 +55,22 @@ public class PlayerController : MonoBehaviour
                 targetRotation,
                 rotationSpeed * Time.fixedDeltaTime
             );
+        }
+
+        // Animasyonlarý güncelle
+        UpdateAnimations(movement);
+    }
+
+    /// <summary>
+    /// Animasyon parametrelerini günceller.
+    /// </summary>
+    /// <param name="movement">Hareket vektörü.</param>
+    private void UpdateAnimations(Vector3 movement)
+    {
+        if (animator != null)
+        {
+            bool isWalking = movement.magnitude > 0.1f;
+            animator.SetBool("isWalking", isWalking);
         }
     }
 }

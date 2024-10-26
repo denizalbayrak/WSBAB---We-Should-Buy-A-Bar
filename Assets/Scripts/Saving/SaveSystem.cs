@@ -13,8 +13,11 @@ public static class SaveSystem
     {
         string path = GetSavePath(slot);
         string json = JsonUtility.ToJson(data, true);
+        Debug.Log("SaveSystem - Saving data to path: " + path);
+        Debug.Log("SaveSystem - JSON Data: " + json);
         File.WriteAllText(path, json);
     }
+
 
     public static SaveData LoadGame(int slot)
     {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Wsbab.Enums; // CharacterType enumýný kullanmak için
 
 [System.Serializable]
 public class SaveData
@@ -7,6 +8,6 @@ public class SaveData
     public float playTime;
     public string playerName;
 
-    // Character selection
-    public CharacterType selectedCharacter = CharacterType.Female; // Default to Female
+    // Karakter seçimi
+    public CharacterType selectedCharacter = CharacterType.Female; // Varsayýlan olarak Female
 }

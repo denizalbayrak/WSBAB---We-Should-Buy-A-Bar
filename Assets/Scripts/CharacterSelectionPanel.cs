@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Wsbab.Enums; // CharacterType enumýný kullanmak için
 
 public class CharacterSelectionPanel : MonoBehaviour
 {
@@ -10,11 +11,11 @@ public class CharacterSelectionPanel : MonoBehaviour
     public Image maleSelectionHighlight;
     public Image femaleSelectionHighlight;
 
-    private CharacterType selectedCharacter = CharacterType.Female; // Varsayýlan seçim
+    private CharacterType selectedCharacter; // Varsayýlan seçimi kaldýrdýk
 
     private void Start()
     {
-        // Kaydedilmiþ karakter seçimini yükle
+        // Kaydedilen karakter seçimini yükle
         LoadCharacterSelection();
 
         // UI'ý güncelle
@@ -25,12 +26,14 @@ public class CharacterSelectionPanel : MonoBehaviour
     {
         selectedCharacter = CharacterType.Male;
         UpdateSelectionUI();
+        Debug.Log("OnMaleCharacterSelected called. selectedCharacter set to Male.");
     }
 
     public void OnFemaleCharacterSelected()
     {
         selectedCharacter = CharacterType.Female;
         UpdateSelectionUI();
+        Debug.Log("OnFemaleCharacterSelected called. selectedCharacter set to Female.");
     }
 
     public void OnConfirmSelection()
@@ -40,8 +43,6 @@ public class CharacterSelectionPanel : MonoBehaviour
 
         // Paneli kapat
         gameObject.SetActive(false);
-
-        // Gerekirse diðer UI veya oyun öðelerini güncelle
     }
 
     private void UpdateSelectionUI()
@@ -52,33 +53,31 @@ public class CharacterSelectionPanel : MonoBehaviour
 
     private void SaveCharacterSelection()
     {
-        PlayerPrefs.SetInt("SelectedCharacter", (int)selectedCharacter);
-        PlayerPrefs.Save();
-        Debug.Log("Character saved: " + selectedCharacter);
-
-        if (GameManager.Instance != null && GameManager.Instance.currentSaveData != null)
+        if (GameManager.Instance != null)
         {
-            GameManager.Instance.currentSaveData.selectedCharacter = selectedCharacter;
-            GameManager.Instance.SaveGame();
-            Debug.Log("Character saved in GameManager: " + selectedCharacter);
-        }
-    }
-
-
-    private void LoadCharacterSelection()
-    {
-        // Seçimi PlayerPrefs veya kayýt sisteminizden yükleyin
-        if (GameManager.Instance != null && GameManager.Instance.currentSaveData != null)
-        {
-            selectedCharacter = GameManager.Instance.currentSaveData.selectedCharacter;
-        }
-        else if (PlayerPrefs.HasKey("SelectedCharacter"))
-        {
-            selectedCharacter = (CharacterType)PlayerPrefs.GetInt("SelectedCharacter");
+            // GameManager'daki selectedCharacter deðerini güncelle
+            GameManager.Instance.selectedCharacter = selectedCharacter;
+            Debug.Log("Character selection saved in GameManager: " + selectedCharacter);
         }
         else
         {
-            selectedCharacter = CharacterType.Female; // Varsayýlan olarak kadýn karakter
+            Debug.LogWarning("GameManager instance not found in CharacterSelectionPanel.");
+        }
+    }
+
+    private void LoadCharacterSelection()
+    {
+        if (GameManager.Instance != null)
+        {
+            // Eðer GameManager'da selectedCharacter varsa, onu kullan
+            selectedCharacter = GameManager.Instance.selectedCharacter;
+            Debug.Log("Character selection loaded from GameManager: " + selectedCharacter);
+        }
+        else
+        {
+            // Varsayýlan olarak Female seç
+            selectedCharacter = CharacterType.Female;
+            Debug.LogWarning("GameManager instance not found. Defaulting to Female.");
         }
     }
 }

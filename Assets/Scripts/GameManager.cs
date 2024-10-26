@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Wsbab.Enums; // CharacterType enumýný kullanmak için
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class GameManager : MonoBehaviour
     public GameObject maleCharacterPrefab;
     public GameObject femaleCharacterPrefab;
 
+    public CharacterType selectedCharacter = CharacterType.Female; // Varsayýlan olarak Female
+
     private void Awake()
     {
         // Singleton pattern
@@ -19,50 +22,35 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            // Oyun baþlatýldýðýnda karakter seçimini yükle
+            // Eðer isterseniz, burada karakter seçimini yükleyebilirsiniz
         }
         else
         {
             Destroy(gameObject);
         }
     }
+
     public void NewGame(int slot)
     {
         currentSlot = slot;
         currentSaveData = new SaveData();
+
         // Yeni oyun için varsayýlan deðerleri ayarla
         currentSaveData.level = 1;
         currentSaveData.playTime = 0f;
         currentSaveData.playerName = "Player";
 
-        // Varsayýlan karakter olarak Female seç
-        currentSaveData.selectedCharacter = CharacterType.Female;
+        // Seçilen karakteri save data'ya iþle
+        currentSaveData.selectedCharacter = selectedCharacter;
 
         // Oyunu kaydet
-        SaveSystem.SaveGame(currentSaveData, currentSlot);
+        SaveGame();
 
         // Oyun sahnesini yükle
         SceneManager.LoadScene("GameScene");
     }
-    public void SpawnPlayerCharacter()
-    {
-        CharacterType selectedCharacter = CharacterType.Female; // Varsayýlan
-
-        if (currentSaveData != null && !string.IsNullOrEmpty(currentSaveData.playerName))
-        {
-            selectedCharacter = currentSaveData.selectedCharacter;
-        }
-        else if (PlayerPrefs.HasKey("SelectedCharacter"))
-        {
-            selectedCharacter = (CharacterType)PlayerPrefs.GetInt("SelectedCharacter");
-        }
-
-        GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
-
-        // Karakteri istenilen pozisyonda oluþturun
-        Vector3 spawnPosition = Vector3.zero; // Spawn pozisyonunu ayarlayýn
-        Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
-    }
-
 
     public void LoadGame(int slot)
     {
@@ -71,6 +59,13 @@ public class GameManager : MonoBehaviour
 
         if (currentSaveData != null)
         {
+          
+            currentSaveData.selectedCharacter = selectedCharacter;
+            Debug.Log(selectedCharacter);
+
+            // Oyunu kaydet (isteðe baðlý)
+            SaveGame();
+
             // Oyun sahnesini yükle
             SceneManager.LoadScene("GameScene");
         }
@@ -85,9 +80,34 @@ public class GameManager : MonoBehaviour
     {
         if (currentSaveData != null)
         {
-            // Update currentSaveData with current game state
+            // currentSaveData'yý güncel oyun durumu ile güncelle
+            // Örneðin, playTime veya level gibi
+
+            // Seçilen karakteri save data'ya iþle
+            currentSaveData.selectedCharacter = selectedCharacter;
 
             SaveSystem.SaveGame(currentSaveData, currentSlot);
         }
+    }
+
+    public void SpawnPlayerCharacter()
+    {
+        if (currentSaveData != null)
+        {
+            // Save data'daki karakteri kullan
+            selectedCharacter = currentSaveData.selectedCharacter;
+            Debug.Log("SpawnPlayerCharacter - selectedCharacter from save data: " + selectedCharacter);
+        }
+        else
+        {
+            // Kayýtlý oyun yoksa, GameManager'daki selectedCharacter'ý kullan
+            Debug.Log("SpawnPlayerCharacter - No save data, using selectedCharacter from GameManager: " + selectedCharacter);
+        }
+
+        GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
+
+        // Karakteri istenilen pozisyonda oluþturun
+        Vector3 spawnPosition = Vector3.zero; // Spawn pozisyonunu ayarlayýn
+        Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
     }
 }

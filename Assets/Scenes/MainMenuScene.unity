@@ -313,6 +313,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1447376007}
+        m_TargetAssemblyTypeName: CharacterSelectionPanel, Assembly-CSharp
+        m_MethodName: OnConfirmSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8943432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -807,7 +819,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   saveSlotsParent: {fileID: 1105016671}
-  saveSlotPrefab: {fileID: 1145668772}
+  saveSlotPrefab: {fileID: 7731925494512203378, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
 --- !u!1 &459787223
 GameObject:
   m_ObjectHideFlags: 0
@@ -1941,8 +1953,9 @@ MonoBehaviour:
     playerName: 
     selectedCharacter: 0
   currentSlot: 0
-  maleCharacterPrefab: {fileID: 0}
-  femaleCharacterPrefab: {fileID: 0}
+  maleCharacterPrefab: {fileID: 1471328627644378163, guid: 3e0931dd95bee724bb26fdd573900335, type: 3}
+  femaleCharacterPrefab: {fileID: 807456354009633900, guid: 74a90ab66b7a1624692781ca86ffed1a, type: 3}
+  selectedCharacter: 0
 --- !u!4 &1047734272
 Transform:
   m_ObjectHideFlags: 0
@@ -2050,6 +2063,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5924360433545394482, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
+      propertyPath: characterSelectionPanel
+      value: 
+      objectReference: {fileID: 1447376007}
     - target: {fileID: 7731925494512203378, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
       propertyPath: m_Name
       value: SaveSlot2
@@ -2410,11 +2427,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1145668772 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7731925494512203378, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
-  m_PrefabInstance: {fileID: 2787634197695082614}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1145668773 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2960213253782551460, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
@@ -3494,6 +3506,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5924360433545394482, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
+      propertyPath: characterSelectionPanel
+      value: 
+      objectReference: {fileID: 1447376007}
     - target: {fileID: 7731925494512203378, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
       propertyPath: m_Name
       value: SaveSlot3
@@ -4465,6 +4481,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5924360433545394482, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
+      propertyPath: characterSelectionPanel
+      value: 
+      objectReference: {fileID: 1447376007}
     - target: {fileID: 7731925494512203378, guid: c85b76fec1b1ffa4eb6acae53a30247e, type: 3}
       propertyPath: m_Name
       value: SaveSlot1

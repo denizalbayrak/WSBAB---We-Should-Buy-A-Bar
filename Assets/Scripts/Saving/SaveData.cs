@@ -11,3 +11,11 @@ public class SaveData
     // Karakter seçimi
     public CharacterType selectedCharacter = CharacterType.Female; // Varsayýlan olarak Female
 }
+[System.Serializable]
+public class PlacedObjectData
+{
+    public string objectID;
+    public Vector3 position;
+    public Quaternion rotation;
+    public string placementAreaID;
+}

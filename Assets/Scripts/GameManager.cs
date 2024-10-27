@@ -1,9 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Wsbab.Enums; // CharacterType enumýný kullanmak için
-
+public enum GameState
+{
+    PreLevel,
+    InGame,
+    Paused,
+    GameOver
+}
 public class GameManager : MonoBehaviour
 {
+    public GameState currentGameState = GameState.PreLevel;
     public static GameManager Instance;
 
     public SaveData currentSaveData;
@@ -110,4 +117,11 @@ public class GameManager : MonoBehaviour
         Vector3 spawnPosition = Vector3.zero; // Spawn pozisyonunu ayarlayýn
         Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
     }
+
+    public void StartGame()
+    {
+        currentGameState = GameState.InGame;
+        Debug.Log("Oyun baþladý!");
+    }
+
 }

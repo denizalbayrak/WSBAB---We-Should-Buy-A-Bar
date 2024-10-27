@@ -91,7 +91,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 807456354009633900}
-  m_LocalRotation: {x: 0, y: 0.97719413, z: -0, w: -0.21234825}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 1
@@ -100,8 +100,8 @@ Transform:
   - {fileID: 5988213981402096714}
   - {fileID: 8076422745749646423}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 204.52, z: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &8364521754089997386
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -139,6 +139,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   rotationSpeed: 720
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  overlapBoxSize: {x: 0.91, y: 1.81, z: 1.18}
+  overlapBoxOffset: {x: 0, y: 1.06, z: 0.81}
+  carryPoint: {fileID: 8076422745749646423}
+  DropPointLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!54 &3860036980047782978
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1545,7 +1554,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8618878434946481728}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.231, y: 0.776, z: 0.417}
+  m_LocalPosition: {x: 0, y: 0.699, z: 0.775}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1567,7 +1576,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8618878434946481728}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

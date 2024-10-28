@@ -392,7 +392,7 @@ MonoBehaviour:
   overlapBoxSize: {x: 0.7, y: 2, z: 0.64}
   overlapBoxOffset: {x: 0, y: 1, z: 0.59}
   carryPoint: {fileID: 8290394472900143720}
-  DropPointLayer:
+  dropPointLayer:
     serializedVersion: 2
     m_Bits: 256
 --- !u!54 &1474840065299483431

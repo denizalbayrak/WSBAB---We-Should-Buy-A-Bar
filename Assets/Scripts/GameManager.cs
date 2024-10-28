@@ -6,6 +6,7 @@ public enum GameState
     PreLevel,
     InGame,
     Paused,
+    PostLevel,
     GameOver
 }
 public class GameManager : MonoBehaviour

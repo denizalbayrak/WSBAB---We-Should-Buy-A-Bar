@@ -1947,6 +1947,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9839873e052276441be4f3a5b7867958, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentGameState: 0
   currentSaveData:
     level: 0
     playTime: 0

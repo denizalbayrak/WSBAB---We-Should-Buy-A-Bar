@@ -1,60 +1,71 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+
+public enum HighlightState
+{
+    None,       // Orijinal renk
+    CanCarry,   // Taþýma ihtimali durumu
+    Carried     // Taþýma durumu
+}
 
 public class PortableObject : MonoBehaviour
 {
     public float dropYOffset = 0f;
 
-    // Objenin merkez offset'i
-    public Vector3 centerOffset = Vector3.zero;
+    private Renderer objectRenderer;
+    private List<Color> originalColors = new List<Color>();
 
-    private Rigidbody rb;
+    // Renk çarpanlarý
+    private Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f); // Taþýma ihtimali durumu
+    private Color carriedColorMultiplier = new Color(0.3f, 0.3f, 0.3f);  // Taþýma durumu
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        if (rb == null)
+        // Child objelerdeki Renderer bileþenini al
+        objectRenderer = GetComponentInChildren<Renderer>();
+        if (objectRenderer != null)
         {
-            rb = gameObject.AddComponent<Rigidbody>();
-        }
-    }
-
-    private void Update()
-    {
-        // Oyunun durumuna göre objenin taþýnabilirliðini kontrol et
-        if (GameManager.Instance.currentGameState == GameState.InGame)
-        {
-            // Oyun baþladý, obje artýk taþýnamaz
-            rb.isKinematic = true;
+            // Tüm materyallerin orijinal renklerini sakla
+            foreach (var mat in objectRenderer.materials)
+            {
+                originalColors.Add(mat.color);
+            }
         }
         else
         {
-            // PreLevel veya diðer durumlarda obje taþýnabilir
-            rb.isKinematic = false;
+            Debug.LogError("Renderer component is missing on " + gameObject.name);
         }
     }
 
     /// <summary>
-    /// Objenin merkez offset'ini hesaplar.
-    /// Bu metod, objenin Renderer bileþenlerine dayanarak merkezini hesaplar.
+    /// Objeye vurgu yapar veya vurguyu kaldýrýr.
     /// </summary>
-    public void CalculateCenterOffset()
+    /// <param name="state">Vurgu durumu (None, CanCarry, Carried).</param>
+    public void SetHighlight(HighlightState state)
     {
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        if (renderers.Length == 0)
+        if (objectRenderer != null)
         {
-            centerOffset = Vector3.zero;
-            return;
-        }
+            Material[] mats = objectRenderer.materials;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                mats[i] = new Material(mats[i]); // Her materyalin bir kopyasýný oluþtur
 
-        Bounds combinedBounds = renderers[0].bounds;
-        for (int i = 1; i < renderers.Length; i++)
-        {
-            combinedBounds.Encapsulate(renderers[i].bounds);
-        }
+                switch (state)
+                {
+                    case HighlightState.None:
+                        mats[i].color = originalColors[i];
+                        break;
+                    case HighlightState.CanCarry:
+                        mats[i].color = originalColors[i] * canCarryColorMultiplier;
+                        break;
+                    case HighlightState.Carried:
+                        mats[i].color = originalColors[i] * carriedColorMultiplier;
+                        break;
+                }
+            }
 
-        // Dünya pozisyonundaki merkez ile objenin pivot noktasý arasýndaki fark
-        centerOffset = transform.InverseTransformPoint(combinedBounds.center) - transform.localPosition;
+            // Deðiþiklikleri Renderer'a geri ata
+            objectRenderer.materials = mats;
+        }
     }
 }

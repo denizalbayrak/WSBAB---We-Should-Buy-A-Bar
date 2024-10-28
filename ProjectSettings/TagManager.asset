@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Portable
   - DropPoint
+  - DropPoints
+  - ShopDropPoint
+  - StorageDropPoint
   layers:
   - Default
   - TransparentFX
@@ -15,9 +18,9 @@ TagManager:
   - UI
   - Interactable
   - Surface
-  - DropPointLayer
-  - 
-  - 
+  - dropPointLayer
+  - StorageLayer
+  - ShopLayer
   - 
   - 
   - 

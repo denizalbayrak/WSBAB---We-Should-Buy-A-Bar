@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c71fc6a5e6024844c8619ea2c9e53e20, type: 3}
+  m_Name: Level1
+  m_EditorClassIdentifier: 
+  levelName: 1
+  recipes:
+  - {fileID: 11400000, guid: d4d584d9a10ee304a87a6d701051caf6, type: 2}

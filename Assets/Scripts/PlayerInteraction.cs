@@ -47,7 +47,7 @@ public class PlayerInteraction : MonoBehaviour
     private bool isNearDropPoint = false;
     private Transform currentDropPoint;
     private HashSet<GameObject> highlightedObjects = new HashSet<GameObject>();
-
+    private LevelManager levelManager;
     #endregion
 
     #region Unity Methods
@@ -58,7 +58,7 @@ public class PlayerInteraction : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         movementController = GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
-
+        levelManager = LevelManager.Instance;
         if (movementController == null)
         {
             Debug.LogError("PlayerMovement component is missing on the player!");
@@ -74,16 +74,16 @@ public class PlayerInteraction : MonoBehaviour
         interactAction = inputActions.Player.Interact;
         interactAction.performed += ctx => Interact();
 
-        // DropPoints'ý Bulma
-        dropPoints = GameObject.FindGameObjectWithTag("DropPoints");
-        if (dropPoints != null)
-        {
-            dropPoints.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("DropPoints GameObject with tag 'DropPoints' not found in the scene!");
-        }
+        //// DropPoints'ý Bulma
+        //dropPoints = GameObject.FindGameObjectWithTag("DropPoints");
+        //if (dropPoints != null)
+        //{
+        //    dropPoints.SetActive(false);
+        //}
+        //else
+        //{
+        //    Debug.LogError("DropPoints GameObject with tag 'DropPoints' not found in the scene!");
+        //}
     }
 
     private void OnEnable()
@@ -106,29 +106,15 @@ public class PlayerInteraction : MonoBehaviour
     {
         // Vurgulama ve Taþýma Durumu Yönetimi
         UpdateHighlighting();
-
         if (carriedObject != null)
         {
             CheckForNearbyDropPoint();
             UpdateCarriedObjectPosition();
-
-            // Eðer bir obje taþýyorsa tüm drop point'lerdeki plane'leri aç
-            foreach (var dropPoint in FindObjectsOfType<DropPoint>())
-            {
-                dropPoint.TogglePlane(true);
-            }
+            
         }
-        else
-        {
-            // Obje taþýmayý býrakýnca tüm plane'leri kapat
-            foreach (var dropPoint in FindObjectsOfType<DropPoint>())
-            {
-                dropPoint.TogglePlane(false);
-            }
-        }
-
+       
     }
-
+    
     #endregion
 
     #region Interaction Methods
@@ -185,7 +171,10 @@ public class PlayerInteraction : MonoBehaviour
     private void PickUpObject(GameObject obj)
     {
         carriedObject = obj;
+        DropPoint dropPointObj = obj.transform.parent.GetComponent<DropPoint>();
         obj.transform.SetParent(carryPoint);
+        dropPointObj.isEmpty=true;
+        dropPointObj.deliveredObject = null;
         obj.transform.localPosition = carriedObjectOriginalLocalPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
 
@@ -193,12 +182,7 @@ public class PlayerInteraction : MonoBehaviour
         if (objCollider != null)
         {
             objCollider.enabled = false;
-        }
-
-        if (dropPoints != null)
-        {
-            dropPoints.SetActive(true);
-        }
+        }       
 
         PortableObject portableObject = obj.GetComponent<PortableObject>();
         if (portableObject != null)
@@ -208,6 +192,7 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         Debug.Log("Objeyi taþýyorsun: " + obj.name);
+        levelManager.UpdateDropPointPlanes(true);
     }
 
     /// <summary>
@@ -217,20 +202,30 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (isNearDropPoint && currentDropPoint != null)
         {
-            DropObject(currentDropPoint.position);
+            DropPoint dropPointComponent = currentDropPoint.GetComponent<DropPoint>();
+
+            if (dropPointComponent != null && dropPointComponent.isEmpty)
+            {
+                DropObject(currentDropPoint.position, dropPointComponent);  // Eðer drop point boþsa objeyi býrak
+            }
+            else
+            {
+                Debug.LogWarning("This drop point is already occupied! Cannot place another object.");
+            }
         }
         else
         {
-            Debug.LogWarning("Yakýnda geçerli bir býrakma noktasý yok.");
+            Debug.Log("Yakýnda geçerli bir býrakma noktasý yok.");
         }
     }
+
 
 
     /// <summary>
     /// Taþýnan objeyi býrakýr ve býrakma noktasýna yerleþtirir.
     /// </summary>
     /// <param name="dropPosition">Objenin býrakýlacaðý pozisyon.</param>
-    private void DropObject(Vector3 dropPosition)
+    private void DropObject(Vector3 dropPosition, DropPoint dropPointComponent)
     {
         PortableObject portableObject = carriedObject.GetComponent<PortableObject>();
         if (portableObject != null)
@@ -243,28 +238,23 @@ public class PlayerInteraction : MonoBehaviour
             Debug.LogError("Carried object does not have a PortableObject component!");
         }
 
-        carriedObject.transform.SetParent(null);
+        carriedObject.transform.SetParent(dropPointComponent.gameObject.transform);
+        dropPointComponent.DeliverObject(carriedObject);        
         carriedObject.transform.position = dropPosition;
         carriedObject.transform.rotation = currentDropPoint.rotation;
-
         Collider objCollider = carriedObject.GetComponent<Collider>();
         if (objCollider != null)
         {
             objCollider.enabled = true;
         }
-
-        if (dropPoints != null)
-        {
-            dropPoints.SetActive(false);
-        }
-
+       
         if (portableObject != null)
         {
             portableObject.SetHighlight(HighlightState.None); // Rengi orijinal haline döndür
         }
 
         Debug.Log("Objeyi býraktýn: " + carriedObject.name);
-
+        levelManager.UpdateDropPointPlanes(false);
         carriedObject = null;
         currentDropPoint = null;
         isNearDropPoint = false;

@@ -12,8 +12,8 @@ public class PortableObject : MonoBehaviour
 {
     public float dropYOffset = 0f;
 
-    private Renderer objectRenderer;
-    private List<Color> originalColors = new List<Color>();
+    public List<Renderer> objectRenderers = new List<Renderer>(); // Tüm Renderer'lar
+    public List<List<Color>> originalColors = new List<List<Color>>(); // Her Renderer için orijinal renkler listesi
 
     // Renk çarpanlarý
     private Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f); // Taþýma ihtimali durumu
@@ -21,19 +21,23 @@ public class PortableObject : MonoBehaviour
 
     private void Awake()
     {
-        // Child objelerdeki Renderer bileþenini al
-        objectRenderer = GetComponentInChildren<Renderer>();
-        if (objectRenderer != null)
+        // Tüm child objelerdeki Renderer bileþenlerini al
+        objectRenderers.AddRange(GetComponentsInChildren<Renderer>());
+
+        // Tüm materyallerin orijinal renklerini sakla
+        foreach (var renderer in objectRenderers)
         {
-            // Tüm materyallerin orijinal renklerini sakla
-            foreach (var mat in objectRenderer.materials)
+            List<Color> colors = new List<Color>();
+            foreach (var mat in renderer.materials)
             {
-                originalColors.Add(mat.color);
+                colors.Add(mat.color); // Orijinal rengi kaydet
             }
+            originalColors.Add(colors);
         }
-        else
+
+        if (objectRenderers.Count == 0)
         {
-            Debug.LogError("Renderer component is missing on " + gameObject.name);
+            Debug.LogError("No Renderer components found in " + gameObject.name);
         }
     }
 
@@ -43,29 +47,32 @@ public class PortableObject : MonoBehaviour
     /// <param name="state">Vurgu durumu (None, CanCarry, Carried).</param>
     public void SetHighlight(HighlightState state)
     {
-        if (objectRenderer != null)
+        for (int rendererIndex = 0; rendererIndex < objectRenderers.Count; rendererIndex++)
         {
-            Material[] mats = objectRenderer.materials;
+            var renderer = objectRenderers[rendererIndex];
+            Material[] mats = renderer.materials;
+
             for (int i = 0; i < mats.Length; i++)
             {
                 mats[i] = new Material(mats[i]); // Her materyalin bir kopyasýný oluþtur
 
+                // Orijinal rengi kullanarak highlight durumuna göre çarpan uygula
                 switch (state)
                 {
                     case HighlightState.None:
-                        mats[i].color = originalColors[i];
+                        mats[i].color = originalColors[rendererIndex][i];
                         break;
                     case HighlightState.CanCarry:
-                        mats[i].color = originalColors[i] * canCarryColorMultiplier;
+                        mats[i].color = originalColors[rendererIndex][i] * canCarryColorMultiplier;
                         break;
                     case HighlightState.Carried:
-                        mats[i].color = originalColors[i] * carriedColorMultiplier;
+                        mats[i].color = originalColors[rendererIndex][i] * canCarryColorMultiplier;
                         break;
                 }
             }
 
             // Deðiþiklikleri Renderer'a geri ata
-            objectRenderer.materials = mats;
+            renderer.materials = mats;
         }
     }
 }

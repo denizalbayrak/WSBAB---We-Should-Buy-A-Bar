@@ -308,4 +308,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67e28838b984c34296eaaf08d15eaa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropYOffset: 0.65
+  dropYOffset: 0.12

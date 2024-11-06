@@ -10,14 +10,15 @@ public enum HighlightState
 
 public class PortableObject : MonoBehaviour
 {
+    public string itemName;             // Obje adý, örneðin: "Çöp Kutusu"
+    public bool isMandatory;            // Görev için zorunlu mu?
     public float dropYOffset = 0f;
 
     public List<Renderer> objectRenderers = new List<Renderer>(); // Tüm Renderer'lar
-    public List<List<Color>> originalColors = new List<List<Color>>(); // Her Renderer için orijinal renkler listesi
+    private List<List<Color>> originalColors = new List<List<Color>>(); // Her Renderer için orijinal renkler listesi
 
     // Renk çarpanlarý
-    private Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f); // Taþýma ihtimali durumu
-    private Color carriedColorMultiplier = new Color(0.3f, 0.3f, 0.3f);  // Taþýma durumu
+    private Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f);
 
     private void Awake()
     {

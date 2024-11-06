@@ -1,5 +1,6 @@
 using UnityEngine;
 using Wsbab.Enums; // CharacterType enumýný kullanmak için
+using System.Collections.Generic;
 
 [System.Serializable]
 public class SaveData
@@ -7,7 +8,9 @@ public class SaveData
     public int level;
     public float playTime;
     public string playerName;
+    public CharacterType selectedCharacter = CharacterType.Female;
 
-    // Karakter seçimi
-    public CharacterType selectedCharacter = CharacterType.Female; // Varsayýlan olarak Female
+
+    // Recipe names that the player owns
+    public List<string> ownedRecipeNames = new List<string>();
 }

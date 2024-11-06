@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
+
     [Header("Level Settings")]
     public List<Level> levels;                      // Seviye listesi
     public List<DropPoint> depotDropPoints;         // Depo için DropPoint'ler
@@ -11,9 +12,10 @@ public class LevelManager : MonoBehaviour
 
     private int currentLevelIndex = 0;
     private Level currentLevel;
+    private List<PortableObject> requiredBarObjects = new List<PortableObject>(); // Bar'a taþýnmasý gereken objeler
+
     private void Awake()
     {
-        // Singleton pattern
         if (Instance == null)
         {
             Instance = this;
@@ -23,6 +25,7 @@ public class LevelManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     private void Start()
     {
         if (levels.Count > 0)
@@ -41,6 +44,7 @@ public class LevelManager : MonoBehaviour
         {
             currentLevel = levels[levelIndex];
             Debug.Log($"Loading Level: {currentLevel.levelName}");
+
             InstantiateRequiredObjects(currentLevel);
         }
         else
@@ -49,6 +53,9 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Level gereksinimlerine göre gerekli objeleri yaratýr ve depoya yerleþtirir.
+    /// </summary>
     private void InstantiateRequiredObjects(Level level)
     {
         foreach (var recipe in level.recipes)
@@ -59,35 +66,24 @@ public class LevelManager : MonoBehaviour
                 {
                     bool instantiated = false;
 
-                    // Ýlk olarak depo drop point'lerine yerleþtirme yap
+                    // Depo alanýnda boþ drop point bul ve objeyi yerleþtir
                     foreach (var dropPoint in depotDropPoints)
                     {
-                        if (dropPoint.isEmpty) // Sadece boþ drop point'lere yerleþtir
+                        if (dropPoint.isEmpty)
                         {
-                            Debug.Log("11111");
                             GameObject newObject = Instantiate(requiredObj.objectPrefab, dropPoint.transform.position, Quaternion.identity);
-                            dropPoint.DeliverObject(newObject); // Obje yerleþtir
+                            PortableObject portableObject = newObject.GetComponent<PortableObject>();
+                            if (portableObject != null)
+                            {
+                                dropPoint.DeliverObject(newObject);
+
+                                                              
+                            }
                             instantiated = true;
                             break;
                         }
                     }
 
-                    //// Depoda yer yoksa bar drop point'lerine yerleþtir
-                    //if (!instantiated)
-                    //{
-                    //    foreach (var dropPoint in barDropPoints)
-                    //    {
-                    //        if (dropPoint.isEmpty) // Sadece boþ drop point'lere yerleþtir
-                    //        {
-                    //            GameObject newObject = Instantiate(requiredObj.objectPrefab, dropPoint.transform.position, Quaternion.identity);
-                    //            dropPoint.DeliverObject(newObject); // Obje yerleþtir
-                    //            instantiated = true;
-                    //            break;
-                    //        }
-                    //    }
-                    //}
-
-                    // Eðer depo ve bar drop point'lerinde yer yoksa uyarý ver
                     if (!instantiated)
                     {
                         Debug.LogWarning($"No available drop point for object: {requiredObj.objectPrefab.name}");
@@ -101,29 +97,32 @@ public class LevelManager : MonoBehaviour
     {
         foreach (var dropPoint in depotDropPoints)
         {
-            if (isCarrying)
-            {
-                dropPoint.TogglePlane(true);
-            }
-
-            else
-            {
-                dropPoint.TogglePlane(false);
-            }
+            dropPoint.TogglePlane(isCarrying);
         }
         foreach (var dropPoint in barDropPoints)
         {
+            dropPoint.TogglePlane(isCarrying);
+        }
+    }
 
-            if (isCarrying)
+    public bool AreRequiredObjectsMovedToBar()
+    {
+        foreach (var obj in requiredBarObjects)
+        {
+            bool isInBar = false;
+            foreach (var barDropPoint in barDropPoints)
             {
-                dropPoint.TogglePlane(true);
+                if (!barDropPoint.isEmpty && barDropPoint.deliveredObject == obj.gameObject)
+                {
+                    isInBar = true;
+                    break;
+                }
             }
-
-            else
+            if (!isInBar)
             {
-                dropPoint.TogglePlane(false);
+                return false;
             }
         }
-
+        return true;
     }
 }

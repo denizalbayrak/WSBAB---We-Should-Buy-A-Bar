@@ -667,9 +667,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67e28838b984c34296eaaf08d15eaa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: BeerGlassCabinet
+  isMandatory: 0
   dropYOffset: 0.11
-  objectRenderer: {fileID: 0}
-  originalColors: []
+  objectRenderers: []
 --- !u!1 &7563355770170703955
 GameObject:
   m_ObjectHideFlags: 0

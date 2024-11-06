@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Wsbab.Enums; // CharacterType enumýný kullanmak için
+using System.Collections.Generic;
+
 public enum GameState
 {
     PreLevel,
@@ -9,30 +11,28 @@ public enum GameState
     PostLevel,
     GameOver
 }
+
 public class GameManager : MonoBehaviour
 {
-    public GameState currentGameState = GameState.PreLevel;
     public static GameManager Instance;
-
+    public GameState currentGameState = GameState.PreLevel;
     public SaveData currentSaveData;
     public int currentSlot;
 
-    // Character prefabs
     public GameObject maleCharacterPrefab;
     public GameObject femaleCharacterPrefab;
+    public CharacterType selectedCharacter = CharacterType.Female;
 
-    public CharacterType selectedCharacter = CharacterType.Female; // Varsayýlan olarak Female
+    public List<PortableObject> defaultInventoryItems; // Default items for each player
+    public List<Recipe> availableRecipes; // All recipes available in the game
+    public List<Level> levels; // Levels with specific recipes and requirements
 
     private void Awake()
     {
-        // Singleton pattern
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            // Oyun baþlatýldýðýnda karakter seçimini yükle
-            // Eðer isterseniz, burada karakter seçimini yükleyebilirsiniz
         }
         else
         {
@@ -43,20 +43,16 @@ public class GameManager : MonoBehaviour
     public void NewGame(int slot)
     {
         currentSlot = slot;
-        currentSaveData = new SaveData();
+        currentSaveData = new SaveData
+        {
+            level = 1,
+            playTime = 0f,
+            playerName = "Player",
+            selectedCharacter = selectedCharacter,
+            ownedRecipeNames = new List<string>() // Store recipe names for owned recipes
+        };
 
-        // Yeni oyun için varsayýlan deðerleri ayarla
-        currentSaveData.level = 1;
-        currentSaveData.playTime = 0f;
-        currentSaveData.playerName = "Player";
-
-        // Seçilen karakteri save data'ya iþle
-        currentSaveData.selectedCharacter = selectedCharacter;
-
-        // Oyunu kaydet
         SaveGame();
-
-        // Oyun sahnesini yükle
         SceneManager.LoadScene("GameScene");
     }
 
@@ -67,20 +63,73 @@ public class GameManager : MonoBehaviour
 
         if (currentSaveData != null)
         {
-          
-            currentSaveData.selectedCharacter = selectedCharacter;
-            Debug.Log(selectedCharacter);
+            selectedCharacter = currentSaveData.selectedCharacter;
+            LoadOwnedRecipesFromSaveData(); // Load owned recipes by names
 
-            // Oyunu kaydet (isteðe baðlý)
-            SaveGame();
-
-            // Oyun sahnesini yükle
+           
             SceneManager.LoadScene("GameScene");
+            SceneManager.sceneLoaded += OnGameSceneLoaded;
         }
         else
         {
-            // Kayýt bulunamadýysa yeni oyun baþlat
             NewGame(slot);
+        }
+    }
+
+    private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "GameScene")
+        {
+            // Instantiate all inventory objects in the game scene
+            SceneManager.sceneLoaded -= OnGameSceneLoaded;
+        }
+    }
+
+   
+
+    private List<PortableObject> GetItemsFromOwnedRecipes()
+    {
+        List<PortableObject> items = new List<PortableObject>();
+        HashSet<string> existingItems = new HashSet<string>();
+
+        // Loop through each owned recipe and add unique items
+        foreach (var recipe in GetOwnedRecipes())
+        {
+            foreach (var item in recipe.requiredObjects)
+            {
+                if (!existingItems.Contains(item.objectPrefab.name))
+                {
+                    items.Add(item.objectPrefab.GetComponent<PortableObject>());
+                    existingItems.Add(item.objectPrefab.name);
+                }
+            }
+        }
+        return items;
+    }
+
+    private List<Recipe> GetOwnedRecipes()
+    {
+        List<Recipe> ownedRecipes = new List<Recipe>();
+        foreach (var recipeName in currentSaveData.ownedRecipeNames)
+        {
+            Recipe recipe = availableRecipes.Find(r => r.name == recipeName);
+            if (recipe != null)
+            {
+                ownedRecipes.Add(recipe);
+            }
+        }
+        return ownedRecipes;
+    }
+
+    private void LoadOwnedRecipesFromSaveData()
+    {
+        foreach (var recipeName in currentSaveData.ownedRecipeNames)
+        {
+            Recipe recipe = availableRecipes.Find(r => r.name == recipeName);
+            if (recipe != null)
+            {
+                currentSaveData.ownedRecipeNames.Add(recipe.name);
+            }
         }
     }
 
@@ -88,34 +137,26 @@ public class GameManager : MonoBehaviour
     {
         if (currentSaveData != null)
         {
-            // currentSaveData'yý güncel oyun durumu ile güncelle
-            // Örneðin, playTime veya level gibi
-
-            // Seçilen karakteri save data'ya iþle
             currentSaveData.selectedCharacter = selectedCharacter;
-
+            currentSaveData.ownedRecipeNames = GetOwnedRecipeNames(); // Save owned recipes by names
             SaveSystem.SaveGame(currentSaveData, currentSlot);
         }
     }
 
+    private List<string> GetOwnedRecipeNames()
+    {
+        List<string> recipeNames = new List<string>();
+        foreach (var recipe in GetOwnedRecipes())
+        {
+            recipeNames.Add(recipe.name);
+        }
+        return recipeNames;
+    }
+
     public void SpawnPlayerCharacter()
     {
-        if (currentSaveData != null)
-        {
-            // Save data'daki karakteri kullan
-            selectedCharacter = currentSaveData.selectedCharacter;
-            Debug.Log("SpawnPlayerCharacter - selectedCharacter from save data: " + selectedCharacter);
-        }
-        else
-        {
-            // Kayýtlý oyun yoksa, GameManager'daki selectedCharacter'ý kullan
-            Debug.Log("SpawnPlayerCharacter - No save data, using selectedCharacter from GameManager: " + selectedCharacter);
-        }
-
         GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
-
-        // Karakteri istenilen pozisyonda oluþturun
-        Vector3 spawnPosition = Vector3.zero; // Spawn pozisyonunu ayarlayýn
+        Vector3 spawnPosition = Vector3.zero; // Adjust spawn position as needed
         Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
     }
 
@@ -124,5 +165,4 @@ public class GameManager : MonoBehaviour
         currentGameState = GameState.InGame;
         Debug.Log("Oyun baþladý!");
     }
-
 }

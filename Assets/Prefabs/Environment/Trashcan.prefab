@@ -32,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 4940743982299712993}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2146150448596752042
 BoxCollider:
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67e28838b984c34296eaaf08d15eaa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Trash
+  itemName: Trashcan
   isMandatory: 0
   dropYOffset: 0
   objectRenderers: []

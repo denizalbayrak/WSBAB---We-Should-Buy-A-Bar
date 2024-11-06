@@ -13,4 +13,7 @@ public class SaveData
 
     // Recipe names that the player owns
     public List<string> ownedRecipeNames = new List<string>();
+    public List<string> ownedInventoryItemNames = new List<string>();
+    public List<string> selectedRecipeNames = new List<string>(); // Kullanýcýnýn seçili tarifleri
+
 }

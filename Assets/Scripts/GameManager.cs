@@ -51,8 +51,13 @@ public class GameManager : MonoBehaviour
             selectedCharacter = selectedCharacter,
             ownedRecipeNames = new List<string>() // Store recipe names for owned recipes
         };
-
+        currentSaveData.ownedRecipeNames.Add("Beer");
+        currentSaveData.ownedRecipeNames.Add("Wine");
+        currentSaveData.ownedRecipeNames.Add("Wine1");
+        currentSaveData.ownedRecipeNames.Add("Wine2");
+        currentSaveData.ownedRecipeNames.Add("Wine3");
         SaveGame();
+        SceneManager.sceneLoaded += OnGameSceneLoaded;
         SceneManager.LoadScene("GameScene");
     }
 
@@ -64,15 +69,13 @@ public class GameManager : MonoBehaviour
         if (currentSaveData != null)
         {
             selectedCharacter = currentSaveData.selectedCharacter;
-            LoadOwnedRecipesFromSaveData(); // Load owned recipes by names
 
-           
-            SceneManager.LoadScene("GameScene");
             SceneManager.sceneLoaded += OnGameSceneLoaded;
+            SceneManager.LoadScene("GameScene");
         }
         else
         {
-            NewGame(slot);
+            NewGame(slot);        
         }
     }
 
@@ -80,80 +83,22 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == "GameScene")
         {
+            GameUIManager.Instance.LoadLevelRecipesUI();
             // Instantiate all inventory objects in the game scene
             SceneManager.sceneLoaded -= OnGameSceneLoaded;
         }
     }
 
-   
 
-    private List<PortableObject> GetItemsFromOwnedRecipes()
-    {
-        List<PortableObject> items = new List<PortableObject>();
-        HashSet<string> existingItems = new HashSet<string>();
-
-        // Loop through each owned recipe and add unique items
-        foreach (var recipe in GetOwnedRecipes())
-        {
-            foreach (var item in recipe.requiredObjects)
-            {
-                if (!existingItems.Contains(item.objectPrefab.name))
-                {
-                    items.Add(item.objectPrefab.GetComponent<PortableObject>());
-                    existingItems.Add(item.objectPrefab.name);
-                }
-            }
-        }
-        return items;
-    }
-
-    private List<Recipe> GetOwnedRecipes()
-    {
-        List<Recipe> ownedRecipes = new List<Recipe>();
-        foreach (var recipeName in currentSaveData.ownedRecipeNames)
-        {
-            Recipe recipe = availableRecipes.Find(r => r.name == recipeName);
-            if (recipe != null)
-            {
-                ownedRecipes.Add(recipe);
-            }
-        }
-        return ownedRecipes;
-    }
-
-    private void LoadOwnedRecipesFromSaveData()
-    {
-        foreach (var recipeName in currentSaveData.ownedRecipeNames)
-        {
-            Recipe recipe = availableRecipes.Find(r => r.name == recipeName);
-            if (recipe != null)
-            {
-                currentSaveData.ownedRecipeNames.Add(recipe.name);
-            }
-        }
-    }
-
-    public void SaveGame()
+      public void SaveGame()
     {
         if (currentSaveData != null)
         {
             currentSaveData.selectedCharacter = selectedCharacter;
-            currentSaveData.ownedRecipeNames = GetOwnedRecipeNames(); // Save owned recipes by names
             SaveSystem.SaveGame(currentSaveData, currentSlot);
         }
     }
-
-    private List<string> GetOwnedRecipeNames()
-    {
-        List<string> recipeNames = new List<string>();
-        foreach (var recipe in GetOwnedRecipes())
-        {
-            recipeNames.Add(recipe.name);
-        }
-        return recipeNames;
-    }
-
-    public void SpawnPlayerCharacter()
+        public void SpawnPlayerCharacter()
     {
         GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
         Vector3 spawnPosition = Vector3.zero; // Adjust spawn position as needed

@@ -3,34 +3,31 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 /// <summary>
-/// Bu script, oyuncunun taþýnabilir objelerle etkileþimini ve objelerin vurgulanmasýný yönetir.
+/// Manages player interaction with carryable and interactable objects.
 /// </summary>
 public class PlayerInteraction : MonoBehaviour
 {
     #region Public Variables
 
     [Header("Interaction Settings")]
-    [Tooltip("Taþýnabilir objelerin bulunduðu Layer.")]
-    public LayerMask interactLayer;
+    [Tooltip("Layer for interactable and carryable objects.")]
+    public LayerMask interactableLayer;
 
-    [Tooltip("Drop point objelerinin bulunduðu Layer.")]
-    public LayerMask dropPointLayer;
-
-    [Tooltip("Oyuncunun objeleri taþýdýðý nokta.")]
+    [Tooltip("The point where the player carries objects.")]
     public Transform carryPoint;
 
-    [Tooltip("Overlap box boyutu.")]
+    [Tooltip("Overlap box size.")]
     public Vector3 overlapBoxSize = new Vector3(1f, 1f, 1f);
 
-    [Tooltip("Overlap box ofseti.")]
+    [Tooltip("Overlap box offset.")]
     public Vector3 overlapBoxOffset = new Vector3(0f, 0f, 1.5f);
 
     [Header("Highlight Settings")]
-    [Tooltip("Taþýma ihtimali durumunda renk çarpaný.")]
-    public Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f); // Taþýma ihtimali durumu
+    [Tooltip("Color multiplier when object can be carried.")]
+    public Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f); // Can carry
 
-    [Tooltip("Taþýma durumunda renk çarpaný.")]
-    public Color carriedColorMultiplier = new Color(0.4f, 0.4f, 0.4f);  // Taþýma durumu
+    [Tooltip("Color multiplier when object is being carried.")]
+    public Color carriedColorMultiplier = new Color(0.4f, 0.4f, 0.4f);  // Carried
 
     #endregion
 
@@ -41,24 +38,31 @@ public class PlayerInteraction : MonoBehaviour
     private PlayerMovement movementController;
     private Animator animator;
     private Rigidbody rb;
-    private GameObject dropPoints;
     private GameObject carriedObject = null;
     private Vector3 carriedObjectOriginalLocalPosition;
-    private bool isNearDropPoint = false;
-    private Transform currentDropPoint;
     private HashSet<GameObject> highlightedObjects = new HashSet<GameObject>();
-    private LevelManager levelManager;
+
+    #endregion
+
+    #region Properties
+
+    public GameObject CarriedObject
+    {
+        get { return carriedObject; }
+        set { carriedObject = value; }
+    }
+
     #endregion
 
     #region Unity Methods
 
     private void Awake()
     {
-        // Bileþen Referanslarý
+        // Component References
         rb = GetComponent<Rigidbody>();
         movementController = GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
-        levelManager = LevelManager.Instance;
+
         if (movementController == null)
         {
             Debug.LogError("PlayerMovement component is missing on the player!");
@@ -69,21 +73,10 @@ public class PlayerInteraction : MonoBehaviour
             Debug.LogError("Animator component is missing on the player!");
         }
 
-        // Input Ayarlarý
+        // Input Setup
         inputActions = new PlayerInputActions();
         interactAction = inputActions.Player.Interact;
         interactAction.performed += ctx => Interact();
-
-        //// DropPoints'ý Bulma
-        //dropPoints = GameObject.FindGameObjectWithTag("DropPoints");
-        //if (dropPoints != null)
-        //{
-        //    dropPoints.SetActive(false);
-        //}
-        //else
-        //{
-        //    Debug.LogError("DropPoints GameObject with tag 'DropPoints' not found in the scene!");
-        //}
     }
 
     private void OnEnable()
@@ -98,166 +91,205 @@ public class PlayerInteraction : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Hareket ve Animasyon Yönetimi
+        // Movement and Animation Management
         HandleMovement();
     }
 
     private void Update()
     {
-        // Vurgulama ve Taþýma Durumu Yönetimi
+        // Highlighting and Carrying State Management
         UpdateHighlighting();
+
         if (carriedObject != null)
         {
-            CheckForNearbyDropPoint();
             UpdateCarriedObjectPosition();
-            
         }
-       
     }
-    
+
     #endregion
 
     #region Interaction Methods
 
     /// <summary>
-    /// Oyuncu etkileþimde bulunduðunda çaðrýlýr.
+    /// Called when the player interacts.
     /// </summary>
     private void Interact()
     {
-        if (GameManager.Instance.currentGameState == GameState.InGame || GameManager.Instance.currentGameState == GameState.PreLevel)
+        // First, check if the game is in a state where interaction is allowed
+        if (GameManager.Instance.currentGameState != GameState.InGame && GameManager.Instance.currentGameState != GameState.PreLevel)
         {
-            if (carriedObject == null)
+            return;
+        }
+
+        // Try to find an interactable object in front
+        Interactable interactable = GetInteractableInFront();
+
+        if (interactable != null)
+        {
+            if (interactable.CanInteract(gameObject))
             {
-                TryPickUpObject();
+                // Interact with the object
+                interactable.Interact(gameObject);
+            }
+            else if (carriedObject == null)
+            {
+                // Cannot interact, but not carrying anything
+                // Try to pick up the interactable object if possible
+                Carryable carryable = interactable.GetComponent<Carryable>();
+                if (carryable != null)
+                {
+                    // Pick up the carryable object
+                    PickUpObject(carryable.gameObject);
+                }
+                else
+                {
+                    Debug.Log("Cannot interact or pick up the object.");
+                }
             }
             else
             {
-                TryDropObject();
+                Debug.Log("Cannot interact with the object.");
             }
+        }
+        else if (carriedObject != null)
+        {
+            // No interactable object, but carrying something
+            // Drop the carried object
+            DropCarriedObject();
         }
         else
         {
-            Debug.Log("Þu anda objeleri taþýyamazsýn.");
+            // Not carrying anything
+            // Try to find a carryable object in front
+            Carryable carryable = GetCarryableInFront();
+
+            if (carryable != null)
+            {
+                // Pick up the carryable object
+                PickUpObject(carryable.gameObject);
+            }
         }
     }
 
+
     /// <summary>
-    /// Objeyi taþýmaya çalýþýr.
+    /// Picks up the specified object.
     /// </summary>
-    private void TryPickUpObject()
+    /// <param name="obj">The object to pick up.</param>
+    public void PickUpObject(GameObject obj)
+    {
+        if (carriedObject != null)
+        {
+            Debug.LogWarning("Already carrying an object!");
+            return;
+        }
+
+        carriedObject = obj;
+        carriedObjectOriginalLocalPosition = carriedObject.transform.localPosition;
+
+        // Parent the object to carryPoint
+        carriedObject.transform.SetParent(carryPoint);
+        carriedObject.transform.localPosition = Vector3.zero;
+        carriedObject.transform.localRotation = Quaternion.identity;
+
+        // Set the carried object's state
+        Carryable carryable = carriedObject.GetComponent<Carryable>();
+        if (carryable != null)
+        {
+            carryable.OnPickUp();
+        }
+
+        // Remove highlighting
+        RemoveHighlightFromObject(carriedObject);
+    }
+
+    /// <summary>
+    /// Drops the currently carried object.
+    /// </summary>
+    private void DropCarriedObject()
+    {
+        if (carriedObject == null)
+        {
+            return;
+        }
+
+        // Detach the object
+        carriedObject.transform.SetParent(null);
+
+        // Get the position in front of the player
+        Vector3 dropPosition = transform.position + transform.TransformDirection(overlapBoxOffset);
+        // Place the object at dropPosition
+        carriedObject.transform.position = dropPosition;
+
+        // Set the carried object's state
+        Carryable carryable = carriedObject.GetComponent<Carryable>();
+        if (carryable != null)
+        {
+            carryable.OnDrop();
+        }
+
+        // Reset carriedObject
+        carriedObject = null;
+    }
+
+    /// <summary>
+    /// Gets the interactable object in front of the player.
+    /// </summary>
+    /// <returns>The Interactable object, or null if none found.</returns>
+    private Interactable GetInteractableInFront()
     {
         Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
+
         Collider[] hitColliders = Physics.OverlapBox(
             boxCenter,
             overlapBoxSize / 2,
             transform.rotation,
-            interactLayer
+            interactableLayer
         );
 
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.CompareTag("Portable"))
+            if (hitCollider.CompareTag("InteractableStatic"))
             {
-                PickUpObject(hitCollider.gameObject);
-                break;
+                Interactable interactable = hitCollider.GetComponent<Interactable>();
+                if (interactable != null)
+                {
+                    return interactable;
+                }
             }
         }
+
+        return null;
     }
 
     /// <summary>
-    /// Objeyi taþýmaya baþlar.
+    /// Gets the carryable object in front of the player.
     /// </summary>
-    /// <param name="obj">Taþýnacak obje.</param>
-    private void PickUpObject(GameObject obj)
+    /// <returns>The Carryable object, or null if none found.</returns>
+    private Carryable GetCarryableInFront()
     {
-        carriedObject = obj;
-        DropPoint dropPointObj = obj.transform.parent.GetComponent<DropPoint>();
-        obj.transform.SetParent(carryPoint);
-        dropPointObj.isEmpty=true;
-        dropPointObj.deliveredObject = null;
-        obj.transform.localPosition = carriedObjectOriginalLocalPosition = Vector3.zero;
-        obj.transform.localRotation = Quaternion.identity;
+        Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
 
-        Collider objCollider = obj.GetComponent<Collider>();
-        if (objCollider != null)
+        Collider[] hitColliders = Physics.OverlapBox(
+            boxCenter,
+            overlapBoxSize / 2,
+            transform.rotation,
+            interactableLayer
+        );
+
+        foreach (var hitCollider in hitColliders)
         {
-            objCollider.enabled = false;
-        }       
-
-        PortableObject portableObject = obj.GetComponent<PortableObject>();
-        if (portableObject != null)
-        {
-            portableObject.SetHighlight(HighlightState.Carried);
-            highlightedObjects.Remove(obj);
-        }
-
-        Debug.Log("Objeyi taþýyorsun: " + obj.name);
-        levelManager.UpdateDropPointPlanes(true);
-    }
-
-    /// <summary>
-    /// Objeyi býrakmayý dener.
-    /// </summary>
-    private void TryDropObject()
-    {
-        if (isNearDropPoint && currentDropPoint != null)
-        {
-            DropPoint dropPointComponent = currentDropPoint.GetComponent<DropPoint>();
-
-            if (dropPointComponent != null && dropPointComponent.isEmpty)
+            if (hitCollider.CompareTag("Carryable"))
             {
-                DropObject(currentDropPoint.position, dropPointComponent);  // Eðer drop point boþsa objeyi býrak
-            }
-            else
-            {
-                Debug.LogWarning("This drop point is already occupied! Cannot place another object.");
+                Carryable carryable = hitCollider.GetComponent<Carryable>();
+                if (carryable != null)
+                {
+                    return carryable;
+                }
             }
         }
-        else
-        {
-            Debug.Log("Yakýnda geçerli bir býrakma noktasý yok.");
-        }
-    }
 
-
-
-    /// <summary>
-    /// Taþýnan objeyi býrakýr ve býrakma noktasýna yerleþtirir.
-    /// </summary>
-    /// <param name="dropPosition">Objenin býrakýlacaðý pozisyon.</param>
-    private void DropObject(Vector3 dropPosition, DropPoint dropPointComponent)
-    {
-        PortableObject portableObject = carriedObject.GetComponent<PortableObject>();
-        if (portableObject != null)
-        {
-            float yOffset = portableObject.dropYOffset;
-            dropPosition.y += yOffset;
-        }
-        else
-        {
-            Debug.LogError("Carried object does not have a PortableObject component!");
-        }
-
-        carriedObject.transform.SetParent(dropPointComponent.gameObject.transform);
-        dropPointComponent.DeliverObject(carriedObject);        
-        carriedObject.transform.position = dropPosition;
-        carriedObject.transform.rotation = currentDropPoint.rotation;
-        Collider objCollider = carriedObject.GetComponent<Collider>();
-        if (objCollider != null)
-        {
-            objCollider.enabled = true;
-        }
-       
-        if (portableObject != null)
-        {
-            portableObject.SetHighlight(HighlightState.None); // Rengi orijinal haline döndür
-        }
-
-        Debug.Log("Objeyi býraktýn: " + carriedObject.name);
-        levelManager.UpdateDropPointPlanes(false);
-        carriedObject = null;
-        currentDropPoint = null;
-        isNearDropPoint = false;
+        return null;
     }
 
     #endregion
@@ -265,7 +297,7 @@ public class PlayerInteraction : MonoBehaviour
     #region Highlighting Methods
 
     /// <summary>
-    /// Taþýnabilir objeleri tespit eder ve vurgular.
+    /// Detects and highlights carryable and interactable objects.
     /// </summary>
     private void UpdateHighlighting()
     {
@@ -274,95 +306,69 @@ public class PlayerInteraction : MonoBehaviour
             boxCenter,
             overlapBoxSize / 2,
             transform.rotation,
-            interactLayer
+            interactableLayer
         );
 
         List<GameObject> detectedObjects = new List<GameObject>();
 
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.CompareTag("Portable"))
+            GameObject obj = hitCollider.gameObject;
+            if (obj == carriedObject)
             {
-                detectedObjects.Add(hitCollider.gameObject);
+                continue;
             }
-        }
 
-        // Yeni tespit edilen objeleri vurgula
-        foreach (var obj in detectedObjects)
-        {
-            if (!highlightedObjects.Contains(obj) && obj != carriedObject)
+            if (obj.CompareTag("Carryable") || obj.CompareTag("InteractableStatic"))
             {
-                PortableObject portableObject = obj.GetComponent<PortableObject>();
-                if (portableObject != null)
+                detectedObjects.Add(obj);
+
+                if (!highlightedObjects.Contains(obj))
                 {
-                    portableObject.SetHighlight(HighlightState.CanCarry);
+                    // Highlight the object
+                    HighlightObject(obj);
                     highlightedObjects.Add(obj);
-                    Debug.Log("Objeyi vurguladýn (CanCarry): " + obj.name);
                 }
             }
         }
 
-        // Artýk tespit edilmeyen objelerin vurgusunu kaldýr
+        // Unhighlight objects that are no longer detected
         HashSet<GameObject> objectsToUnhighlight = new HashSet<GameObject>(highlightedObjects);
         objectsToUnhighlight.ExceptWith(detectedObjects);
 
         foreach (var obj in objectsToUnhighlight)
         {
-            PortableObject portableObject = obj.GetComponent<PortableObject>();
-            if (portableObject != null)
-            {
-                portableObject.SetHighlight(HighlightState.None);
-                highlightedObjects.Remove(obj);
-                Debug.Log("Objenin vurgusunu kaldýrdýn (None): " + obj.name);
-            }
+            RemoveHighlightFromObject(obj);
+            highlightedObjects.Remove(obj);
         }
     }
-
-    #endregion
-
-    #region Drop Point Methods
 
     /// <summary>
-    /// Yakýndaki býrakma noktalarýný kontrol eder.
+    /// Highlights the specified object.
     /// </summary>
-    private void CheckForNearbyDropPoint()
+    /// <param name="obj">The object to highlight.</param>
+    private void HighlightObject(GameObject obj)
     {
-        Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
-        Collider[] hitColliders = Physics.OverlapBox(
-            boxCenter,
-            overlapBoxSize / 2,
-            transform.rotation,
-            dropPointLayer // Drop point'leri kontrol et
-        );
-
-        isNearDropPoint = false;
-        currentDropPoint = null;
-
-        foreach (var hitCollider in hitColliders)
-        {
-            // Depo ya da bar alaný olup olmadýðýný kontrol et
-            if (hitCollider.CompareTag("StorageDropPoint") || hitCollider.CompareTag("ShopDropPoint"))
-            {
-                isNearDropPoint = true;
-                currentDropPoint = hitCollider.transform;
-                break;
-            }
-        }
-
-        if (!isNearDropPoint)
-        {
-            Debug.Log("Yakýnda býrakma noktasý bulunamadý!");
-        }
+        // Implement highlighting logic
+        // For example, change material color or enable outline
     }
 
-
+    /// <summary>
+    /// Removes the highlight from the specified object.
+    /// </summary>
+    /// <param name="obj">The object to unhighlight.</param>
+    private void RemoveHighlightFromObject(GameObject obj)
+    {
+        // Implement unhighlighting logic
+        // For example, reset material color or disable outline
+    }
 
     #endregion
 
     #region Movement and Animation
 
     /// <summary>
-    /// Oyuncunun hareketini yönetir ve animasyon parametrelerini günceller.
+    /// Manages player movement and updates animation parameters.
     /// </summary>
     private void HandleMovement()
     {
@@ -376,38 +382,13 @@ public class PlayerInteraction : MonoBehaviour
     #region Carried Object Positioning
 
     /// <summary>
-    /// Taþýma durumunda olan objenin pozisyonunu günceller.
+    /// Updates the position of the carried object.
     /// </summary>
     private void UpdateCarriedObjectPosition()
     {
-        if (isNearDropPoint && currentDropPoint != null)
-        {
-            PortableObject portableObject = carriedObject.GetComponent<PortableObject>();
-            if (portableObject != null)
-            {
-                float yOffset = portableObject.dropYOffset;
-                Vector3 targetPosition = currentDropPoint.position + new Vector3(0, yOffset, 0);
-
-                // carryPoint'in dönüþüne göre objenin lokal pozisyonunu hesapla
-                Vector3 localPosition = carryPoint.InverseTransformPoint(targetPosition);
-
-                carriedObject.transform.localPosition = localPosition;
-                carriedObject.transform.rotation = currentDropPoint.rotation;
-
-                Debug.Log($"Objeyi drop point'e yerleþtiriliyor: Position={carriedObject.transform.position}, Rotation={carriedObject.transform.rotation}");
-            }
-            else
-            {
-                Debug.LogError("Carried object does not have a PortableObject component!");
-            }
-        }
-        else
-        {
-            carriedObject.transform.localPosition = carriedObjectOriginalLocalPosition;
-            carriedObject.transform.localRotation = Quaternion.identity;
-
-            Debug.Log($"Objeyi carryPoint'e göre konumlandýrýlýyor: LocalPosition={carriedObject.transform.localPosition}");
-        }
+        // Keep the carried object at the carry point
+        carriedObject.transform.localPosition = Vector3.zero;
+        carriedObject.transform.localRotation = Quaternion.identity;
     }
 
     #endregion

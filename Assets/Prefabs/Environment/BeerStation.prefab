@@ -191,6 +191,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &5197083386494555500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6577605098691302582}
+  m_Layer: 6
+  m_Name: PlacementPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6577605098691302582
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197083386494555500}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.454, z: 0}
+  m_LocalScale: {x: 0.001, y: 0.0001, z: 0.001}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1790970325049897758}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5839186990300934349
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,7 +426,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1790970325049897758}
   - component: {fileID: 9191747698371367503}
-  - component: {fileID: 358467169555147844}
+  - component: {fileID: 5446241389536765825}
   m_Layer: 6
   m_Name: BeerStation
   m_TagString: Portable
@@ -416,6 +447,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2097400075116089592}
+  - {fileID: 6577605098691302582}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -440,7 +472,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.791973, y: 1, z: 1}
   m_Center: {x: 0.031839885, y: 0, z: 0}
---- !u!114 &358467169555147844
+--- !u!114 &5446241389536765825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -449,13 +481,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6911678195281547234}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67e28838b984c34296eaaf08d15eaa4, type: 3}
+  m_Script: {fileID: 11500000, guid: a61d5f07a23243b48a1a0f9e1f4f9397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: BeerStation
-  isMandatory: 0
-  dropYOffset: 0.11
-  objectRenderers: []
+  placementPoint: {fileID: 6577605098691302582}
 --- !u!1 &7092031257927386311
 GameObject:
   m_ObjectHideFlags: 0

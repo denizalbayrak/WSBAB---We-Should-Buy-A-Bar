@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5693098926355941178}
   - component: {fileID: 8410133412163345728}
-  - component: {fileID: 3011149631518628395}
+  - component: {fileID: -8606800700208329407}
   m_Layer: 6
   m_Name: Sink
   m_TagString: Portable
@@ -31,6 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4980353833542695499}
+  - {fileID: 3104595094752928193}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -55,7 +56,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3011149631518628395
+--- !u!114 &-8606800700208329407
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,13 +65,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2483490619502376542}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67e28838b984c34296eaaf08d15eaa4, type: 3}
+  m_Script: {fileID: 11500000, guid: 3aa07615e3cdaa24bb46be6682e21655, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Sink
-  isMandatory: 0
-  dropYOffset: 0
-  objectRenderers: []
+  placementPoint: {fileID: 3104595094752928193}
 --- !u!1 &4967795760410596926
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,3 +157,34 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6391174440591858799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3104595094752928193}
+  m_Layer: 6
+  m_Name: PlacementPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3104595094752928193
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6391174440591858799}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.336, z: 0}
+  m_LocalScale: {x: 0.001, y: 0.0001, z: 0.001}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5693098926355941178}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

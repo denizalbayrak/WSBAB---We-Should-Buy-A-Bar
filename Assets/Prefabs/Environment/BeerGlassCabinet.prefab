@@ -277,6 +277,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3068719734830437816
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3358294193479799930}
+  m_Layer: 6
+  m_Name: PlacementPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3358294193479799930
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3068719734830437816}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.342, z: 0}
+  m_LocalScale: {x: 0.001, y: 0.0001, z: 0.001}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5623029392495492107}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3449083148861246020
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,10 +639,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5623029392495492107}
   - component: {fileID: 7408483782661741994}
-  - component: {fileID: 6525354038010329969}
+  - component: {fileID: 7828373524823073608}
   m_Layer: 6
   m_Name: BeerGlassCabinet
-  m_TagString: Portable
+  m_TagString: InteractableStatic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -631,6 +662,7 @@ Transform:
   - {fileID: 7346245387790891693}
   - {fileID: 3088730491541167672}
   - {fileID: 756755931056691903}
+  - {fileID: 3358294193479799930}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -655,7 +687,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.8640802, y: 0.8436717, z: 0.42156073}
   m_Center: {x: -0.0084949, y: -0.07816379, z: 0.2093848}
---- !u!114 &6525354038010329969
+--- !u!114 &7828373524823073608
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -664,13 +696,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7482732300916718232}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67e28838b984c34296eaaf08d15eaa4, type: 3}
+  m_Script: {fileID: 11500000, guid: ad5400b83e897d64ca638df912f53434, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: BeerGlassCabinet
-  isMandatory: 0
-  dropYOffset: 0.11
-  objectRenderers: []
+  placementPoint: {fileID: 0}
+  maxBeerGlasses: 2
+  currentBeerGlasses: 2
+  beerGlassPrefab: {fileID: 8722614702567484086, guid: e4cc83c390bbd5b429948ad974a687da, type: 3}
 --- !u!1 &7563355770170703955
 GameObject:
   m_ObjectHideFlags: 0

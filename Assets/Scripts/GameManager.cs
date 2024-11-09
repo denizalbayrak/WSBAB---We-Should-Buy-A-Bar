@@ -80,7 +80,6 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == "GameScene")
         {
-            GameUIManager.Instance.LoadLevelRecipesUI();
             // Instantiate all inventory objects in the game scene
             SceneManager.sceneLoaded -= OnGameSceneLoaded;
         }

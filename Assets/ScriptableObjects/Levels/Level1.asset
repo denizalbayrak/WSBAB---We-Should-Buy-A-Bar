@@ -15,3 +15,4 @@ MonoBehaviour:
   levelName: 1
   recipes:
   - {fileID: 11400000, guid: d4d584d9a10ee304a87a6d701051caf6, type: 2}
+  levelMapPrefab: {fileID: 7345529607415524228, guid: 720430768fff29748b35d3de6a6f5f6c, type: 3}

@@ -53,9 +53,6 @@ public class GameManager : MonoBehaviour
         };
         currentSaveData.ownedRecipeNames.Add("Beer");
         currentSaveData.ownedRecipeNames.Add("Wine");
-        currentSaveData.ownedRecipeNames.Add("Wine1");
-        currentSaveData.ownedRecipeNames.Add("Wine2");
-        currentSaveData.ownedRecipeNames.Add("Wine3");
         SaveGame();
         SceneManager.sceneLoaded += OnGameSceneLoaded;
         SceneManager.LoadScene("GameScene");

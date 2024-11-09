@@ -22,4 +22,15 @@ public class RequiredObject
 
     [Tooltip("Bu objenin kaç tane gerektiði")]
     public int quantity;
+
+    [Tooltip("Bu obje bara taþýnmalý mý?")]
+    public bool moveToBar; // Newly added property
+
+    // Constructor (optional)
+    public RequiredObject(GameObject prefab, int qty, bool moveToBar)
+    {
+        objectPrefab = prefab;
+        quantity = qty;
+        this.moveToBar = moveToBar;
+    }
 }

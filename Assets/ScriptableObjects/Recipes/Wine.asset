@@ -15,11 +15,6 @@ MonoBehaviour:
   recipeName: Wine
   recipeImage: {fileID: 21300000, guid: 088105df18e004d498d06452f054412e, type: 3}
   requiredObjects:
-  - objectPrefab: {fileID: 7482732300916718232, guid: ed276231ced9826488daeb0994c3c747, type: 3}
+  - objectPrefab: {fileID: 5872014374053846874, guid: 8b46944660b000840b378c1f525b964f, type: 3}
     quantity: 1
-  - objectPrefab: {fileID: 6911678195281547234, guid: 18953321b3af535439d4ab5a6f8b9d53, type: 3}
-    quantity: 1
-  - objectPrefab: {fileID: 4117432509922278940, guid: e048fd988edbba54ab390a1d82dca8c7, type: 3}
-    quantity: 1
-  - objectPrefab: {fileID: 2483490619502376542, guid: ab3effc9cc4baad47aca4c567cb46b66, type: 3}
-    quantity: 1
+    moveToBar: 0

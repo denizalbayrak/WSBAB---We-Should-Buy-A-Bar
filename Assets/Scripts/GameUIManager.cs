@@ -7,6 +7,7 @@ public class GameUIManager : MonoBehaviour
 {
     public static GameUIManager Instance;
     public List<GameObject> recipes;
+    public List<GameObject> recipesUI;
     public GameObject recipeTopUIPrefab;
     public GameObject recipeToggleUIPrefab;
     public GameObject MoreRecipeUI;
@@ -14,7 +15,7 @@ public class GameUIManager : MonoBehaviour
     public Transform chooseRecipeContainer; // Panel listing all recipes
     public GameObject WarningPanel; // Reference to the warning panel
     public TextMeshProUGUI WarningPanelText; // Reference to the warning panel
-
+    public int recipeTopUINum;
     private void Awake()
     {
         if (Instance == null)
@@ -96,18 +97,6 @@ public class GameUIManager : MonoBehaviour
             }
         }
 
-        // After setting up toggles, check if no recipes are selected
-        if (GameManager.Instance.currentSaveData.selectedRecipeNames.Count == 0)
-        {
-            // Show warning panel
-            WarningPanel.SetActive(true);
-            WarningPanelText.text = "You must choose at least one recipe.";
-        }
-        else
-        {
-            // Hide warning panel
-            WarningPanel.SetActive(false);
-        }
     }
 
     private void AddRecipeToOwnedContainer(Recipe recipe)
@@ -122,9 +111,13 @@ public class GameUIManager : MonoBehaviour
         GameObject newRecipeUI = Instantiate(recipeTopUIPrefab, ownedRecipesContainer);
         newRecipeUI.GetComponentInChildren<TextMeshProUGUI>().text = recipe.recipeName;
         newRecipeUI.transform.GetChild(0).GetComponent<Image>().sprite = recipe.recipeImage;
+        recipeTopUINum++;
+        recipesUI.Add(newRecipeUI);
+        TopUIUpdate(newRecipeUI);
+
     }
 
-    private bool IsRecipeInOwnedContainer(string recipeName)
+private bool IsRecipeInOwnedContainer(string recipeName)
     {
         foreach (Transform child in ownedRecipesContainer)
         {
@@ -156,22 +149,11 @@ public class GameUIManager : MonoBehaviour
             // Remove from selectedRecipeNames in SaveData
             GameManager.Instance.currentSaveData.selectedRecipeNames.Remove(recipe.recipeName);
         }
-
+        LevelManager.Instance.InstantiateRequiredObjects();
         // Save changes
         GameManager.Instance.SaveGame();
 
-        // Check if no recipes are selected
-        if (GameManager.Instance.currentSaveData.selectedRecipeNames.Count == 0)
-        {
-            // Show warning panel
-            WarningPanel.SetActive(true);
-            WarningPanelText.text = "You must choose at least one recipe.";
-        }
-        else
-        {
-            // Hide warning panel
-            WarningPanel.SetActive(false);
-        }
+        
     }
 
     private void RemoveRecipeFromOwnedContainer(string recipeName)
@@ -182,9 +164,51 @@ public class GameUIManager : MonoBehaviour
             TextMeshProUGUI textComponent = child.GetComponentInChildren<TextMeshProUGUI>();
             if (textComponent != null && textComponent.text == recipeName)
             {
+                recipesUI.Remove(child.gameObject);
+                TopUIUpdate(child.gameObject);
                 Destroy(child.gameObject);
                 break;
             }
         }
     }
+
+    private void TopUIUpdate( GameObject recipe)
+    {
+       
+        if (recipesUI.Count>3)
+        {
+            MoreRecipeUI.SetActive(true);
+            MoreRecipeUI.GetComponentInChildren<TextMeshProUGUI>().text = "+" + (recipesUI.Count - 3).ToString();
+           for (int i = 0; i < recipesUI.Count; i++)
+            {
+                recipesUI[i].SetActive(true);
+                if (i>=3)
+                {
+                    recipesUI[i].SetActive(false);
+                }
+            }
+        }
+     
+        else
+        {
+            if (recipesUI.Count == 0)
+            {
+                WarningPanel.SetActive(true);
+                WarningPanelText.text = "You must choose at least one recipe.";
+            }
+            else
+            {
+                // Hide warning panel
+                WarningPanel.SetActive(false);
+            }
+        }
+            for (int i = 0; i < recipesUI.Count; i++)
+            {
+                    recipesUI[i].SetActive(true);               
+            }
+            MoreRecipeUI.SetActive(false);
+       
+    }
+        
+    
 }

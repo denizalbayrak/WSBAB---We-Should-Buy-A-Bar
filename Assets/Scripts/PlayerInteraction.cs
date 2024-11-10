@@ -35,6 +35,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private PlayerInputActions inputActions;
     private InputAction interactAction;
+    private InputAction holdAction;
     private PlayerMovement movementController;
     private Animator animator;
     private Rigidbody rb;
@@ -77,6 +78,9 @@ public class PlayerInteraction : MonoBehaviour
         inputActions = new PlayerInputActions();
         interactAction = inputActions.Player.Interact;
         interactAction.performed += ctx => Interact();
+
+        // Initialize holdAction
+        holdAction = inputActions.Player.InteractHold;
     }
 
     private void OnEnable()
@@ -104,6 +108,9 @@ public class PlayerInteraction : MonoBehaviour
         {
             UpdateCarriedObjectPosition();
         }
+
+        // Handle holdAction input
+        HandleHoldAction();
     }
 
     #endregion
@@ -126,51 +133,68 @@ public class PlayerInteraction : MonoBehaviour
 
         if (interactable != null)
         {
+            Debug.Log("Found interactable: " + interactable.name);
+
             if (interactable.CanInteract(gameObject))
             {
+                Debug.Log("Can interact with: " + interactable.name);
+
                 // Interact with the object
                 interactable.Interact(gameObject);
-            }
-            else if (carriedObject == null)
-            {
-                // Cannot interact, but not carrying anything
-                // Try to pick up the interactable object if possible
-                Carryable carryable = interactable.GetComponent<Carryable>();
-                if (carryable != null)
-                {
-                    // Pick up the carryable object
-                    PickUpObject(carryable.gameObject);
-                }
-                else
-                {
-                    Debug.Log("Cannot interact or pick up the object.");
-                }
             }
             else
             {
                 Debug.Log("Cannot interact with the object.");
             }
         }
-        else if (carriedObject != null)
-        {
-            // No interactable object, but carrying something
-            // Drop the carried object
-            DropCarriedObject();
-        }
         else
         {
-            // Not carrying anything
-            // Try to find a carryable object in front
-            Carryable carryable = GetCarryableInFront();
-
-            if (carryable != null)
+            // No interactable object found
+            if (carriedObject != null)
             {
-                // Pick up the carryable object
-                PickUpObject(carryable.gameObject);
+                // Player is carrying something but not near an interactable
+                // Do not allow dropping the object
+                Debug.Log("Cannot drop the object here.");
+                // Optionally, provide feedback to the player (e.g., UI message or sound)
+            }
+            else
+            {
+                // Player is not carrying anything
+                // Try to pick up a carryable object if one is in front
+                Carryable carryable = GetCarryableInFront();
+                if (carryable != null)
+                {
+                    Debug.Log("Picking up carryable object: " + carryable.name);
+
+                    // Pick up the carryable object
+                    PickUpObject(carryable.gameObject);
+                }
             }
         }
     }
 
+    /// <summary>
+    /// Handles the hold action input (e.g., holding the Ctrl key).
+    /// </summary>
+    private void HandleHoldAction()
+    {
+        if (holdAction.IsPressed())
+        {
+            // Check for interactable objects in front
+            Interactable interactable = GetInteractableInFront();
+
+            if (interactable != null)
+            {
+                // Check if the interactable can handle hold actions
+                IHoldInteractable holdInteractable = interactable as IHoldInteractable;
+                if (holdInteractable != null && holdInteractable.CanHoldInteract(gameObject))
+                {
+                    // Pass the hold action to the interactable
+                    holdInteractable.OnHoldInteract(gameObject, Time.deltaTime);
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// Picks up the specified object.
@@ -203,34 +227,9 @@ public class PlayerInteraction : MonoBehaviour
         RemoveHighlightFromObject(carriedObject);
     }
 
-    /// <summary>
-    /// Drops the currently carried object.
-    /// </summary>
-    private void DropCarriedObject()
-    {
-        if (carriedObject == null)
-        {
-            return;
-        }
+    #endregion
 
-        // Detach the object
-        carriedObject.transform.SetParent(null);
-
-        // Get the position in front of the player
-        Vector3 dropPosition = transform.position + transform.TransformDirection(overlapBoxOffset);
-        // Place the object at dropPosition
-        carriedObject.transform.position = dropPosition;
-
-        // Set the carried object's state
-        Carryable carryable = carriedObject.GetComponent<Carryable>();
-        if (carryable != null)
-        {
-            carryable.OnDrop();
-        }
-
-        // Reset carriedObject
-        carriedObject = null;
-    }
+    #region Detection Methods
 
     /// <summary>
     /// Gets the interactable object in front of the player.

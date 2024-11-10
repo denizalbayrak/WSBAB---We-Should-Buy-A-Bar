@@ -101,7 +101,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -168,7 +168,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8722614702567484086}
   m_LocalRotation: {x: -0.00000003774895, y: 0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.41300508, y: 1.96, z: 0.993}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 17.9, y: 17.9, z: 17.9}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -260,9 +260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63e71e224f10da141a197577444b7f1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropYOffset: 0
-  IsDirty: 0
-  IsFilled: 0
+  CurrentState: 0
 --- !u!95 &638078393006620804
 Animator:
   serializedVersion: 5
@@ -385,7 +383,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2

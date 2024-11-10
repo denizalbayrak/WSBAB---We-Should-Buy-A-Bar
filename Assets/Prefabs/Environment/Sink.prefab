@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -8606800700208329407}
   m_Layer: 6
   m_Name: Sink
-  m_TagString: Portable
+  m_TagString: InteractableStatic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

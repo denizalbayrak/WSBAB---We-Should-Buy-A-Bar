@@ -2,16 +2,37 @@ using UnityEngine;
 
 public class Carryable : MonoBehaviour
 {
-    public float dropYOffset = 0f; // Offset when dropping the object
+    private Collider objectCollider;
 
-    // Methods that can be overridden by derived classes
+    private void Awake()
+    {
+        objectCollider = GetComponent<Collider>();
+    }
+
     public virtual void OnPickUp()
     {
-        // Default behavior when picked up
+        // Disable the collider or set it to trigger
+        if (objectCollider != null)
+        {
+            //objectCollider.enabled = false;
+             objectCollider.isTrigger = true;
+        }
+
+        // Additional logic for when the object is picked up
+        Debug.Log(gameObject.name + " picked up.");
     }
 
     public virtual void OnDrop()
     {
-        // Default behavior when dropped
+        // Re-enable the collider or unset the trigger
+        if (objectCollider != null)
+        {
+            
+           //objectCollider.enabled = true;
+           objectCollider.isTrigger = false;
+        }
+
+        // Additional logic for when the object is dropped
+        Debug.Log(gameObject.name + " dropped.");
     }
 }

@@ -6,5 +6,6 @@ public class Level : ScriptableObject
 {
     public string levelName;
     public List<Recipe> recipes;
+    public List<Recipe> neededLevelRecipes;
     public GameObject levelMapPrefab; // Reference to the level's map prefab
 }

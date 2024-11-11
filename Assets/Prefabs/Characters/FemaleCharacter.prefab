@@ -161,6 +161,8 @@ MonoBehaviour:
   overlapBoxOffset: {x: 0, y: 1.06, z: 0.81}
   canCarryColorMultiplier: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   carriedColorMultiplier: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  animator: {fileID: 0}
+  isCarrying: 0
 --- !u!114 &6579071687332570780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1579,9 +1581,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8618878434946481728}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.699, z: 0.775}
+  m_LocalPosition: {x: -0.112, y: 0.592, z: 0.417}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8619805929223589546}
   m_RootOrder: -1

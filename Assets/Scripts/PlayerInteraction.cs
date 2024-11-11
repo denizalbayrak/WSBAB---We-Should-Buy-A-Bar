@@ -37,12 +37,12 @@ public class PlayerInteraction : MonoBehaviour
     private InputAction interactAction;
     private InputAction holdAction;
     private PlayerMovement movementController;
-    private Animator animator;
+    public Animator animator;
     private Rigidbody rb;
     private GameObject carriedObject = null;
     private Vector3 carriedObjectOriginalLocalPosition;
     private HashSet<GameObject> highlightedObjects = new HashSet<GameObject>();
-
+    public bool isCarrying = false;
     #endregion
 
     #region Properties
@@ -108,7 +108,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             UpdateCarriedObjectPosition();
         }
-
+        
         // Handle holdAction input
         HandleHoldAction();
     }
@@ -215,7 +215,7 @@ public class PlayerInteraction : MonoBehaviour
         carriedObject.transform.SetParent(carryPoint);
         carriedObject.transform.localPosition = Vector3.zero;
         carriedObject.transform.localRotation = Quaternion.identity;
-
+        isCarrying = true;
         // Set the carried object's state
         Carryable carryable = carriedObject.GetComponent<Carryable>();
         if (carryable != null)
@@ -371,9 +371,23 @@ public class PlayerInteraction : MonoBehaviour
     /// </summary>
     private void HandleMovement()
     {
-        Vector2 moveInput = movementController.MoveInput;
-        bool isWalking = moveInput.magnitude > 0.1f;
+        Vector2 moveInput;
+        bool isWalking;
+        if (isCarrying)
+        {
+            animator.SetBool("isCarry", true);
+            Debug.Log("1");
+            moveInput = movementController.MoveInput;
+            isWalking = moveInput.magnitude > 0.1f;
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isCarryWalking", isWalking);
+            return;
+        }
+         moveInput = movementController.MoveInput;
+         isWalking = moveInput.magnitude > 0.1f;
+        animator.SetBool("isCarryWalking", false);
         animator.SetBool("isWalking", isWalking);
+        Debug.Log("2");
     }
 
     #endregion
@@ -388,6 +402,8 @@ public class PlayerInteraction : MonoBehaviour
         // Keep the carried object at the carry point
         carriedObject.transform.localPosition = Vector3.zero;
         carriedObject.transform.localRotation = Quaternion.identity;
+
+
     }
 
     #endregion

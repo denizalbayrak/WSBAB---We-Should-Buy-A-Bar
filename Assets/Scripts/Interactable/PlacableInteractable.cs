@@ -29,10 +29,13 @@ public class PlacableInteractable : Interactable
                     if (carryable != null)
                     {
                         carryable.OnDrop();
+                        playerInteraction.animator.SetBool("isCarry", false);
                     }
 
                     // Reset the player's carried object
+                    
                     playerInteraction.CarriedObject = null;
+                    playerInteraction.isCarrying = false;
 
                     // Keep track of the placed object
                     placedObject = carriedObject;

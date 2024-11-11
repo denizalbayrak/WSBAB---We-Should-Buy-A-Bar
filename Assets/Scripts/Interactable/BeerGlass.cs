@@ -8,9 +8,15 @@ public class BeerGlass : Carryable
         CleanEmpty,
         Filled
     }
-
+   [SerializeField] private Material dirtyMat;
+   [SerializeField] private Material cleanMat;
     public GlassState CurrentState = GlassState.DirtyEmpty;
 
+    public void Dirty()
+    {
+        CurrentState = GlassState.DirtyEmpty;
+        GetComponent<Renderer>().material = dirtyMat;
+    }
     public void Clean()
     {
         if (CurrentState == GlassState.DirtyEmpty)
@@ -19,6 +25,7 @@ public class BeerGlass : Carryable
             // Update the beer glass's appearance to look clean
             // For example, change material or texture
             // Optionally, play a sound or particle effect
+            GetComponent<Renderer>().material = cleanMat;
             Debug.Log("The beer glass is now clean.");
         }
         else

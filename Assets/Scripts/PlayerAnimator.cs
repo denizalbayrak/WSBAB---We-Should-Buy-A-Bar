@@ -26,14 +26,14 @@ public class PlayerAnimator : MonoBehaviour
     /// </summary>
     private void UpdateAnimations()
     {
-        if (movementController != null)
-        {
-            // Hareket verilerini al
-            Vector2 moveInput = movementController.MoveInput;
+        //if (movementController != null)
+        //{
+        //    // Hareket verilerini al
+        //    Vector2 moveInput = movementController.MoveInput;
 
-            // Hareket olup olmadýðýný kontrol et
-            bool isWalking = moveInput.sqrMagnitude > 0.01f; // SqrMagnitude daha performanslýdýr
-            animator.SetBool("isWalking", isWalking);
-        }
+        //    // Hareket olup olmadýðýný kontrol et
+        //    bool isWalking = moveInput.sqrMagnitude > 0.01f; // SqrMagnitude daha performanslýdýr
+        //    animator.SetBool("isWalking", isWalking);
+        //}
     }
 }

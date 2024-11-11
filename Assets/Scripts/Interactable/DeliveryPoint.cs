@@ -1,6 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class EmptyCabinet : PlacableInteractable
+public class DeliveryPoint : PlacableInteractable
 {
     public override void Interact(GameObject player)
     {
@@ -14,32 +16,15 @@ public class EmptyCabinet : PlacableInteractable
                 if (placedObject == null)
                 {
                     base.Interact(player);
-                    
-                    Debug.Log("Placed object on cabinet.");
+                    Destroy(placedObject);
+                    Debug.Log("Placed object on DeliveryPoint.");
                 }
                 else
                 {
                     Debug.Log("Cannot place object on cabinet. It's already occupied.");
                 }
             }
-            else
-            {
-                // Player is not carrying anything: Pick up the object from the cabinet
-                if (placedObject != null)
-                {
-                    // Pick up the object
-                    playerInteraction.PickUpObject(placedObject);
 
-                    // Remove the object from the cabinet
-                    placedObject = null;
-
-                    Debug.Log("Picked up object from cabinet.");
-                }
-                else
-                {
-                    Debug.Log("There is nothing to pick up on the cabinet.");
-                }
-            }
         }
         else
         {

@@ -1358,7 +1358,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 75fb86cc7ac66834abc07a372af17e37, type: 2}
   m_sharedMaterial: {fileID: 1722980126835760888, guid: 75fb86cc7ac66834abc07a372af17e37, type: 2}
@@ -1923,10 +1923,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WarningPanel: {fileID: 639947420}
   WarningPanelText: {fileID: 1288950914}
-  activeRecipes: []
-  recipeUIPrefab: {fileID: 0}
-  recipeUIParent: {fileID: 0}
-  maxActiveRecipes: 4
 --- !u!114 &2120909998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1946,4 +1942,4 @@ MonoBehaviour:
   scorePerFailure: -10
   scoreText: {fileID: 1532858379}
   maxActiveOrders: 4
-  orderSpawnInterval: 5
+  defaultInterOrderDelay: 2

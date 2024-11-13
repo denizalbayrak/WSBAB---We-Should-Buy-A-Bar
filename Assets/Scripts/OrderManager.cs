@@ -26,10 +26,11 @@ public class OrderManager : MonoBehaviour
     public int scorePerFailure = -5;
     public TextMeshProUGUI scoreText;
 
-    [Header("Order Settings")]
+    [Header("Order Spawn Settings")]
     public int maxActiveOrders = 4;
-    public float orderSpawnInterval = 5f; // Her sipariþin ortaya çýkma aralýðý
+    public float interOrderDelay = 2f; // Her sipariþ arasýndaki gecikme süresi
 
+    private float spawnTimer = 0f; // Spawn zamanlayýcýsý
     private Queue<Order> orderQueue = new Queue<Order>();
     private List<ActiveOrder> activeOrders = new List<ActiveOrder>();
     private int currentScore = 0;
@@ -48,7 +49,8 @@ public class OrderManager : MonoBehaviour
     private void Start()
     {
         LoadLevel(currentLevel);
-        StartCoroutine(SpawnOrders());
+        // Baþlangýçta spawnTimer'ý interOrderDelay olarak ayarlayýn
+        spawnTimer = interOrderDelay;
     }
 
     /// <summary>
@@ -66,24 +68,6 @@ public class OrderManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Sipariþleri belirli aralýklarla oluþturur.
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator SpawnOrders()
-    {
-        while (orderQueue.Count > 0)
-        {
-            if (activeOrders.Count < maxActiveOrders)
-            {
-                Order newOrder = orderQueue.Dequeue();
-                CreateOrderUI(newOrder);
-            }
-
-            yield return new WaitForSeconds(orderSpawnInterval);
-        }
-    }
-
-    /// <summary>
     /// Yeni bir sipariþ UI elemaný oluþturur.
     /// </summary>
     /// <param name="order">Oluþturulacak sipariþ.</param>
@@ -94,6 +78,7 @@ public class OrderManager : MonoBehaviour
         orderUI.Setup(order, this);
         ActiveOrder activeOrder = new ActiveOrder(order, orderUI);
         activeOrders.Add(activeOrder);
+        Debug.Log($"Spawned Order: {order.orderType} at {Time.time} seconds");
     }
 
     /// <summary>
@@ -127,6 +112,9 @@ public class OrderManager : MonoBehaviour
             }
 
             UpdateScoreUI();
+
+            // Sipariþ tamamlandýktan sonra gecikme süresini resetle
+            spawnTimer = interOrderDelay;
         }
         else
         {
@@ -197,10 +185,22 @@ public class OrderManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Aktif sipariþlerin zamanýný kontrol eder.
+    /// Aktif sipariþlerin zamanýný kontrol eder ve yeni sipariþler spawn eder.
     /// </summary>
     private void Update()
     {
+        // Spawn zamanlayýcýsýný güncelle
+        spawnTimer -= Time.deltaTime;
+
+        // Eðer zamanlayýcý sýfýrlandýysa, aktif sipariþ sayýsý maksimumun altýnda ise ve sipariþ kuyruðunda sipariþ varsa yeni bir sipariþ spawn et
+        if (spawnTimer <= 0f && activeOrders.Count < maxActiveOrders && orderQueue.Count > 0)
+        {
+            Order newOrder = orderQueue.Dequeue();
+            CreateOrderUI(newOrder);
+            spawnTimer = interOrderDelay; // Gecikmeyi resetle
+        }
+
+        // Aktif sipariþlerin zamanýný kontrol et
         List<ActiveOrder> ordersToFail = new List<ActiveOrder>();
 
         foreach (var activeOrder in activeOrders)

@@ -24,6 +24,7 @@ public class DeliveryPoint : PlacableInteractable
                     Order completedOrder = OrderManager.Instance.FindMatchingOrder(deliveredObject);
                     if (completedOrder != null)
                     {
+                        Debug.Log($"Processing Order: {completedOrder.orderType}");
                         OrderManager.Instance.ProcessOrder(completedOrder, true); // Baþarýlý teslimat
                     }
                     else

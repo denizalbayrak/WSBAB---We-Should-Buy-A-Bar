@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DeliveryPoint : PlacableInteractable
@@ -12,41 +10,57 @@ public class DeliveryPoint : PlacableInteractable
         {
             if (playerInteraction.CarriedObject != null)
             {
-                // Player is carrying an object: Place it on the cabinet
+                // Player'ýn taþýdýðý objeyi bir deðiþkende saklayýn
+                GameObject deliveredObject = playerInteraction.CarriedObject;
+
+                // Player is carrying an object: Place it on the delivery point
                 if (placedObject == null)
                 {
-                    base.Interact(player);
-                    Destroy(placedObject);
-                    Debug.Log("Placed object on DeliveryPoint.");
+                    base.Interact(player); // Objeyi yerleþtirir, CarriedObject null olur
+                    Destroy(placedObject); // Teslimat sonrasý objeyi yok eder
+                    Debug.Log("Delivered object at DeliveryPoint.");
+
+                    // Process the order using the saklanan objeyi
+                    Order completedOrder = OrderManager.Instance.FindMatchingOrder(deliveredObject);
+                    if (completedOrder != null)
+                    {
+                        OrderManager.Instance.ProcessOrder(completedOrder, true); // Baþarýlý teslimat
+                    }
+                    else
+                    {
+                        Debug.LogWarning("No matching order found for the delivered object.");
+                    }
                 }
                 else
                 {
-                    Debug.Log("Cannot place object on cabinet. It's already occupied.");
+                    Debug.Log("Cannot place object. DeliveryPoint is already occupied.");
                 }
             }
-
+            else
+            {
+                Debug.Log("Cannot deliver. No object is being carried.");
+            }
         }
         else
         {
-            Debug.Log("Cannot interact with the cabinet.");
+            Debug.Log("Cannot interact with the DeliveryPoint.");
         }
     }
 
     public override bool CanInteract(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
-
         if (playerInteraction != null)
         {
             if (playerInteraction.CarriedObject != null)
             {
-                // Can interact if carrying an object and the cabinet is empty
+                // Can deliver if DeliveryPoint is empty
                 return placedObject == null;
             }
             else
             {
-                // Can interact if not carrying anything and the cabinet has an object
-                return placedObject != null;
+                // Can interact only if carrying something to deliver
+                return false;
             }
         }
         return false;

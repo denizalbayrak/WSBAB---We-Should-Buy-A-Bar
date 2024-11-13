@@ -56,7 +56,8 @@ public class LevelManager : MonoBehaviour
             // Optionally set position, parent, etc.
 
             // Set up the predetermined recipes
-            SetupLevelRecipes();
+            // SetupLevelRecipes();
+            OrderManager.Instance.LoadLevel(currentLevel);
 
             // Initialize any other level-specific settings
         }
@@ -66,12 +67,12 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void SetupLevelRecipes()
-    {
-        // Access the predetermined recipes for the current level
-        List<Recipe> levelRecipes = currentLevel.recipes;
+    //private void SetupLevelRecipes()
+    //{
+    //    // Access the predetermined recipes for the current level
+    //    List<Recipe> levelRecipes = currentLevel.recipes;
 
 
 
-    }
+    //}
 }

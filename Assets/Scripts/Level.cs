@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class Level : ScriptableObject
 {
     public string levelName;
-    public List<Recipe> recipes;
-    public List<Recipe> neededLevelRecipes;
-    public GameObject levelMapPrefab; // Reference to the level's map prefab
+    public List<Order> orders; // Seviyeye ait sipariþ listesi
+    public GameObject levelMapPrefab; // Seviyeye ait harita prefabý
 }

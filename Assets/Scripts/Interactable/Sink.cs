@@ -1,32 +1,21 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.UI; // Eðer UI öðeleri kullanacaksanýz
 
-public class Sink : PlacableInteractable
+public class Sink : PlacableInteractable, IHoldInteractable
 {
     private bool isWashing = false;
+    private bool isWashingAnimStarted = false;
     private float washProgress = 0f;
-    private float washDuration = 10f; // 10 seconds
+    private float washDuration = 5f; // Sabit yýkama süresi (örneðin 5 saniye)
     private BeerGlass glassBeingWashed;
-    private PlayerInputActions inputActions;
-    private InputAction holdAction;
-
+    [SerializeField] private Animator animator;
     private void Awake()
     {
-        // Initialize input actions
-        inputActions = new PlayerInputActions();
-        // Reference the hold action
-        holdAction = inputActions.Player.InteractHold;
+        animator = GetComponent<Animator>();
     }
+    // UI Elements
+    public Image washProgressUI; // Yýkama ilerlemesini göstermek için
 
-    private void OnEnable()
-    {
-        inputActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        inputActions.Disable();
-    }
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
@@ -42,11 +31,18 @@ public class Sink : PlacableInteractable
                 BeerGlass beerGlass = placedObject.GetComponent<BeerGlass>();
                 if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.DirtyEmpty)
                 {
-                    // Start washing process
+                  
+                    // Yýkama iþlemini baþlat
                     isWashing = true;
                     washProgress = 0f;
                     glassBeingWashed = beerGlass;
-                    Debug.Log("Started washing the beer glass. Hold Ctrl for 10 seconds.");
+                    Debug.Log("Started washing the beer glass. Hold Ctrl for " + washDuration + " seconds.");
+
+                    // Yýkama ilerleme UI'sini göster
+                    if (washProgressUI != null)
+                    {
+                        washProgressUI.gameObject.SetActive(true);
+                    }
                 }
                 else
                 {
@@ -56,8 +52,18 @@ public class Sink : PlacableInteractable
         }
         else if (playerInteraction != null && playerInteraction.CarriedObject == null && placedObject != null)
         {
-            // Player picks up the glass if not carrying anything
-            base.Interact(player);
+            // Player picks up the glass if not carrying anything and not washing
+            if (!isWashing)
+            {
+                base.Interact(player);
+                Debug.Log("Picked up the beer glass from the sink.");
+                isWashingAnimStarted = false;
+                animator.SetTrigger("WaterOff");
+            }
+            else
+            {
+                Debug.Log("Cannot pick up the glass. Washing in progress.");
+            }
         }
         else
         {
@@ -65,36 +71,58 @@ public class Sink : PlacableInteractable
         }
     }
 
-    private void Update()
+    // Implement IHoldInteractable
+    public bool CanHoldInteract(GameObject player)
+    {
+        // Check if there is a glass on the sink and washing is in progress
+        return isWashing;
+    }
+
+    public void OnHoldInteract(GameObject player, float deltaTime)
     {
         if (isWashing)
         {
-            // Check if the player is holding the Ctrl key via the input action
-            if (holdAction.IsPressed())
+            
+            if (!isWashingAnimStarted)
             {
-                washProgress += Time.deltaTime;
-                // Optional: Update washing animation progress here
-                if (washProgress >= washDuration)
-                {
-                    // Washing completed
-                    isWashing = false;
-                    glassBeingWashed.Clean();
-                    glassBeingWashed = null;
-                    Debug.Log("Finished washing the beer glass.");
-                }
+                isWashingAnimStarted = true;
+                animator.SetTrigger("WaterOn");
             }
-            else
+            // Washing process in progress
+            washProgress += deltaTime;
+            if (washProgress > washDuration)
             {
-                // Player released the Ctrl key
-                if (washProgress > 0f)
+                washProgress = washDuration;
+            }
+
+            // Update the wash progress UI
+            UpdateWashProgressUI();
+
+            if (washProgress >= washDuration)
+            {
+                // Washing completed
+                isWashing = false;
+                glassBeingWashed.Clean();
+                glassBeingWashed = null;
+                Debug.Log("Finished washing the beer glass.");
+
+                // Yýkama ilerleme UI'sini gizle
+                if (washProgressUI != null)
                 {
-                    Debug.Log("Washing interrupted. Hold Ctrl continuously for 10 seconds to wash.");
+                    washProgressUI.gameObject.SetActive(false);
                 }
-                washProgress = 0f;
             }
         }
     }
 
+    private void UpdateWashProgressUI()
+    {
+        if (washProgressUI != null)
+        {
+            float fillAmount = washProgress / washDuration;
+            washProgressUI.fillAmount = fillAmount;
+        }
+    }
 
     public override bool CanInteract(GameObject player)
     {
@@ -103,8 +131,9 @@ public class Sink : PlacableInteractable
         {
             if (playerInteraction.CarriedObject != null)
             {
-                // Can place a beer glass if the placement point is empty
-                return placedObject == null && playerInteraction.CarriedObject.GetComponent<BeerGlass>() != null;
+                // Can place a dirty beer glass if the placement point is empty
+                BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
+                return placedObject == null && beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.DirtyEmpty;
             }
             else
             {

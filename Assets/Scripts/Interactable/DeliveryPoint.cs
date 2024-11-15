@@ -1,7 +1,12 @@
 using UnityEngine;
+using System.Collections;
 
 public class DeliveryPoint : PlacableInteractable
 {
+    public float dirtyGlassSpawnDelay = 5f; // Teslimattan sonra kirli bardaðýn spawn olma süresi
+    public DirtyPoint dirtyPoint; // Kirli bardaklarýn spawn olacaðý nokta
+    public GameObject beerGlass; // BeerGlass prefabý
+
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
@@ -20,17 +25,11 @@ public class DeliveryPoint : PlacableInteractable
                     Destroy(placedObject); // Teslimat sonrasý objeyi yok eder
                     Debug.Log("Delivered object at DeliveryPoint.");
 
-                    // Process the order using the saklanan objeyi
-                    Order completedOrder = OrderManager.Instance.FindMatchingOrder(deliveredObject);
-                    if (completedOrder != null)
-                    {
-                        Debug.Log($"Processing Order: {completedOrder.orderType}");
-                        OrderManager.Instance.ProcessOrder(completedOrder, true); // Baþarýlý teslimat
-                    }
-                    else
-                    {
-                        Debug.LogWarning("No matching order found for the delivered object.");
-                    }
+                    // Sipariþi iþle
+                    OrderManager.Instance.ProcessDeliveredItem(deliveredObject);
+
+                    // Kirli bardaðýn spawn olmasýný zamanla
+                    StartCoroutine(SpawnDirtyGlassAfterDelay());
                 }
                 else
                 {
@@ -45,6 +44,28 @@ public class DeliveryPoint : PlacableInteractable
         else
         {
             Debug.Log("Cannot interact with the DeliveryPoint.");
+        }
+    }
+    private IEnumerator SpawnDirtyGlassAfterDelay()
+    {
+        yield return new WaitForSeconds(dirtyGlassSpawnDelay);
+
+        if (dirtyPoint != null)
+        {
+            // Kirli bardaðý oluþtur ve DirtyPoint'in placedObject'ine yerleþtir
+            GameObject dirtyGlassObj = Instantiate(beerGlass, dirtyPoint.transform.position, Quaternion.identity, dirtyPoint.transform);
+            BeerGlass dirtyGlass = dirtyGlassObj.GetComponent<BeerGlass>();
+            if (dirtyGlass != null)
+            {
+                dirtyGlass.Dirty(); // Bardak durumunu kirli olarak ayarla
+            }
+
+            // DirtyPoint'in placedObject'ini ayarla
+            dirtyPoint.SetPlacedObject(dirtyGlassObj);
+        }
+        else
+        {
+            Debug.LogError("DirtyPoint is not assigned in DeliveryPoint.");
         }
     }
 

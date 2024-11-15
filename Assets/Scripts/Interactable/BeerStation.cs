@@ -1,19 +1,17 @@
 using UnityEngine;
-using UnityEngine.UI; // For UI elements
+using UnityEngine.UI;
 
 public class BeerStation : PlacableInteractable, IHoldInteractable
 {
     private bool isFilling = false;
     private float fillProgress = 0f;
-    private float fillDuration = 10f; // 10 seconds to fill
+    private float fillDuration = 5f; // Sabit doldurma süresi (örneðin 5 saniye)
     private BeerGlass glassBeingFilled;
     private Animator glassAnimator;
 
     // UI Elements
     public Image fillProgressUI; // Assign this in the Inspector (clock image)
     private bool isClockVisible = false;
-
-    // Removed inputActions and holdAction variables and methods
 
     public override void Interact(GameObject player)
     {
@@ -32,7 +30,6 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
                         {
                             // Place the glass on the station
                             base.Interact(player); // This places the object and sets placedObject
-
                             Debug.Log("Placed a clean, empty beer glass on the beer station.");
                             // The filling process does NOT start automatically
                             // Player can start filling by holding the Ctrl key
@@ -67,7 +64,6 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
                     else
                     {
                         Debug.Log("Cannot pick up the glass. Filling in progress.");
-                        // Optionally, provide feedback to the player
                     }
                 }
                 else
@@ -119,6 +115,7 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
                 float normalizedTime = fillProgress / fillDuration;
                 glassAnimator.Play("BeerFill", 0, normalizedTime);
                 glassAnimator.speed = 0f; // Keep the animator paused
+                PlayerInteraction.Instance.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
             }
 
             // Update the fill progress UI
@@ -131,11 +128,15 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
                 glassBeingFilled.Fill();
                 glassAnimator.Play("BeerFill", 0, 1f); // Ensure animation is complete
                 glassAnimator.speed = 0f;
+            //    PlayerInteraction.Instance.GetComponent<Animator>().Play("FillBeer", 0, 1f);
                 glassBeingFilled = null;
                 Debug.Log("Finished filling the beer glass.");
 
                 // Hide the fill progress UI
-                fillProgressUI.gameObject.SetActive(false);
+                if (fillProgressUI != null)
+                {
+                    fillProgressUI.gameObject.SetActive(false);
+                }
                 isClockVisible = false;
             }
         }
@@ -153,12 +154,16 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
                 // Start the BeerFill animation at the beginning
                 glassAnimator.Play("BeerFill", 0, 0f);
                 glassAnimator.speed = 0f; // Pause the animation initially
+            //    PlayerInteraction.Instance.GetComponent<Animator>().Play("FillBeer", 0, 0);
             }
 
-            Debug.Log("Started filling the beer glass. Hold Ctrl for 10 seconds.");
+            Debug.Log("Started filling the beer glass. Hold Ctrl for " + fillDuration + " seconds.");
 
             // Show the fill progress UI
-            fillProgressUI.gameObject.SetActive(true);
+            if (fillProgressUI != null)
+            {
+                fillProgressUI.gameObject.SetActive(true);
+            }
             isClockVisible = true;
         }
     }

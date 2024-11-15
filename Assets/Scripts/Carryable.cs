@@ -14,7 +14,6 @@ public class Carryable : MonoBehaviour
         // Disable the collider or set it to trigger
         if (objectCollider != null)
         {
-            //objectCollider.enabled = false;
              objectCollider.isTrigger = true;
         }
 
@@ -27,9 +26,7 @@ public class Carryable : MonoBehaviour
         // Re-enable the collider or unset the trigger
         if (objectCollider != null)
         {
-            
-           //objectCollider.enabled = true;
-           objectCollider.isTrigger = false;
+            objectCollider.isTrigger = false;
         }
 
         // Additional logic for when the object is dropped

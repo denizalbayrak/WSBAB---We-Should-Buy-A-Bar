@@ -34,7 +34,7 @@ public class PlacableInteractable : Interactable
                     // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
                     playerInteraction.isCarrying = false; // Merkezi yönetim için
-
+                    playerInteraction.animator.SetBool("isCarry", false);
                     // Keep track of the placed object
                     placedObject = carriedObject;
 

@@ -55,8 +55,7 @@ public class LevelManager : MonoBehaviour
             currentLevelMapInstance = Instantiate(currentLevel.levelMapPrefab);
             // Optionally set position, parent, etc.
 
-            // Set up the predetermined recipes
-            // SetupLevelRecipes();
+            // Load the level in OrderManager
             OrderManager.Instance.LoadLevel(currentLevel);
 
             // Initialize any other level-specific settings
@@ -66,13 +65,4 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("Invalid level index!");
         }
     }
-
-    //private void SetupLevelRecipes()
-    //{
-    //    // Access the predetermined recipes for the current level
-    //    List<Recipe> levelRecipes = currentLevel.recipes;
-
-
-
-    //}
 }

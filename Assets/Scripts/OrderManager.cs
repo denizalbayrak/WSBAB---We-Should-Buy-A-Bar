@@ -1,15 +1,9 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using System.Collections;
 using TMPro;
-public enum OrderType
-{
-    DeliverBeerGlass,
-    DeliverWineGlass,
-    DeliverWaterGlass,
-    // Diðer sipariþ türlerini ekleyin
-}
+
 public class OrderManager : MonoBehaviour
 {
     public static OrderManager Instance { get; private set; }
@@ -18,7 +12,7 @@ public class OrderManager : MonoBehaviour
     public Level currentLevel;
 
     [Header("UI Settings")]
-    public OrderUI orderUIPrefab; // Sipariþ UI prefabý
+    public GameObject orderUIPrefab; // Sipariþ UI prefabý
     public Transform orderUIContainer; // Sipariþlerin gösterileceði UI container'ý
 
     [Header("Scoring Settings")]
@@ -28,12 +22,14 @@ public class OrderManager : MonoBehaviour
 
     [Header("Order Spawn Settings")]
     public int maxActiveOrders = 4;
-    public float interOrderDelay = 2f; // Her sipariþ arasýndaki gecikme süresi
+    public float minOrderDelay = 15f; // Minimum sipariþler arasý gecikme süresi
+    public float maxOrderDelay = 25f; // Maksimum sipariþler arasý gecikme süresi
 
-    private float spawnTimer = 0f; // Spawn zamanlayýcýsý
-    private Queue<Order> orderQueue = new Queue<Order>();
     private List<ActiveOrder> activeOrders = new List<ActiveOrder>();
     private int currentScore = 0;
+
+    private float levelTimer;
+    private bool isLevelActive = false;
 
     private void Awake()
     {
@@ -43,161 +39,48 @@ public class OrderManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start()
     {
-        LoadLevel(currentLevel);
-        // Baþlangýçta spawnTimer'ý interOrderDelay olarak ayarlayýn
-        spawnTimer = interOrderDelay;
+        // LevelManager üzerinden LoadLevel metodunu çaðýracaðýz
     }
 
-    /// <summary>
-    /// Yüklenen seviyedeki sipariþleri sýraya alýr.
-    /// </summary>
-    /// <param name="level">Yüklenecek seviye.</param>
     public void LoadLevel(Level level)
     {
-        currentLevel = level;
-        orderQueue.Clear();
-        foreach (var order in currentLevel.orders)
+        if (level == null)
         {
-            orderQueue.Enqueue(order);
-        }
-    }
-
-    /// <summary>
-    /// Yeni bir sipariþ UI elemaný oluþturur.
-    /// </summary>
-    /// <param name="order">Oluþturulacak sipariþ.</param>
-    private void CreateOrderUI(Order order)
-    {
-        GameObject orderUIObj = Instantiate(orderUIPrefab.gameObject, orderUIContainer);
-        OrderUI orderUI = orderUIObj.GetComponent<OrderUI>();
-        orderUI.Setup(order, this);
-        ActiveOrder activeOrder = new ActiveOrder(order, orderUI);
-        activeOrders.Add(activeOrder);
-        Debug.Log($"Spawned Order: {order.orderType} at {Time.time} seconds");
-    }
-
-    /// <summary>
-    /// Sipariþ tamamlandýðýnda veya süresi bittiðinde çaðrýlýr.
-    /// </summary>
-    /// <param name="order">Ýþlem yapýlan sipariþ.</param>
-    /// <param name="isSuccess">Baþarýlý mý?</param>
-    public void ProcessOrder(Order order, bool isSuccess)
-    {
-        if (order == null)
-        {
-            Debug.LogError("ProcessOrder called with null Order.");
+            Debug.LogError("No level assigned in OrderManager.");
             return;
         }
 
-        ActiveOrder activeOrder = activeOrders.Find(o => o.order == order);
-        if (activeOrder != null)
+        currentLevel = level;
+        levelTimer = currentLevel.levelDuration;
+        isLevelActive = true;
+        currentScore = 0;
+        UpdateScoreUI();
+
+        // Aktif sipariþleri temizle
+        foreach (var activeOrder in activeOrders)
         {
             activeOrder.orderUI.RemoveUI();
-            activeOrders.Remove(activeOrder);
-
-            if (isSuccess)
-            {
-                currentScore += scorePerSuccess;
-                Debug.Log("Order Successful! Score: " + currentScore);
-            }
-            else
-            {
-                currentScore += scorePerFailure;
-                Debug.Log("Order Failed! Score: " + currentScore);
-            }
-
-            UpdateScoreUI();
-
-            // Sipariþ tamamlandýktan sonra gecikme süresini resetle
-            spawnTimer = interOrderDelay;
         }
-        else
-        {
-            Debug.LogWarning("ActiveOrder not found for the given order.");
-        }
+        activeOrders.Clear();
+
+        // Sipariþ oluþturma coroutine'ini baþlat
+        StartCoroutine(SpawnOrders());
     }
 
-    /// <summary>
-    /// Teslim edilen objeye karþýlýk gelen sipariþi bulur.
-    /// </summary>
-    /// <param name="deliveredObject">Teslim edilen obje.</param>
-    /// <returns>Karþýlýk gelen sipariþ.</returns>
-    public Order FindMatchingOrder(GameObject deliveredObject)
-    {
-        if (deliveredObject == null)
-        {
-            Debug.LogError("FindMatchingOrder called with null deliveredObject.");
-            return null;
-        }
-
-        BeerGlass beerGlass = deliveredObject.GetComponent<BeerGlass>();
-        if (beerGlass == null)
-        {
-            Debug.LogError("Delivered object does not have a BeerGlass component.");
-            return null;
-        }
-
-        Debug.Log($"Delivered object has BeerGlass component with state: {beerGlass.CurrentState}");
-
-        if (currentLevel == null)
-        {
-            Debug.LogError("currentLevel is not assigned in OrderManager.");
-            return null;
-        }
-
-        if (currentLevel.orders == null)
-        {
-            Debug.LogError("currentLevel.orders is null.");
-            return null;
-        }
-
-        switch (beerGlass.CurrentState)
-        {
-            case BeerGlass.GlassState.Filled:
-                Order foundOrder = currentLevel.orders.Find(o => o.orderType == OrderType.DeliverBeerGlass);
-                if (foundOrder == null)
-                {
-                    Debug.LogWarning("No matching order found for OrderType.DeliverBeerGlass.");
-                }
-                return foundOrder;
-
-            // Diðer durumlar için ek case'ler ekleyin
-            default:
-                Debug.LogWarning($"No matching case for BeerGlass state: {beerGlass.CurrentState}");
-                return null;
-        }
-    }
-
-    /// <summary>
-    /// Puaný UI üzerinde günceller.
-    /// </summary>
-    private void UpdateScoreUI()
-    {
-        if (scoreText != null)
-        {
-            scoreText.text = "Score: " + currentScore;
-        }
-    }
-
-    /// <summary>
-    /// Aktif sipariþlerin zamanýný kontrol eder ve yeni sipariþler spawn eder.
-    /// </summary>
     private void Update()
     {
-        // Spawn zamanlayýcýsýný güncelle
-        spawnTimer -= Time.deltaTime;
+        if (!isLevelActive)
+            return;
 
-        // Eðer zamanlayýcý sýfýrlandýysa, aktif sipariþ sayýsý maksimumun altýnda ise ve sipariþ kuyruðunda sipariþ varsa yeni bir sipariþ spawn et
-        if (spawnTimer <= 0f && activeOrders.Count < maxActiveOrders && orderQueue.Count > 0)
+        // Level zamanýný güncelle
+        levelTimer -= Time.deltaTime;
+        if (levelTimer <= 0f)
         {
-            Order newOrder = orderQueue.Dequeue();
-            CreateOrderUI(newOrder);
-            spawnTimer = interOrderDelay; // Gecikmeyi resetle
+            EndLevel();
         }
 
         // Aktif sipariþlerin zamanýný kontrol et
@@ -216,13 +99,145 @@ public class OrderManager : MonoBehaviour
 
         foreach (var order in ordersToFail)
         {
-            ProcessOrder(order.order, false); // Süresi doldu, baþarýsýz sayýlýr
+            // Sipariþi baþarýsýz olarak iþle
+            activeOrders.Remove(order);
+            order.orderUI.RemoveUI();
+            currentScore += scorePerFailure;
+            Debug.Log($"Order Failed! Score: {currentScore}");
+            UpdateScoreUI();
         }
     }
 
-    /// <summary>
-    /// Aktif sipariþleri temsil eden sýnýf.
-    /// </summary>
+    private void EndLevel()
+    {
+        isLevelActive = false;
+        StopAllCoroutines();
+
+        // Level sonu iþlemleri (puan gösterimi, sonuç ekraný vb.)
+        Debug.Log("Level Completed! Final Score: " + currentScore);
+    }
+
+    private IEnumerator SpawnOrders()
+    {
+        while (isLevelActive)
+        {
+            if (activeOrders.Count < maxActiveOrders)
+            {
+                CreateRandomOrder();
+            }
+
+            // Sipariþler arasýndaki gecikme
+            float delay = Random.Range(minOrderDelay, maxOrderDelay);
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+    private void CreateRandomOrder()
+    {
+        if (currentLevel.availableOrders.Count == 0)
+        {
+            Debug.LogError("No available orders in current level.");
+            return;
+        }
+
+        // Rastgele bir sipariþ seç
+        Order randomOrder = currentLevel.availableOrders[Random.Range(0, currentLevel.availableOrders.Count)];
+        CreateOrderUI(randomOrder);
+    }
+
+    private void CreateOrderUI(Order orderTemplate)
+    {
+        // Yeni bir Order nesnesi oluþtur
+        Order newOrder = new Order
+        {
+            orderType = orderTemplate.orderType,
+            description = orderTemplate.description,
+            orderImage = orderTemplate.orderImage,
+            timeLimit = orderTemplate.timeLimit
+        };
+
+        GameObject orderUIObj = Instantiate(orderUIPrefab, orderUIContainer);
+        OrderUI orderUI = orderUIObj.GetComponent<OrderUI>();
+        orderUI.Setup(newOrder, this);
+        ActiveOrder activeOrder = new ActiveOrder(newOrder, orderUI);
+        activeOrders.Add(activeOrder);
+        Debug.Log($"Spawned Order: {newOrder.orderType} at {Time.time} seconds");
+    }
+
+    public void ProcessDeliveredItem(GameObject deliveredObject)
+    {
+        if (deliveredObject == null)
+        {
+            Debug.LogError("ProcessDeliveredItem called with null deliveredObject.");
+            return;
+        }
+
+        // Aktif sipariþler arasýnda, teslim edilen objeye uygun sipariþi bul
+        ActiveOrder matchingActiveOrder = null;
+
+        foreach (var activeOrder in activeOrders)
+        {
+            if (DoesDeliveredObjectMatchOrder(deliveredObject, activeOrder.order))
+            {
+                matchingActiveOrder = activeOrder;
+                break;
+            }
+        }
+
+        if (matchingActiveOrder != null)
+        {
+            // Sipariþi baþarýlý olarak iþle
+            activeOrders.Remove(matchingActiveOrder);
+            matchingActiveOrder.orderUI.RemoveUI();
+            currentScore += scorePerSuccess;
+            Debug.Log($"Order Successful! Score: {currentScore}");
+            UpdateScoreUI();
+        }
+        else
+        {
+            // Eþleþen sipariþ bulunamadý, baþarýsýz say
+            currentScore += scorePerFailure;
+            Debug.Log($"Order Failed! No matching order. Score: {currentScore}");
+            UpdateScoreUI();
+        }
+    }
+
+    private bool DoesDeliveredObjectMatchOrder(GameObject deliveredObject, Order order)
+    {
+        // Teslim edilen objenin özelliklerine göre sipariþle eþleþip eþleþmediðini kontrol edin
+
+        if (order.orderType == OrderType.DeliverBeerGlass)
+        {
+            BeerGlass beerGlass = deliveredObject.GetComponent<BeerGlass>();
+            if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.Filled)
+            {
+                // Teslim edilen obje dolu bir bira bardaðý, sipariþle eþleþiyor
+                return true;
+            }
+        }
+        else if (order.orderType == OrderType.DeliverWineGlass)
+        {
+            WineGlass wineGlass = deliveredObject.GetComponent<WineGlass>();
+            if (wineGlass != null && wineGlass.CurrentState == WineGlass.GlassState.Filled)
+            {
+                // Teslim edilen obje dolu bir þarap bardaðý, sipariþle eþleþiyor
+                return true;
+            }
+        }
+
+        // Diðer sipariþ türleri ve eþleþtirme mantýðýný ekleyebilirsiniz
+
+        return false;
+    }
+
+    private void UpdateScoreUI()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " + currentScore;
+        }
+    }
+
     private class ActiveOrder
     {
         public Order order;

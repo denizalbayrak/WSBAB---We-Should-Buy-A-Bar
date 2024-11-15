@@ -32,7 +32,7 @@ public class PlayerInteraction : MonoBehaviour
     #endregion
 
     #region Private Variables
-
+    public static PlayerInteraction Instance;
     private PlayerInputActions inputActions;
     private InputAction interactAction;
     private InputAction holdAction;
@@ -56,9 +56,17 @@ public class PlayerInteraction : MonoBehaviour
     #endregion
 
     #region Unity Methods
-
+   
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         // Component References
         rb = GetComponent<Rigidbody>();
         movementController = GetComponent<PlayerMovement>();

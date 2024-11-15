@@ -424,6 +424,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abbd95d9e0c0ec941bf0ab196a7d5889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  placementPoint: {fileID: 7032942967487051333}
+--- !u!4 &7032942967487051333 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3870403986349531123, guid: 7b7a32e1679f4bc4783ed097725ed2f1, type: 3}
+  m_PrefabInstance: {fileID: 6065336832516368822}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7365389840729843112 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3610612291520826398, guid: 7b7a32e1679f4bc4783ed097725ed2f1, type: 3}
@@ -511,10 +517,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9da3e6bd812c540a3829636f0f0d43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placementPoint: {fileID: 0}
+  placementPoint: {fileID: 6174508152757374288}
+  dirtyGlassSpawnDelay: 5
+  dirtyPoint: {fileID: 6334528984535792981}
+  beerGlass: {fileID: 8722614702567484086, guid: e4cc83c390bbd5b429948ad974a687da, type: 3}
 --- !u!4 &5916979115546107581 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3610612291520826398, guid: 7b7a32e1679f4bc4783ed097725ed2f1, type: 3}
+  m_PrefabInstance: {fileID: 6919268008968180387}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6174508152757374288 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3870403986349531123, guid: 7b7a32e1679f4bc4783ed097725ed2f1, type: 3}
   m_PrefabInstance: {fileID: 6919268008968180387}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7154736947391986295

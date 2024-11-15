@@ -1936,10 +1936,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLevel: {fileID: 0}
-  orderUIPrefab: {fileID: 7096793916057189211, guid: 525fa2ae8a263684d8c5fd12e8e42fdf, type: 3}
+  orderUIPrefab: {fileID: 8174809019208724658, guid: 525fa2ae8a263684d8c5fd12e8e42fdf, type: 3}
   orderUIContainer: {fileID: 1655640865}
   scorePerSuccess: 10
   scorePerFailure: -10
   scoreText: {fileID: 1532858379}
   maxActiveOrders: 4
-  defaultInterOrderDelay: 2
+  minOrderDelay: 3
+  maxOrderDelay: 7

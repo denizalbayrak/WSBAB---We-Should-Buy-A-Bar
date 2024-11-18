@@ -37,7 +37,10 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("No levels assigned in LevelManager!");
         }
     }
-
+    public int GetCurrentLevelIndex()
+    {
+        return currentLevelIndex;
+    }
     public void LoadLevel(int levelIndex)
     {
         if (levelIndex >= 0 && levelIndex < levels.Count)

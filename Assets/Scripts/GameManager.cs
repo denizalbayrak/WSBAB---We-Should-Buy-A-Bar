@@ -2,20 +2,20 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Wsbab.Enums; // CharacterType enumýný kullanmak için
 using System.Collections.Generic;
+using TMPro;
+using System.Collections; // Eðer TextMeshPro kullanýyorsanýz
 
 public enum GameState
 {
-    PreLevel,
     InGame,
     Paused,
-    PostLevel,
     GameOver
 }
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public GameState currentGameState = GameState.PreLevel;
+    public GameState currentGameState = GameState.InGame;
     public SaveData currentSaveData;
     public int currentSlot;
 
@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     public List<PortableObject> defaultInventoryItems; // Default items for each player
     public List<Recipe> availableRecipes; // All recipes available in the game
     public List<Level> levels; // Levels with specific recipes and requirements
+
+
 
     private void Awake()
     {
@@ -39,7 +41,15 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnGameSceneLoaded;
+    }
 
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnGameSceneLoaded;
+    }
     public void NewGame(int slot)
     {
         currentSlot = slot;
@@ -72,7 +82,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            NewGame(slot);        
+            NewGame(slot);
         }
     }
 
@@ -80,13 +90,23 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == "GameScene")
         {
-            // Instantiate all inventory objects in the game scene
+            // Sahnedeki UI öðelerini bul ve referanslarý ata            
+
+            GameUIManager.Instance.StartCountdown();
+
             SceneManager.sceneLoaded -= OnGameSceneLoaded;
         }
     }
+    public void RestartLevel()
+    {
+        Time.timeScale = 1f;
+        currentGameState = GameState.InGame;
+        SceneManager.sceneLoaded += OnGameSceneLoaded;
+        SceneManager.LoadScene("GameScene");
+    }
 
 
-      public void SaveGame()
+    public void SaveGame()
     {
         if (currentSaveData != null)
         {
@@ -94,16 +114,14 @@ public class GameManager : MonoBehaviour
             SaveSystem.SaveGame(currentSaveData, currentSlot);
         }
     }
-        public void SpawnPlayerCharacter()
+
+    public void SpawnPlayerCharacter()
     {
         GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
         Vector3 spawnPosition = Vector3.zero; // Adjust spawn position as needed
         Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
     }
 
-    public void StartGame()
-    {
-        currentGameState = GameState.InGame;
-        Debug.Log("Oyun baþladý!");
-    }
+    
+    
 }

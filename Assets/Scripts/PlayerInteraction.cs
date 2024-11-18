@@ -116,7 +116,20 @@ public class PlayerInteraction : MonoBehaviour
         {
             UpdateCarriedObjectPosition();
         }
-        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (GameManager.Instance != null)
+            {
+                if (GameManager.Instance.currentGameState == GameState.InGame)
+                {
+                    GameUIManager.Instance.PauseGame();
+                }
+                else if (GameManager.Instance.currentGameState == GameState.Paused)
+                {
+                    GameUIManager.Instance.ResumeGame();
+                }
+            }
+        }
         // Handle holdAction input
         HandleHoldAction();
     }
@@ -130,12 +143,7 @@ public class PlayerInteraction : MonoBehaviour
     /// </summary>
     private void Interact()
     {
-        // First, check if the game is in a state where interaction is allowed
-        if (GameManager.Instance.currentGameState != GameState.InGame && GameManager.Instance.currentGameState != GameState.PreLevel)
-        {
-            return;
-        }
-
+      
         // Try to find an interactable object in front
         Interactable interactable = GetInteractableInFront();
 

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: Sprinkle Darling SDF
+  m_Name: GlowSprinkle
   m_EditorClassIdentifier: 
-  hashCode: -49799490
+  hashCode: -426815577
   material: {fileID: 1722980126835760888}
-  materialHashCode: -1424948002
+  materialHashCode: -2137240537
   m_Version: 1.1.0
   m_SourceFontFileGUID: 0e3a80521a7ed8c4b9c0bad1338930dd
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 0e3a80521a7ed8c4b9c0bad1338930dd, type: 3}
@@ -2685,7 +2685,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - GLOW_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

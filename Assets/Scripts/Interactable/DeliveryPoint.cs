@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DeliveryPoint : PlacableInteractable
 {
     public float dirtyGlassSpawnDelay = 5f; // Teslimattan sonra kirli bardaðýn spawn olma süresi
-    public DirtyPoint dirtyPoint; // Kirli bardaklarýn spawn olacaðý nokta
-    public GameObject beerGlass; // BeerGlass prefabý
+    public GameObject prefabToSpawn;
+    // Bira ve þarap için ayrý DirtyPoint'ler
+    public DirtyPoint beerDirtyPoint;
+    public DirtyPoint wineDirtyPoint;
 
     public override void Interact(GameObject player)
     {
@@ -15,21 +18,27 @@ public class DeliveryPoint : PlacableInteractable
         {
             if (playerInteraction.CarriedObject != null)
             {
+                Carryable carriedItem = playerInteraction.CarriedObject.GetComponent<Carryable>();
+                if (carriedItem != null && !carriedItem.isReady)
+                {
+                    return;
+                }
+
                 // Player'ýn taþýdýðý objeyi bir deðiþkende saklayýn
                 GameObject deliveredObject = playerInteraction.CarriedObject;
 
-                // Player is carrying an object: Place it on the delivery point
+                // Teslimat iþlemi
                 if (placedObject == null)
                 {
                     base.Interact(player); // Objeyi yerleþtirir, CarriedObject null olur
-                    Destroy(placedObject); // Teslimat sonrasý objeyi yok eder
+                 //   Destroy(placedObject); // Teslimat sonrasý objeyi yok eder
                     Debug.Log("Delivered object at DeliveryPoint.");
 
                     // Sipariþi iþle
                     OrderManager.Instance.ProcessDeliveredItem(deliveredObject);
+                    StartCoroutine(SpawnDirtyGlassAfterDelay(deliveredObject));
 
                     // Kirli bardaðýn spawn olmasýný zamanla
-                    StartCoroutine(SpawnDirtyGlassAfterDelay());
                 }
                 else
                 {
@@ -46,28 +55,61 @@ public class DeliveryPoint : PlacableInteractable
             Debug.Log("Cannot interact with the DeliveryPoint.");
         }
     }
-    private IEnumerator SpawnDirtyGlassAfterDelay()
+
+    private IEnumerator SpawnDirtyGlassAfterDelay(GameObject deliveredObject)
     {
+        // Teslim edilen objenin prefab'ýný saklamak için referansý alýn
+         prefabToSpawn = deliveredObject;
+
+        // Nesneyi hemen yok etmiyoruz, Coroutine çalýþmaya devam ediyor
         yield return new WaitForSeconds(dirtyGlassSpawnDelay);
 
-        if (dirtyPoint != null)
+        // Prefab referansý üzerinden yeni nesne oluþtur
+        if (prefabToSpawn != null)
         {
-            // Kirli bardaðý oluþtur ve DirtyPoint'in placedObject'ine yerleþtir
-            GameObject dirtyGlassObj = Instantiate(beerGlass, dirtyPoint.transform.position, Quaternion.identity, dirtyPoint.transform);
-            BeerGlass dirtyGlass = dirtyGlassObj.GetComponent<BeerGlass>();
-            if (dirtyGlass != null)
+            // DirtyPoint için uygun hedefi belirleme (örneðin bira için farklý, þarap için farklý DirtyPoint)
+            DirtyPoint targetDirtyPoint = null;
+
+            if (prefabToSpawn.name.Contains("Beer"))
             {
-                dirtyGlass.Dirty(); // Bardak durumunu kirli olarak ayarla
+                targetDirtyPoint = beerDirtyPoint;
+            }
+            else if (prefabToSpawn.name.Contains("Wine"))
+            {
+                targetDirtyPoint = wineDirtyPoint;
             }
 
-            // DirtyPoint'in placedObject'ini ayarla
-            dirtyPoint.SetPlacedObject(dirtyGlassObj);
-        }
-        else
-        {
-            Debug.LogError("DirtyPoint is not assigned in DeliveryPoint.");
+            if (targetDirtyPoint != null)
+            {
+                // DirtyPoint'in kapasitesini kontrol et
+                if (targetDirtyPoint.placedObjects.Count >= targetDirtyPoint.maxCapacity)
+                {
+                    Debug.Log("DirtyPoint is full. Cannot add more dirty glasses.");
+                    yield break;
+                }
+
+                // Yeni bir nesne oluþtur ve DirtyPoint'e yerleþtir
+                GameObject dirtyGlassObj = Instantiate(prefabToSpawn, targetDirtyPoint.transform.position, Quaternion.identity, targetDirtyPoint.transform);
+                dirtyGlassObj.name = prefabToSpawn.name; // Ýsimlendirmeyi koru
+
+                // Bardak durumunu kirli olarak ayarla
+                Carryable dirtyGlass = dirtyGlassObj.GetComponent<Carryable>();
+                if (dirtyGlass != null)
+                {
+                    dirtyGlass.isReady = false;
+                }
+
+                // DirtyPoint'e bardaðý ekle
+                targetDirtyPoint.AddPlacedObject(dirtyGlassObj);
+            }
+            else
+            {
+                Debug.LogError("No suitable DirtyPoint found for the delivered object.");
+            }
         }
     }
+
+
 
     public override bool CanInteract(GameObject player)
     {

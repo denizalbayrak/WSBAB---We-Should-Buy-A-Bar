@@ -23,6 +23,7 @@ public class BeerGlass : Carryable
     public void Dirty()
     {
         CurrentState = GlassState.DirtyEmpty;
+        isReady = false;
         UpdateVisuals();
         Debug.Log("The beer glass is now dirty.");
     }
@@ -30,6 +31,7 @@ public class BeerGlass : Carryable
     public void Clean()
     {
         CurrentState = GlassState.CleanEmpty;
+        isReady = false;
         UpdateVisuals();
         Debug.Log("The beer glass is now clean.");
     }
@@ -39,6 +41,7 @@ public class BeerGlass : Carryable
         if (CurrentState == GlassState.CleanEmpty)
         {
             CurrentState = GlassState.Filled;
+            isReady = true;
             //UpdateVisuals();
             Debug.Log("Filled the beer glass with beer.");
         }
@@ -56,8 +59,6 @@ public class BeerGlass : Carryable
         if (dirtyVisual != null)
             dirtyVisual.SetActive(CurrentState == GlassState.DirtyEmpty);
         
-        //if (dirtyVisual != null)
-        //    cleanVisual.SetActive(CurrentState == GlassState.Filled);
  }
 
     public override void OnPickUp()

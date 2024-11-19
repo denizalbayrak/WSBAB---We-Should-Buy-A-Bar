@@ -1,16 +1,31 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class DirtyPoint : PlacableInteractable
 {
-    // Yeni eklenen metod
-    public void SetPlacedObject(GameObject obj)
-    {
-        placedObject = obj;
+    public int maxCapacity = 2; // DirtyPoint'in maksimum kapasitesi
+    public List<GameObject> placedObjects = new List<GameObject>(); // Þu anki bardaklar
 
-        placedObject.transform.SetParent(placementPoint);
-        placedObject.transform.localPosition = Vector3.zero;
-        placedObject.transform.localRotation = Quaternion.identity;
-        placedObject.transform.localScale= new Vector3(77.56666f, 775.6667f, 77.56666f);
+    public List<Transform> slotTransforms; // Bardaklarýn yerleþeceði slotlar
+
+    public void AddPlacedObject(GameObject obj)
+    {
+        if (placedObjects.Count >= maxCapacity)
+        {
+            Debug.Log("DirtyPoint is full.");
+            return;
+        }
+
+        placedObjects.Add(obj);
+        obj.transform.SetParent(placementPoint);
+
+        // Bardaklarý slotlara yerleþtir
+        Transform slotTransform = slotTransforms[placedObjects.Count - 1];
+        obj.transform.position = slotTransform.position;
+        obj.transform.rotation = slotTransform.rotation;
+        obj.transform.localScale = Vector3.one; // Ölçeði ayarlayýn
+
+        obj.SetActive(true);
     }
 
     public override void Interact(GameObject player)
@@ -21,15 +36,14 @@ public class DirtyPoint : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Player is not carrying anything: Pick up the object from the DirtyPoint
-                if (placedObject != null)
+                if (placedObjects.Count > 0)
                 {
-                    // Pick up the object
-                    playerInteraction.PickUpObject(placedObject);
+                    // Oyuncu boþ ve DirtyPoint'te bardak var, bir bardaðý al
+                    GameObject objToPickUp = placedObjects[0];
+                    placedObjects.RemoveAt(0);
 
-                    // Remove the object from the DirtyPoint
-                    placedObject = null;
-
+                    // Bardaðý oyuncuya ver
+                    playerInteraction.PickUpObject(objToPickUp);
                     Debug.Log("Picked up dirty glass from DirtyPoint.");
                 }
                 else
@@ -39,7 +53,7 @@ public class DirtyPoint : PlacableInteractable
             }
             else
             {
-                // Player is carrying something: Cannot place objects on DirtyPoint
+                // Oyuncu bir þey taþýyor, DirtyPoint'e obje yerleþtiremez
                 Debug.Log("Cannot place objects on DirtyPoint.");
             }
         }
@@ -57,12 +71,12 @@ public class DirtyPoint : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Player is not carrying anything: Can pick up if there is a placed object
-                return placedObject != null;
+                // Oyuncu bir þey taþýmýyor, DirtyPoint'te bardak varsa alabilir
+                return placedObjects.Count > 0;
             }
             else
             {
-                // Player is carrying something: Cannot place objects on DirtyPoint
+                // Oyuncu bir þey taþýyor, DirtyPoint'e obje yerleþtiremez
                 return false;
             }
         }

@@ -3,7 +3,7 @@ using UnityEngine;
 public class Carryable : MonoBehaviour
 {
     private Collider objectCollider;
-
+    public bool isReady = false;
     private void Awake()
     {
         objectCollider = GetComponent<Collider>();

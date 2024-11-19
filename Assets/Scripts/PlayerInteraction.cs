@@ -43,6 +43,9 @@ public class PlayerInteraction : MonoBehaviour
     private Vector3 carriedObjectOriginalLocalPosition;
     private HashSet<GameObject> highlightedObjects = new HashSet<GameObject>();
     public bool isCarrying = false;
+    public List<Renderer> objectRenderers = new List<Renderer>(); // Tüm Renderer'lar
+    private List<List<Color>> originalColors = new List<List<Color>>(); // Her Renderer için orijinal renkler listesi
+
     #endregion
 
     #region Properties
@@ -56,7 +59,7 @@ public class PlayerInteraction : MonoBehaviour
     #endregion
 
     #region Unity Methods
-   
+
     private void Awake()
     {
         if (Instance == null)
@@ -143,7 +146,7 @@ public class PlayerInteraction : MonoBehaviour
     /// </summary>
     private void Interact()
     {
-      
+
         // Try to find an interactable object in front
         Interactable interactable = GetInteractableInFront();
 
@@ -323,26 +326,29 @@ public class PlayerInteraction : MonoBehaviour
             transform.rotation,
             interactableLayer
         );
-
         List<GameObject> detectedObjects = new List<GameObject>();
 
         foreach (var hitCollider in hitColliders)
         {
             GameObject obj = hitCollider.gameObject;
-            if (obj == carriedObject)
-            {
-                continue;
-            }
 
-            if (obj.CompareTag("Carryable") || obj.CompareTag("InteractableStatic"))
-            {
-                detectedObjects.Add(obj);
+            // Etkileþimli objeyi parent'larda ara
+            GameObject interactableObj = FindInteractableInParents(obj);
 
-                if (!highlightedObjects.Contains(obj))
+            if (interactableObj != null)
+            {
+                if (interactableObj == carriedObject)
+                {
+                    continue;
+                }
+
+                detectedObjects.Add(interactableObj);
+
+                if (!highlightedObjects.Contains(interactableObj))
                 {
                     // Highlight the object
-                    HighlightObject(obj);
-                    highlightedObjects.Add(obj);
+                    HighlightObject(interactableObj);
+                    highlightedObjects.Add(interactableObj);
                 }
             }
         }
@@ -357,25 +363,35 @@ public class PlayerInteraction : MonoBehaviour
             highlightedObjects.Remove(obj);
         }
     }
-
-    /// <summary>
-    /// Highlights the specified object.
-    /// </summary>
-    /// <param name="obj">The object to highlight.</param>
+    private GameObject FindInteractableInParents(GameObject obj)
+    {
+        Transform t = obj.transform;
+        while (t != null)
+        {
+            if (t.CompareTag("Carryable") || t.CompareTag("InteractableStatic"))
+            {
+                return t.gameObject;
+            }
+            t = t.parent;
+        }
+        return null;
+    }
     private void HighlightObject(GameObject obj)
     {
-        // Implement highlighting logic
-        // For example, change material color or enable outline
+        Highlightable highlightable = obj.GetComponent<Highlightable>();
+        if (highlightable != null)
+        {
+            highlightable.SetHighlight(canCarryColorMultiplier);
+        }
     }
 
-    /// <summary>
-    /// Removes the highlight from the specified object.
-    /// </summary>
-    /// <param name="obj">The object to unhighlight.</param>
     private void RemoveHighlightFromObject(GameObject obj)
     {
-        // Implement unhighlighting logic
-        // For example, reset material color or disable outline
+        Highlightable highlightable = obj.GetComponent<Highlightable>();
+        if (highlightable != null)
+        {
+            highlightable.SetHighlight(Color.white);
+        }
     }
 
     #endregion
@@ -392,18 +408,16 @@ public class PlayerInteraction : MonoBehaviour
         if (isCarrying)
         {
             animator.SetBool("isCarry", true);
-            Debug.Log("1");
             moveInput = movementController.MoveInput;
             isWalking = moveInput.magnitude > 0.1f;
             animator.SetBool("isWalking", false);
             animator.SetBool("isCarryWalking", isWalking);
             return;
         }
-         moveInput = movementController.MoveInput;
-         isWalking = moveInput.magnitude > 0.1f;
+        moveInput = movementController.MoveInput;
+        isWalking = moveInput.magnitude > 0.1f;
         animator.SetBool("isCarryWalking", false);
         animator.SetBool("isWalking", isWalking);
-        Debug.Log("2");
     }
 
     #endregion

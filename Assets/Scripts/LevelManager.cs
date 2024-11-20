@@ -9,7 +9,7 @@ public class LevelManager : MonoBehaviour
     public List<Level> levels;
 
     private int currentLevelIndex = 0;
-    private Level currentLevel;
+    public Level currentLevel;
     private GameObject currentLevelMapInstance;
 
     private void Awake()
@@ -41,6 +41,7 @@ public class LevelManager : MonoBehaviour
     {
         return currentLevelIndex;
     }
+
     public void LoadLevel(int levelIndex)
     {
         if (levelIndex >= 0 && levelIndex < levels.Count)
@@ -56,16 +57,15 @@ public class LevelManager : MonoBehaviour
 
             // Instantiate the level map
             currentLevelMapInstance = Instantiate(currentLevel.levelMapPrefab);
-            // Optionally set position, parent, etc.
 
             // Load the level in OrderManager
             OrderManager.Instance.LoadLevel(currentLevel);
 
-            // Initialize any other level-specific settings
         }
         else
         {
             Debug.LogError("Invalid level index!");
         }
     }
+
 }

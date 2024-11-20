@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wine
   m_EditorClassIdentifier: 
   recipeName: Wine
-  recipeImage: {fileID: 21300000, guid: 088105df18e004d498d06452f054412e, type: 3}
+  recipeImage: {fileID: 21300000, guid: ad47ffaa2692cca41bf1055a0052627c, type: 3}
   requiredObjects:
   - objectPrefab: {fileID: 5872014374053846874, guid: 8b46944660b000840b378c1f525b964f, type: 3}
     quantity: 1

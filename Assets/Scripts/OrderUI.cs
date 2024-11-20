@@ -28,7 +28,7 @@ public class OrderUI : MonoBehaviour
 
         if (orderNameText != null)
         {
-            orderNameText.text = order.orderType.ToString();
+            orderNameText.text = order.description.ToString();
         }
 
         if (timerImage != null)

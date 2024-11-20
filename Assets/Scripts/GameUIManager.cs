@@ -16,6 +16,11 @@ public class GameUIManager : MonoBehaviour
     public float countdownTime = 3f; // Geri sayým süresi
     public TextMeshProUGUI countdownText; // Geri sayým metni referansý
     public GameObject pauseMenuUI; // Pause UI referansý
+    public TextMeshProUGUI levelTimerText; // Level süresi için metin
+    public Slider levelTimerSlider; // Level süresi için slider
+
+    private float levelDuration; // Level süresi
+    private float timeRemaining; // Kalan süre
     private void Awake()
     {
         if (Instance == null)
@@ -31,9 +36,7 @@ public class GameUIManager : MonoBehaviour
     // Pause fonksiyonlarý
     public void PauseGame()
     {
-        Debug.Log("gameManager.currentGameState" + gameManager.currentGameState);
-        Debug.Log("gameManager" + gameManager);
-        Debug.Log("GameState" + GameState.InGame);
+        
         if (gameManager.currentGameState == GameState.InGame)
         {
             Time.timeScale = 0f;
@@ -71,6 +74,20 @@ public class GameUIManager : MonoBehaviour
         gameManager.currentGameState = GameState.InGame;
         SceneManager.LoadScene("MainMenuScene"); // Ana menü sahnenizin adýný yazýn
     }
+    public void StartLevelTimer(float duration)
+    {
+        levelDuration = duration;
+        timeRemaining = duration;
+
+        // Slider ayarlarý
+        if (levelTimerSlider != null)
+        {
+            levelTimerSlider.maxValue = duration;
+            levelTimerSlider.value = duration;
+        }
+
+        StartCoroutine(UpdateLevelTimer());
+    }
 
     private IEnumerator Countdown()
     {
@@ -102,12 +119,47 @@ public class GameUIManager : MonoBehaviour
         // Oyunu baþlat
         Time.timeScale = 1f;
         countdownText.transform.parent.gameObject.SetActive(false);
+        countdownText.transform.parent.parent.gameObject.SetActive(false);
         gameManager.currentGameState = GameState.InGame;
+
+        // Level süresini baþlat
+        StartLevelTimer(LevelManager.Instance.currentLevel.levelDuration);
         Debug.Log("GameStarted!");
     }
     public void StartCountdown()
     {
         StartCoroutine(Countdown());
     }
+    private IEnumerator UpdateLevelTimer()
+    {
+        while (timeRemaining > 0)
+        {
+            timeRemaining -= Time.deltaTime;
 
+            // Metni güncelle
+            if (levelTimerText != null)
+            {
+                int minutes = Mathf.FloorToInt(timeRemaining / 60);
+                int seconds = Mathf.FloorToInt(timeRemaining % 60);
+                levelTimerText.text = $"{minutes:00}:{seconds:00}";
+            }
+
+            // Slider'ý güncelle
+            if (levelTimerSlider != null)
+            {
+                levelTimerSlider.value = timeRemaining;
+            }
+
+            yield return null;
+        }
+
+        // Süre dolduðunda bir þey yap
+        if (levelTimerText != null)
+        {
+            levelTimerText.text = "00:00";
+        }
+
+        Debug.Log("Level time is over!");
+    }
 }
+

@@ -26,7 +26,7 @@ public class OrderManager : MonoBehaviour
     public float maxOrderDelay = 25f; // Maksimum sipariþler arasý gecikme süresi
 
     private List<ActiveOrder> activeOrders = new List<ActiveOrder>();
-    private int currentScore = 0;
+    public int currentScore = 0;
 
     private float levelTimer;
     private bool isLevelActive = false;

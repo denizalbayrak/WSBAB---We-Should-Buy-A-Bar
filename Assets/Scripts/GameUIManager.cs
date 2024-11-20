@@ -12,15 +12,23 @@ public class GameUIManager : MonoBehaviour
 
     public GameObject WarningPanel; // Reference to the warning panel
     public TextMeshProUGUI WarningPanelText; // Reference to the warning panel
-                                             // Yeni eklenen deðiþkenler
-    public float countdownTime = 3f; // Geri sayým süresi
-    public TextMeshProUGUI countdownText; // Geri sayým metni referansý
-    public GameObject pauseMenuUI; // Pause UI referansý
-    public TextMeshProUGUI levelTimerText; // Level süresi için metin
-    public Slider levelTimerSlider; // Level süresi için slider
+                                            
+    public float countdownTime = 3f; 
+    public TextMeshProUGUI countdownText; 
+    public GameObject pauseMenuUI; 
+    public TextMeshProUGUI levelTimerText; 
+    public Slider levelTimerSlider; 
 
-    private float levelDuration; // Level süresi
-    private float timeRemaining; // Kalan süre
+    private float levelDuration; 
+    private float timeRemaining; 
+
+    public GameObject endPanel; 
+    public GameObject successPanel; 
+    public GameObject failurePanel; 
+    public Button nextLevelButton; 
+    public GameObject[] stars; 
+
+    private int finalScore; 
     private void Awake()
     {
         if (Instance == null)
@@ -157,9 +165,95 @@ public class GameUIManager : MonoBehaviour
         if (levelTimerText != null)
         {
             levelTimerText.text = "00:00";
+            ShowEndPanel(OrderManager.Instance.currentScore);
         }
 
         Debug.Log("Level time is over!");
+    }
+
+    public void ShowEndPanel(int score)
+    {
+        finalScore = score;
+        endPanel.SetActive(true);
+
+        Level currentLevel = LevelManager.Instance.GetCurrentLevel();
+        if (currentLevel == null)
+        {
+            Debug.LogError("Current level is null!");
+            return;
+        }
+
+        // Yýldýz sayýsýný hesapla
+        int starCount = CalculateStarCount(score, currentLevel);
+
+        // Yýldýz görsellerini güncelle
+        for (int i = 0; i < stars.Length; i++)
+        {
+            Image starImage = stars[i].GetComponent<Image>();
+            if (starImage != null)
+            {
+                if (i < starCount)
+                {
+                    starImage.color = Color.yellow; 
+                }
+                else
+                {
+                    starImage.color = Color.gray; 
+                }
+            }
+        }
+
+        // Baþarýlý veya baþarýsýz UI'ý göster
+        if (starCount > 0)
+        {
+            successPanel.SetActive(true);
+            failurePanel.SetActive(false);
+
+            // Next Level butonu sadece baþarýlý olduðunda aktif
+            if (nextLevelButton != null)
+            {
+                nextLevelButton.interactable = true;
+            }
+        }
+        else
+        {
+            successPanel.SetActive(false);
+            failurePanel.SetActive(true);
+
+            // Baþarýsýz olursa next level butonu pasif
+            if (nextLevelButton != null)
+            {
+                nextLevelButton.interactable = false;
+            }
+        }
+    }
+    private int CalculateStarCount(int score, Level currentLevel)
+    {
+        if (score >= currentLevel.threeStarScore)
+            return 3;
+        else if (score >= currentLevel.twoStarScore)
+            return 2;
+        else if (score >= currentLevel.targetScore)
+            return 1;
+        else
+            return 0;
+    }
+
+    public void OnNextLevelButtonClicked()
+    {
+        endPanel.SetActive(false);
+        LevelManager.Instance.LoadNextLevel();
+    }
+
+    public void OnRestartLevelButtonClicked()
+    {
+        endPanel.SetActive(false);
+        gameManager.RestartLevel();
+    }
+
+    public void OnExitToMainMenuButtonClicked()
+    {
+        SceneManager.LoadScene("MainMenuScene");
     }
 }
 

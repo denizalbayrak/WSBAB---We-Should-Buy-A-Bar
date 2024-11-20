@@ -67,5 +67,22 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("Invalid level index!");
         }
     }
+    public Level GetCurrentLevel()
+    {
+        return currentLevel;
+    }
+
+    public void LoadNextLevel()
+    {
+        if (currentLevelIndex + 1 < levels.Count)
+        {
+            currentLevelIndex++;
+            LoadLevel(currentLevelIndex);
+        }
+        else
+        {
+            Debug.Log("No more levels!");
+        }
+    }
 
 }

@@ -31,7 +31,8 @@ public class DeliveryPoint : PlacableInteractable
                 if (placedObject == null)
                 {
                     base.Interact(player); // Objeyi yerleþtirir, CarriedObject null olur
-                 //   Destroy(placedObject); // Teslimat sonrasý objeyi yok eder
+                                           //   Destroy(placedObject); // Teslimat sonrasý objeyi yok eder
+                    placedObject.SetActive(false); // Teslimat sonrasý objeyi yok eder
                     Debug.Log("Delivered object at DeliveryPoint.");
 
                     // Sipariþi iþle
@@ -91,7 +92,7 @@ public class DeliveryPoint : PlacableInteractable
                 // Yeni bir nesne oluþtur ve DirtyPoint'e yerleþtir
                 GameObject dirtyGlassObj = Instantiate(prefabToSpawn, targetDirtyPoint.transform.position, Quaternion.identity, targetDirtyPoint.transform);
                 dirtyGlassObj.name = prefabToSpawn.name; // Ýsimlendirmeyi koru
-
+                Destroy(prefabToSpawn);   
                 // Bardak durumunu kirli olarak ayarla
                 Carryable dirtyGlass = dirtyGlassObj.GetComponent<Carryable>();
                 if (dirtyGlass != null)

@@ -24,7 +24,7 @@ public class DirtyPoint : PlacableInteractable
         obj.transform.position = slotTransform.position;
         obj.transform.rotation = slotTransform.rotation;
         obj.transform.localScale = Vector3.one; // Ölçeði ayarlayýn
-
+        obj.GetComponent<BeerGlass>().Dirty();
         obj.SetActive(true);
     }
 

@@ -53,8 +53,15 @@ public class BeerGlass : Carryable
 
     private void UpdateVisuals()
     {
-        if (cleanVisual != null)
+        if (cleanVisual != null) 
+        {
             cleanVisual.SetActive(CurrentState == GlassState.CleanEmpty);
+            foreach (Transform child in cleanVisual.transform)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+            
 
         if (dirtyVisual != null)
             dirtyVisual.SetActive(CurrentState == GlassState.DirtyEmpty);

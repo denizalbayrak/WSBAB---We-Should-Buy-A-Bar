@@ -325,7 +325,6 @@ GameObject:
   - component: {fileID: 8143035056777330984}
   - component: {fileID: 3036009264749024307}
   - component: {fileID: 638078393006620804}
-  - component: {fileID: 927569192829151701}
   m_Layer: 0
   m_Name: BeerGlass
   m_TagString: Carryable
@@ -433,7 +432,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63e71e224f10da141a197577444b7f1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentState: 0
+  isReady: 0
+  CurrentState: 1
   cleanVisual: {fileID: 6669551970502315237}
   dirtyVisual: {fileID: 7688056041447804498}
   filledVisual: {fileID: 0}
@@ -458,20 +458,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &927569192829151701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8722614702567484086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cc1c350997025742987a1214d9d66fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isReady: 0
-  itemName: Beer
 --- !u!1 &8962850887932253322
 GameObject:
   m_ObjectHideFlags: 0

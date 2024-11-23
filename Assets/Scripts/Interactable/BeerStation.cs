@@ -13,7 +13,6 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
     public Image fillProgressUI; // Assign this in the Inspector (clock image)
     private bool isClockVisible = false;
     private bool isFillStart = false;
-    private Animator playerAnimator;
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
@@ -101,10 +100,13 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
 
     public void OnHoldInteract(GameObject player, float deltaTime)
     {
-        if (playerAnimator == null)
+        var animationController = player.GetComponent<PlayerAnimator>();
+        if (animationController == null)
         {
-            playerAnimator = player.GetComponent<Animator>();
+            Debug.LogError("PlayerAnimationController is missing on player!");
+            return;
         }
+
         if (isFilling)
         {
             // Filling process in progress
@@ -112,7 +114,9 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
             if (fillProgress > fillDuration)
             {
                 fillProgress = fillDuration;
-            }
+            }           
+            // Update the fill progress UI
+            UpdateFillProgressUI();
 
             // Update the Animator's playback time
             if (glassAnimator != null)
@@ -123,13 +127,10 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
                 if (isFillStart)
                 {
                     isFillStart = false;
-                    playerAnimator.SetBool("isFillingBeer", false);
+                    animationController.SetFillingBeer(false);
                 }
                 PlayerInteraction.Instance.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
             }
-
-            // Update the fill progress UI
-            UpdateFillProgressUI();
 
             if (fillProgress >= fillDuration)
             {
@@ -141,7 +142,7 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
                 if (isFillStart)
                 {
                     isFillStart = false;
-                    playerAnimator.SetBool("isFillingBeer", false);
+                    animationController.SetFillingBeer(false);
                 }
                 //    PlayerInteraction.Instance.GetComponent<Animator>().Play("FillBeer", 0, 1f);
                 glassBeingFilled = null;
@@ -174,8 +175,8 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
             if (!isFillStart)
             {
                 isFillStart = true;
-                playerAnimator.SetBool("isFillingBeer", true);
-                playerAnimator.SetTrigger("FillBeer");
+                animationController.SetFillingBeer(true);
+                animationController.TriggerFillingBeer();
             }
             Debug.Log("Started filling the beer glass. Hold Ctrl for " + fillDuration + " seconds.");
 

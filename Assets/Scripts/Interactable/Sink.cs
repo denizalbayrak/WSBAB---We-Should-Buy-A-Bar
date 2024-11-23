@@ -19,7 +19,6 @@ public class Sink : PlacableInteractable, IHoldInteractable
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
-
         if (playerInteraction != null && playerInteraction.CarriedObject != null)
         {
             // First, perform the base interaction (placement)
@@ -80,14 +79,14 @@ public class Sink : PlacableInteractable, IHoldInteractable
 
     public void OnHoldInteract(GameObject player, float deltaTime)
     {
-        if (isWashing)
+        var animationController = player.GetComponent<PlayerAnimator>();
+        if (animationController == null)
         {
-            
-            if (!isWashingAnimStarted)
-            {
-                isWashingAnimStarted = true;
-                animator.SetTrigger("WaterOn");
-            }
+            Debug.LogError("PlayerAnimationController is missing on player!");
+            return;
+        }
+        if (isWashing)
+        {         
             // Washing process in progress
             washProgress += deltaTime;
             if (washProgress > washDuration)
@@ -98,6 +97,16 @@ public class Sink : PlacableInteractable, IHoldInteractable
             // Update the wash progress UI
             UpdateWashProgressUI();
 
+                float normalizedTime = washProgress / washDuration;
+            if (!isWashingAnimStarted)
+            {
+                isWashingAnimStarted = true;
+                animator.SetTrigger("WaterOn"); 
+                animationController.SetFillingBeer(false);
+            }
+                PlayerInteraction.Instance.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
+           
+
             if (washProgress >= washDuration)
             {
                 // Washing completed
@@ -105,12 +114,36 @@ public class Sink : PlacableInteractable, IHoldInteractable
                 glassBeingWashed.Clean();
                 glassBeingWashed = null;
                 Debug.Log("Finished washing the beer glass.");
-
+                if (isWashingAnimStarted)
+                {
+                    isWashingAnimStarted = false;
+                    animationController.SetFillingBeer(false);
+                }
                 // Yýkama ilerleme UI'sini gizle
                 if (washProgressUI != null)
                 {
                     washProgressUI.gameObject.SetActive(false);
                 }
+                // Hide the fill progress UI
+                if (washProgressUI != null)
+                {
+                    washProgressUI.gameObject.SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            isWashing = true;
+            washProgress = 0f;
+            if (!isWashing)
+            {
+                isWashing = true;
+                animationController.SetFillingBeer(true);
+                animationController.TriggerFillingBeer();
+            }
+            if (washProgressUI != null)
+            {
+                washProgressUI.gameObject.SetActive(true);
             }
         }
     }

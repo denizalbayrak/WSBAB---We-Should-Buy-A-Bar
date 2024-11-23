@@ -26,9 +26,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 62742942524688694}
   m_LocalRotation: {x: -0.00000003774895, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.439, y: -0.498, z: 0}
-  m_LocalScale: {x: 200, y: 200, z: 200}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: -0.439, y: -0.601, z: 0}
+  m_LocalScale: {x: 200, y: 236.08, z: 200}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5623029392495492107}
   m_RootOrder: -1
@@ -62,8 +62,8 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: -8591878086861873238, guid: ebb89a81e2b82a948ad20478059f9950, type: 3}
-  - {fileID: 1299595426843909347, guid: ebb89a81e2b82a948ad20478059f9950, type: 3}
-  - {fileID: -5157210581841017692, guid: ebb89a81e2b82a948ad20478059f9950, type: 3}
+  - {fileID: 2100000, guid: b2cf6da08e9372048afc709aa433cefd, type: 2}
+  - {fileID: 2100000, guid: ee409ee3c0a32844ea9856731ea6f132, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 5623029392495492107}
   - component: {fileID: 7408483782661741994}
   - component: {fileID: 7828373524823073608}
+  - component: {fileID: 4250175207783432715}
   m_Layer: 6
   m_Name: BeerGlassCabinet
   m_TagString: InteractableStatic
@@ -172,8 +173,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.8640802, y: 0.8436717, z: 0.42156073}
-  m_Center: {x: -0.0084949, y: -0.07816379, z: 0.2093848}
+  m_Size: {x: 0.8640802, y: 1.0000995, z: 0.42156067}
+  m_Center: {x: -0.008494901, y: -0.110751554, z: 0.2093848}
 --- !u!114 &7828373524823073608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,6 +192,19 @@ MonoBehaviour:
   - {fileID: 1512565257819023488}
   - {fileID: 567968682392961750}
   beerGlassPrefab: {fileID: 8722614702567484086, guid: e4cc83c390bbd5b429948ad974a687da, type: 3}
+--- !u!114 &4250175207783432715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482732300916718232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe55308403be1c24da2585873f67c42e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectRenderers: []
 --- !u!1001 &7922189966304870966
 PrefabInstance:
   m_ObjectHideFlags: 0

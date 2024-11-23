@@ -41,9 +41,13 @@ public class DirtyPoint : PlacableInteractable
         obj.transform.rotation = availableSlot.rotation;
         obj.transform.localScale = Vector3.one; // Ölçeði ayarlayýn
         GlassType carriedGlassType = GetGlassType(obj);
-        if (allowedGlassTypes == carriedGlassType)
+        if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Beer)
         {
             obj.GetComponent<BeerGlass>().Dirty();
+        } 
+        if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Wine)
+        {
+            obj.GetComponent<WineGlass>().Dirty();
         }
         obj.SetActive(true);
 
@@ -80,11 +84,28 @@ public class DirtyPoint : PlacableInteractable
             else
             {
                 GlassType carriedGlassType = GetGlassType(playerInteraction.CarriedObject);
-                if (allowedGlassTypes == carriedGlassType)
+                if (allowedGlassTypes == carriedGlassType && allowedGlassTypes == GlassType.Beer)
                 {
                     // Oyuncu bir þey taþýyor, pis bardak yerleþtirmeye çalýþ
                     BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
                     if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.DirtyEmpty)
+                    {
+                        // Pis bardaðý DirtyPoint'e yerleþtir
+                        AddPlacedObject(playerInteraction.CarriedObject);
+                        playerInteraction.CarriedObject = null;
+                        playerInteraction.isCarrying = false; // Merkezi yönetim için
+                        playerInteraction.animator.SetBool("isCarry", false);
+                    }
+                    else
+                    {
+                        Debug.Log("Cannot place object. Only dirty glasses can be placed on DirtyPoint.");
+                    }
+                }
+                if (allowedGlassTypes == carriedGlassType && allowedGlassTypes == GlassType.Wine)
+                {
+                    // Oyuncu bir þey taþýyor, pis bardak yerleþtirmeye çalýþ
+                    WineGlass wineGlass = playerInteraction.CarriedObject.GetComponent<WineGlass>();
+                    if (wineGlass != null && wineGlass.CurrentState == WineGlass.GlassState.DirtyEmpty)
                     {
                         // Pis bardaðý DirtyPoint'e yerleþtir
                         AddPlacedObject(playerInteraction.CarriedObject);
@@ -119,10 +140,25 @@ public class DirtyPoint : PlacableInteractable
             else
             {
                 GlassType carriedGlassType = GetGlassType(playerInteraction.CarriedObject);
-                if (allowedGlassTypes == carriedGlassType)
+                if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Beer)
                 {
                     BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
                     if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.DirtyEmpty)
+                    {
+                        // Boþ bir slot var mý kontrol et
+                        foreach (Transform slot in slotTransforms)
+                        {
+                            if (slot.childCount == 0)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Wine)
+                {
+                    WineGlass wineGlass = playerInteraction.CarriedObject.GetComponent<WineGlass>();
+                    if (wineGlass != null && wineGlass.CurrentState == WineGlass.GlassState.DirtyEmpty)
                     {
                         // Boþ bir slot var mý kontrol et
                         foreach (Transform slot in slotTransforms)
@@ -145,10 +181,10 @@ public class DirtyPoint : PlacableInteractable
         {
             return beerGlass.glassType;
         }
-        //else if (obj.TryGetComponent<WineGlass>(out var wineGlass))
-        //{
-        //    return wineGlass.glassType;
-        //}
+        else if (obj.TryGetComponent<WineGlass>(out var wineGlass))
+        {
+            return wineGlass.glassType;
+        }
         //else if (obj.TryGetComponent<WhiskeyGlass>(out var whiskeyGlass))
         //{
         //    return whiskeyGlass.glassType;

@@ -10,10 +10,10 @@ public class WineGlass : Carryable
     }
 
     public GlassState CurrentState = GlassState.DirtyEmpty;
-
-    public GameObject cleanVisual;
-    public GameObject dirtyVisual; 
-    public GameObject filledVisual;
+    public GlassType glassType = GlassType.Wine;
+    public GameObject cleanVisual; // Temiz bardak görseli
+    public GameObject dirtyVisual; // Kirli bardak görseli
+    public GameObject filledVisual; // Kirli bardak görseli
 
     private void Start()
     {
@@ -23,15 +23,17 @@ public class WineGlass : Carryable
     public void Dirty()
     {
         CurrentState = GlassState.DirtyEmpty;
+        isReady = false;
         UpdateVisuals();
-        Debug.Log("The wine glass is now dirty.");
+        Debug.Log("The beer glass is now dirty.");
     }
 
     public void Clean()
     {
         CurrentState = GlassState.CleanEmpty;
+        isReady = false;
         UpdateVisuals();
-        Debug.Log("The wine glass is now clean.");
+        Debug.Log("The beer glass is now clean.");
     }
 
     public void Fill()
@@ -39,36 +41,42 @@ public class WineGlass : Carryable
         if (CurrentState == GlassState.CleanEmpty)
         {
             CurrentState = GlassState.Filled;
+            isReady = true;
             //UpdateVisuals();
-            Debug.Log("Filled the wine glass with beer.");
+            Debug.Log("Filled the beer glass with beer.");
         }
         else
         {
-            Debug.Log("Cannot fill the wine glass in its current state.");
+            Debug.Log("Cannot fill the beer glass in its current state.");
         }
     }
 
     private void UpdateVisuals()
     {
         if (cleanVisual != null)
+        {
             cleanVisual.SetActive(CurrentState == GlassState.CleanEmpty);
+            foreach (Transform child in cleanVisual.transform)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+
 
         if (dirtyVisual != null)
             dirtyVisual.SetActive(CurrentState == GlassState.DirtyEmpty);
 
-        //if (dirtyVisual != null)
-        //    cleanVisual.SetActive(CurrentState == GlassState.Filled);
     }
 
     public override void OnPickUp()
     {
         base.OnPickUp();
-        Debug.Log("Picked up a wine glass.");
+        Debug.Log("Picked up a beer glass.");
     }
 
     public override void OnDrop()
     {
         base.OnDrop();
-        Debug.Log("Dropped the wine glass.");
+        Debug.Log("Dropped the beer glass.");
     }
 }

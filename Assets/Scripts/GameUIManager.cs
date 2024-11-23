@@ -12,23 +12,23 @@ public class GameUIManager : MonoBehaviour
 
     public GameObject WarningPanel; // Reference to the warning panel
     public TextMeshProUGUI WarningPanelText; // Reference to the warning panel
-                                            
-    public float countdownTime = 3f; 
-    public TextMeshProUGUI countdownText; 
-    public GameObject pauseMenuUI; 
-    public TextMeshProUGUI levelTimerText; 
-    public Slider levelTimerSlider; 
 
-    private float levelDuration; 
-    private float timeRemaining; 
+    public float countdownTime = 3f;
+    public TextMeshProUGUI countdownText;
+    public GameObject pauseMenuUI;
+    public TextMeshProUGUI levelTimerText;
+    public Slider levelTimerSlider;
 
-    public GameObject endPanel; 
-    public GameObject successPanel; 
-    public GameObject failurePanel; 
-    public Button nextLevelButton; 
-    public GameObject[] stars; 
+    private float levelDuration;
+    private float timeRemaining;
 
-    private int finalScore; 
+    public GameObject endPanel;
+    public GameObject successPanel;
+    public GameObject failurePanel;
+    public Button nextLevelButton;
+    public GameObject[] stars;
+
+    private int finalScore;
     private void Awake()
     {
         if (Instance == null)
@@ -44,7 +44,7 @@ public class GameUIManager : MonoBehaviour
     // Pause fonksiyonlarý
     public void PauseGame()
     {
-        
+
         if (gameManager.currentGameState == GameState.InGame)
         {
             Time.timeScale = 0f;
@@ -173,6 +173,7 @@ public class GameUIManager : MonoBehaviour
 
     public void ShowEndPanel(int score)
     {
+        OrderManager.Instance.StopLevel();
         finalScore = score;
         endPanel.SetActive(true);
 
@@ -189,16 +190,29 @@ public class GameUIManager : MonoBehaviour
         // Yýldýz görsellerini güncelle
         for (int i = 0; i < stars.Length; i++)
         {
+            if (i == 0)
+            {
+                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.targetScore.ToString();
+            }
+            if (i == 1)
+            {
+                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.twoStarScore.ToString();
+            }
+            if (i == 2)
+            {
+                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.threeStarScore.ToString();
+            }
+
             Image starImage = stars[i].GetComponent<Image>();
             if (starImage != null)
             {
                 if (i < starCount)
                 {
-                    starImage.color = Color.yellow; 
+                    starImage.color = Color.yellow;
                 }
                 else
                 {
-                    starImage.color = Color.gray; 
+                    starImage.color = Color.gray;
                 }
             }
         }

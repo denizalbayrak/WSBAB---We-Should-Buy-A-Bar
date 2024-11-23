@@ -41,11 +41,6 @@ public class OrderManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
-    {
-        // LevelManager üzerinden LoadLevel metodunu çaðýracaðýz
-    }
-
     public void LoadLevel(Level level)
     {
         if (level == null)
@@ -53,19 +48,13 @@ public class OrderManager : MonoBehaviour
             Debug.LogError("No level assigned in OrderManager.");
             return;
         }
+        StopLevel();
 
         currentLevel = level;
         levelTimer = currentLevel.levelDuration;
         isLevelActive = true;
         currentScore = 0;
         UpdateScoreUI();
-
-        // Aktif sipariþleri temizle
-        foreach (var activeOrder in activeOrders)
-        {
-            activeOrder.orderUI.RemoveUI();
-        }
-        activeOrders.Clear();
 
         // Sipariþ oluþturma coroutine'ini baþlat
         StartCoroutine(SpawnOrders());
@@ -76,12 +65,12 @@ public class OrderManager : MonoBehaviour
         if (!isLevelActive)
             return;
 
-        // Level zamanýný güncelle
-        levelTimer -= Time.deltaTime;
-        if (levelTimer <= 0f)
-        {
-            EndLevel();
-        }
+        //// Level zamanýný güncelle
+        //levelTimer -= Time.deltaTime;
+        //if (levelTimer <= 0f)
+        //{
+        //    EndLevel();
+        //}
 
         // Aktif sipariþlerin zamanýný kontrol et
         List<ActiveOrder> ordersToFail = new List<ActiveOrder>();
@@ -108,15 +97,25 @@ public class OrderManager : MonoBehaviour
         }
     }
 
-    private void EndLevel()
+
+    public void StopLevel()
     {
-        isLevelActive = false;
-        StopAllCoroutines();
-
-        // Level sonu iþlemleri (puan gösterimi, sonuç ekraný vb.)
-        Debug.Log("Level Completed! Final Score: " + currentScore);
+        isLevelActive = false; // Yeni sipariþ oluþturmayý durdur
+        StopAllCoroutines(); // Coroutine'leri durdur
+        ClearActiveOrders(); // Aktif sipariþleri temizle
     }
-
+    private void ClearActiveOrders()
+    {
+        // Aktif sipariþ listesini temizle
+        foreach (var activeOrder in activeOrders)
+        {
+            if (activeOrder.orderUI != null)
+            {
+                activeOrder.orderUI.RemoveUI(); // Sipariþ UI'larýný kaldýr
+            }
+        }
+        activeOrders.Clear(); // Listeyi tamamen temizle
+    }
     private IEnumerator SpawnOrders()
     {
         while (isLevelActive)

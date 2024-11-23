@@ -861,6 +861,7 @@ MonoBehaviour:
   slotTransforms:
   - {fileID: 2538542389414812382}
   - {fileID: 6141849926921932562}
+  allowedGlassTypes: 00000000
 --- !u!114 &7592427525193399536
 MonoBehaviour:
   m_ObjectHideFlags: 0

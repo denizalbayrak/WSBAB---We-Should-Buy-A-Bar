@@ -1,5 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
+public enum GlassType
+{
+    Beer,
+    Wine,
+    Whiskey
+}
 
 public class ItemHolder : MonoBehaviour
 {

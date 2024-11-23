@@ -10,7 +10,7 @@ public class BeerGlass : Carryable
     }
 
     public GlassState CurrentState = GlassState.DirtyEmpty;
-
+    public GlassType glassType = GlassType.Beer;
     public GameObject cleanVisual; // Temiz bardak görseli
     public GameObject dirtyVisual; // Kirli bardak görseli
     public GameObject filledVisual; // Kirli bardak görseli

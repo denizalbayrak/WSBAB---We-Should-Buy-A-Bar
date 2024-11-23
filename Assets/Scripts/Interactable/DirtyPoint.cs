@@ -6,7 +6,7 @@ public class DirtyPoint : PlacableInteractable
     public int maxCapacity = 2; // DirtyPoint'in maksimum kapasitesi
     public List<GameObject> placedObjects = new List<GameObject>(); // Þu anki bardaklar
     public List<Transform> slotTransforms; // Bardaklarýn yerleþeceði slotlar
-
+    public GlassType allowedGlassTypes;
     public void AddPlacedObject(GameObject obj)
     {
         // Kapasite kontrolü
@@ -40,7 +40,11 @@ public class DirtyPoint : PlacableInteractable
         obj.transform.position = availableSlot.position;
         obj.transform.rotation = availableSlot.rotation;
         obj.transform.localScale = Vector3.one; // Ölçeði ayarlayýn
-        obj.GetComponent<BeerGlass>().Dirty();
+        GlassType carriedGlassType = GetGlassType(obj);
+        if (allowedGlassTypes == carriedGlassType)
+        {
+            obj.GetComponent<BeerGlass>().Dirty();
+        }
         obj.SetActive(true);
 
         Debug.Log("Placed dirty glass on DirtyPoint.");
@@ -75,19 +79,23 @@ public class DirtyPoint : PlacableInteractable
             }
             else
             {
-                // Oyuncu bir þey taþýyor, pis bardak yerleþtirmeye çalýþ
-                BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
-                if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.DirtyEmpty)
+                GlassType carriedGlassType = GetGlassType(playerInteraction.CarriedObject);
+                if (allowedGlassTypes == carriedGlassType)
                 {
-                    // Pis bardaðý DirtyPoint'e yerleþtir
-                    AddPlacedObject(playerInteraction.CarriedObject);
-                    playerInteraction.CarriedObject = null;
-                    playerInteraction.isCarrying = false; // Merkezi yönetim için
-                    playerInteraction.animator.SetBool("isCarry", false);
-                }
-                else
-                {
-                    Debug.Log("Cannot place object. Only dirty glasses can be placed on DirtyPoint.");
+                    // Oyuncu bir þey taþýyor, pis bardak yerleþtirmeye çalýþ
+                    BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
+                    if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.DirtyEmpty)
+                    {
+                        // Pis bardaðý DirtyPoint'e yerleþtir
+                        AddPlacedObject(playerInteraction.CarriedObject);
+                        playerInteraction.CarriedObject = null;
+                        playerInteraction.isCarrying = false; // Merkezi yönetim için
+                        playerInteraction.animator.SetBool("isCarry", false);
+                    }
+                    else
+                    {
+                        Debug.Log("Cannot place object. Only dirty glasses can be placed on DirtyPoint.");
+                    }
                 }
             }
         }
@@ -110,16 +118,19 @@ public class DirtyPoint : PlacableInteractable
             }
             else
             {
-                // Oyuncu bir þey taþýyor, pis bardak yerleþtirebilir mi kontrol et
-                BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
-                if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.DirtyEmpty)
+                GlassType carriedGlassType = GetGlassType(playerInteraction.CarriedObject);
+                if (allowedGlassTypes == carriedGlassType)
                 {
-                    // Boþ bir slot var mý kontrol et
-                    foreach (Transform slot in slotTransforms)
+                    BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
+                    if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.DirtyEmpty)
                     {
-                        if (slot.childCount == 0)
+                        // Boþ bir slot var mý kontrol et
+                        foreach (Transform slot in slotTransforms)
                         {
-                            return true;
+                            if (slot.childCount == 0)
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -127,5 +138,23 @@ public class DirtyPoint : PlacableInteractable
             }
         }
         return false;
+    }
+    private GlassType GetGlassType(GameObject obj)
+    {
+        if (obj.TryGetComponent<BeerGlass>(out var beerGlass))
+        {
+            return beerGlass.glassType;
+        }
+        //else if (obj.TryGetComponent<WineGlass>(out var wineGlass))
+        //{
+        //    return wineGlass.glassType;
+        //}
+        //else if (obj.TryGetComponent<WhiskeyGlass>(out var whiskeyGlass))
+        //{
+        //    return whiskeyGlass.glassType;
+        //}
+        // Diðer bardak tipleri için ekleyebilirsiniz
+
+        return GlassType.Beer; // Varsayýlan deðer, isterseniz deðiþtirebilirsiniz
     }
 }

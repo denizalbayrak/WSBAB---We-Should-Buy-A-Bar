@@ -93,7 +93,7 @@ public class DirtyPoint : PlacableInteractable
                         // Pis bardaðý DirtyPoint'e yerleþtir
                         AddPlacedObject(playerInteraction.CarriedObject);
                         playerInteraction.CarriedObject = null;
-                        playerInteraction.isCarrying = false; // Merkezi yönetim için
+                        playerInteraction.isCarrying = false;
                         playerInteraction.animator.SetBool("isCarry", false);
                     }
                     else

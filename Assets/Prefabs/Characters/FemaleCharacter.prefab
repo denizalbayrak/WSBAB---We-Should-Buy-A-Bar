@@ -157,7 +157,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   carryPoint: {fileID: 8076422745749646423}
-  overlapBoxSize: {x: 0.57, y: 1.81, z: 0.48}
+  overlapBoxSize: {x: 0.3, y: 1.81, z: 0.48}
   overlapBoxOffset: {x: 0, y: 1.06, z: 0.72}
   canCarryColorMultiplier: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   carriedColorMultiplier: {r: 0.4, g: 0.4, b: 0.4, a: 1}

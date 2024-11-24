@@ -220,6 +220,7 @@ public class GameUIManager : MonoBehaviour
         // Baþarýlý veya baþarýsýz UI'ý göster
         if (starCount > 0)
         {
+            LevelManager.Instance.CompleteLevel();
             successPanel.SetActive(true);
             failurePanel.SetActive(false);
 

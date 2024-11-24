@@ -41,6 +41,7 @@ public class Sink : PlacableInteractable, IHoldInteractable
                     if (washProgressUI != null)
                     {
                         washProgressUI.gameObject.SetActive(true);
+                        washProgressUI.fillAmount = 0;
                     }
                 }
                 else

@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public List<PortableObject> defaultInventoryItems; // Default items for each player
     public List<Recipe> availableRecipes; // All recipes available in the game
     public List<Level> levels; // Levels with specific recipes and requirements
-
+    public int selectedLevelIndex = 0;
 
 
     private void Awake()
@@ -61,11 +61,10 @@ public class GameManager : MonoBehaviour
             selectedCharacter = selectedCharacter,
             ownedRecipeNames = new List<string>() // Store recipe names for owned recipes
         };
-        currentSaveData.ownedRecipeNames.Add("Beer");
-        currentSaveData.ownedRecipeNames.Add("Wine");
         SaveGame();
-        SceneManager.sceneLoaded += OnGameSceneLoaded;
-        SceneManager.LoadScene("GameScene");
+        //SceneManager.sceneLoaded += OnGameSceneLoaded;
+        //SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("MapScene");
     }
 
     public void LoadGame(int slot)
@@ -77,8 +76,9 @@ public class GameManager : MonoBehaviour
         {
             selectedCharacter = currentSaveData.selectedCharacter;
 
-            SceneManager.sceneLoaded += OnGameSceneLoaded;
-            SceneManager.LoadScene("GameScene");
+            //SceneManager.sceneLoaded += OnGameSceneLoaded;
+            //SceneManager.LoadScene("GameScene");
+            SceneManager.LoadScene("MapScene");
         }
         else
         {
@@ -90,13 +90,25 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == "GameScene")
         {
-            // Sahnedeki UI öðelerini bul ve referanslarý ata            
+            // Ensure LevelManager is initialized in GameScene
+
+            LevelManager levelManager = FindObjectOfType<LevelManager>();
+            if (levelManager != null)
+            {
+                levelManager.LoadLevel(selectedLevelIndex);
+            }
+            else
+            {
+                Debug.LogError("LevelManager not found in GameScene.");
+            }
 
             GameUIManager.Instance.StartCountdown();
 
             SceneManager.sceneLoaded -= OnGameSceneLoaded;
         }
     }
+
+
     public void RestartLevel()
     {
         Time.timeScale = 1f;

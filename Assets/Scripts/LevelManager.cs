@@ -41,7 +41,7 @@ public class LevelManager : MonoBehaviour
     {
         return currentLevelIndex;
     }
-
+   
     public void LoadLevel(int levelIndex)
     {
         if (levelIndex >= 0 && levelIndex < levels.Count)
@@ -70,6 +70,17 @@ public class LevelManager : MonoBehaviour
     public Level GetCurrentLevel()
     {
         return currentLevel;
+    }
+    public void CompleteLevel()
+    {
+     int nextLevelIndex = currentLevelIndex + 1;
+        if (nextLevelIndex + 1 > GameManager.Instance.currentSaveData.level)
+        {
+            GameManager.Instance.currentSaveData.level = nextLevelIndex + 1; // Level numaralarý 1'den baþlýyorsa
+            Debug.Log("Unlocked Level: " + GameManager.Instance.currentSaveData.level);
+            GameManager.Instance.SaveGame();
+        }
+        // Baþarý ekraný gösterme vb.
     }
 
     public void LoadNextLevel()

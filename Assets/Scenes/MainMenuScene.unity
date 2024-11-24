@@ -2041,6 +2041,7 @@ MonoBehaviour:
   defaultInventoryItems: []
   availableRecipes: []
   levels: []
+  selectedLevelIndex: 0
 --- !u!4 &1047734272
 Transform:
   m_ObjectHideFlags: 0

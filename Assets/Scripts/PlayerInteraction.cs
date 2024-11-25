@@ -32,7 +32,6 @@ public class PlayerInteraction : MonoBehaviour
     #endregion
 
     #region Private Variables
-    public static PlayerInteraction Instance;
     private PlayerInputActions inputActions;
     private InputAction interactAction;
     private InputAction holdAction;
@@ -62,14 +61,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+       
         // Component References
         rb = GetComponent<Rigidbody>();
         movementController = GetComponent<PlayerMovement>();
@@ -96,12 +88,18 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnEnable()
     {
-        inputActions.Player.Enable();
+        if (inputActions != null)
+        {
+            inputActions.Player.Enable();
+        }
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Disable();
+        if (inputActions != null)
+        {
+            inputActions.Player.Disable();
+        }
     }
 
     private void FixedUpdate()

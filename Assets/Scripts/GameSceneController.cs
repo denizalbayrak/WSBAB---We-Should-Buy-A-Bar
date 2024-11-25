@@ -6,7 +6,7 @@ public class GameSceneController : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.SpawnPlayerCharacter();
+          //  GameManager.Instance.SpawnPlayerCharacter();
         }
         else
         {

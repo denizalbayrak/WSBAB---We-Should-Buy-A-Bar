@@ -250,4 +250,11 @@ public class OrderManager : MonoBehaviour
             this.timeLeft = order.timeLimit;
         }
     }
+    public void ResetOrderManager()
+    {
+        StopLevel();
+        currentScore = 0;
+        UpdateScoreUI();
+    }
+
 }

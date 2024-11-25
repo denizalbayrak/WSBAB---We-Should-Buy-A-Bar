@@ -105,7 +105,7 @@ public class Sink : PlacableInteractable, IHoldInteractable
                 animator.SetTrigger("WaterOn"); 
                 animationController.SetFillingBeer(false);
             }
-                PlayerInteraction.Instance.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
+            player.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
            
 
             if (washProgress >= washDuration)

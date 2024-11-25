@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     public List<Recipe> availableRecipes; // All recipes available in the game
     public List<Level> levels; // Levels with specific recipes and requirements
     public int selectedLevelIndex = 0;
-
+    private GameObject playerInstance;
 
     private void Awake()
     {
@@ -90,19 +90,21 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == "GameScene")
         {
+            SpawnPlayerCharacter();
+            LevelManager.Instance.LoadLevel(selectedLevelIndex);
             // Ensure LevelManager is initialized in GameScene
 
-            LevelManager levelManager = FindObjectOfType<LevelManager>();
-            if (levelManager != null)
-            {
-                levelManager.LoadLevel(selectedLevelIndex);
-            }
-            else
-            {
-                Debug.LogError("LevelManager not found in GameScene.");
-            }
+            //LevelManager levelManager = FindObjectOfType<LevelManager>();
+            //if (levelManager != null)
+            //{
+            //    levelManager.LoadLevel(selectedLevelIndex);
+            //}
+            //else
+            //{
+            //    Debug.LogError("LevelManager not found in GameScene.");
+            //}
 
-            GameUIManager.Instance.StartCountdown();
+            GameUIManager.Instance.ResetUI();
 
             SceneManager.sceneLoaded -= OnGameSceneLoaded;
         }
@@ -111,10 +113,13 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        Time.timeScale = 1f;
+        LevelManager.Instance.UnloadCurrentLevel();
+        DestroyPlayerCharacter();
+        LevelManager.Instance.LoadLevel(LevelManager.Instance.currentLevelIndex);
+        SpawnPlayerCharacter();
         currentGameState = GameState.InGame;
-        SceneManager.sceneLoaded += OnGameSceneLoaded;
-        SceneManager.LoadScene("GameScene");
+        GameUIManager.Instance.StartCountdown();
+        Time.timeScale = 1f;
     }
 
 
@@ -129,11 +134,23 @@ public class GameManager : MonoBehaviour
 
     public void SpawnPlayerCharacter()
     {
+        if (playerInstance != null)
+        {
+            Destroy(playerInstance);
+        }
+
         GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
         Vector3 spawnPosition = Vector3.zero; // Adjust spawn position as needed
-        Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
+        playerInstance = Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
+    }
+    public void DestroyPlayerCharacter()
+    {
+        if (playerInstance != null)
+        {
+            Destroy(playerInstance);
+            playerInstance = null;
+        }
     }
 
-    
-    
+
 }

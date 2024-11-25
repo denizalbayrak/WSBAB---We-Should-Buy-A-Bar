@@ -15,9 +15,8 @@ public class LevelButton : MonoBehaviour
 
     private void OnButtonClick()
     {
-        // Store the selected level index in GameManager
-        GameManager.Instance.selectedLevelIndex = levelIndex - 1; // Adjust if needed
-
+        GameManager.Instance.selectedLevelIndex = levelIndex-1;
+        Debug.Log("levelIndex " + levelIndex);
         // Load the GameScene
         SceneManager.LoadScene("GameScene");
     }

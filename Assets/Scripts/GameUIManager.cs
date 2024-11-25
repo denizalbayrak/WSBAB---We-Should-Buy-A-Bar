@@ -101,7 +101,7 @@ public class GameUIManager : MonoBehaviour
     {
         // Oyunu duraklat
         Time.timeScale = 0f;
-        countdownText.transform.parent.gameObject.SetActive(true);
+        countdownText.transform.parent.parent.gameObject.SetActive(true);
         float remainingTime = countdownTime;
         while (remainingTime > 0)
         {
@@ -257,9 +257,17 @@ public class GameUIManager : MonoBehaviour
     public void OnNextLevelButtonClicked()
     {
         endPanel.SetActive(false);
+        LevelManager.Instance.UnloadCurrentLevel();
+        GameManager.Instance.DestroyPlayerCharacter();
         LevelManager.Instance.LoadNextLevel();
+        GameManager.Instance.SpawnPlayerCharacter();
+        GameManager.Instance.currentGameState = GameState.InGame;
+        GameUIManager.Instance.StartCountdown();
     }
-
+    public void ResetUI()
+    {
+        StartCountdown();      
+    }
     public void OnRestartLevelButtonClicked()
     {
         endPanel.SetActive(false);

@@ -8,10 +8,10 @@ public class LevelManager : MonoBehaviour
     [Header("Level Settings")]
     public List<Level> levels;
 
-    private int currentLevelIndex = 0;
+    public int currentLevelIndex = 0;
     public Level currentLevel;
     private GameObject currentLevelMapInstance;
-
+    private GameObject currentLevelInstance;
     private void Awake()
     {
         if (Instance == null)
@@ -37,34 +37,41 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("No levels assigned in LevelManager!");
         }
     }
-    public int GetCurrentLevelIndex()
-    {
-        return currentLevelIndex;
-    }
-   
+      
     public void LoadLevel(int levelIndex)
     {
+        Debug.Log("Loading Level:" + levelIndex); 
+        currentLevelIndex = levelIndex;
         if (levelIndex >= 0 && levelIndex < levels.Count)
         {
-            // Clean up previous level if any
-            if (currentLevelMapInstance != null)
-            {
-                Destroy(currentLevelMapInstance);
-            }
-
+            UnloadCurrentLevel();
             currentLevel = levels[levelIndex];
             Debug.Log($"Loading Level: {currentLevel.levelName}");
-
-            // Instantiate the level map
-            currentLevelMapInstance = Instantiate(currentLevel.levelMapPrefab);
+            // Clean up previous level if any
+            if (currentLevel.levelMapPrefab != null)
+            {
+                currentLevelInstance = Instantiate(currentLevel.levelMapPrefab);
+            }
+            else
+            {
+                Debug.LogError("Current level prefab is null!");
+            }
 
             // Load the level in OrderManager
+            OrderManager.Instance.ResetOrderManager();
             OrderManager.Instance.LoadLevel(currentLevel);
-
         }
         else
         {
             Debug.LogError("Invalid level index!");
+        }
+    }
+    public void UnloadCurrentLevel()
+    {
+        if (currentLevelInstance != null)
+        {
+            Destroy(currentLevelInstance);
+            currentLevelInstance = null;
         }
     }
     public Level GetCurrentLevel()
@@ -73,10 +80,12 @@ public class LevelManager : MonoBehaviour
     }
     public void CompleteLevel()
     {
-     int nextLevelIndex = currentLevelIndex + 1;
+     int nextLevelIndex = GameManager.Instance.currentSaveData.level + 1;
+        Debug.Log("currentLevelIndex + " + currentLevelIndex);
+        Debug.Log("GameManager.Instance.currentSaveData.level + " + GameManager.Instance.currentSaveData.level);
         if (nextLevelIndex + 1 > GameManager.Instance.currentSaveData.level)
         {
-            GameManager.Instance.currentSaveData.level = nextLevelIndex + 1; // Level numaralarý 1'den baþlýyorsa
+            GameManager.Instance.currentSaveData.level = nextLevelIndex; // Level numaralarý 1'den baþlýyorsa
             Debug.Log("Unlocked Level: " + GameManager.Instance.currentSaveData.level);
             GameManager.Instance.SaveGame();
         }
@@ -85,14 +94,16 @@ public class LevelManager : MonoBehaviour
 
     public void LoadNextLevel()
     {
-        if (currentLevelIndex + 1 < levels.Count)
+        int nextLevelIndex = currentLevelIndex + 1;
+        if (nextLevelIndex < levels.Count)
         {
-            currentLevelIndex++;
-            LoadLevel(currentLevelIndex);
+            LoadLevel(nextLevelIndex);
+            GameManager.Instance.selectedLevelIndex = nextLevelIndex;
         }
         else
         {
             Debug.Log("No more levels!");
+            // Oyunun sonuna geldiniz, isterseniz bir bitiþ ekraný gösterebilirsiniz
         }
     }
 

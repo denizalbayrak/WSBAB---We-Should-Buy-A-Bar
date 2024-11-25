@@ -129,7 +129,7 @@ public class BeerStation : PlacableInteractable, IHoldInteractable
                     isFillStart = false;
                     animationController.SetFillingBeer(false);
                 }
-                PlayerInteraction.Instance.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
+                player.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
             }
 
             if (fillProgress >= fillDuration)

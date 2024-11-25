@@ -131,7 +131,7 @@ public class WineStation : PlacableInteractable, IHoldInteractable
                     isFillStart = false;
                     animationController.SetFillingBeer(false);
                 }
-                PlayerInteraction.Instance.GetComponent<Animator>().Play("WineFill", 0, normalizedTime);
+                player.GetComponent<Animator>().Play("WineFill", 0, normalizedTime);
             }
 
             if (fillProgress >= fillDuration)

@@ -28,34 +28,36 @@ public class GameManager : MonoBehaviour
     public List<Level> levels; // Levels with specific recipes and requirements
     public int selectedLevelIndex = 0;
     private GameObject playerInstance;
-
+    private bool isSubscribed = false;
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnGameSceneLoaded; // Aboneliði burada yapýyoruz
+            isSubscribed = true;
         }
         else
         {
             Destroy(gameObject);
         }
     }
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnGameSceneLoaded;
-    }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnGameSceneLoaded;
+        if (isSubscribed)
+        {
+            SceneManager.sceneLoaded -= OnGameSceneLoaded;
+            isSubscribed = false;
+        }
     }
     public void NewGame(int slot)
     {
         currentSlot = slot;
         currentSaveData = new SaveData
         {
-            level = 1,
+            level = 0,
             playTime = 0f,
             playerName = "Player",
             selectedCharacter = selectedCharacter,
@@ -90,23 +92,12 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == "GameScene")
         {
+            Debug.Log("SCENE LOADED");
             SpawnPlayerCharacter();
             LevelManager.Instance.LoadLevel(selectedLevelIndex);
-            // Ensure LevelManager is initialized in GameScene
-
-            //LevelManager levelManager = FindObjectOfType<LevelManager>();
-            //if (levelManager != null)
-            //{
-            //    levelManager.LoadLevel(selectedLevelIndex);
-            //}
-            //else
-            //{
-            //    Debug.LogError("LevelManager not found in GameScene.");
-            //}
-
+            GameUIManager.Instance.StartCountdown();
+            Time.timeScale = 1f;            
             GameUIManager.Instance.ResetUI();
-
-            SceneManager.sceneLoaded -= OnGameSceneLoaded;
         }
     }
 
@@ -119,7 +110,7 @@ public class GameManager : MonoBehaviour
         SpawnPlayerCharacter();
         currentGameState = GameState.InGame;
         GameUIManager.Instance.StartCountdown();
-        Time.timeScale = 1f;
+        Time.timeScale = 0f;
     }
 
 
@@ -129,6 +120,8 @@ public class GameManager : MonoBehaviour
         {
             currentSaveData.selectedCharacter = selectedCharacter;
             SaveSystem.SaveGame(currentSaveData, currentSlot);
+            Debug.Log("data saved");
+            Debug.Log("currentSaveData " + currentSaveData);
         }
     }
 
@@ -142,6 +135,7 @@ public class GameManager : MonoBehaviour
         GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
         Vector3 spawnPosition = Vector3.zero; // Adjust spawn position as needed
         playerInstance = Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
+        Debug.Log("player spawned");
     }
     public void DestroyPlayerCharacter()
     {

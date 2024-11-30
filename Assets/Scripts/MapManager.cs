@@ -17,7 +17,7 @@ public class MapManager : MonoBehaviour
 
         for (int i = 0; i < levelButtons.Count; i++)
         {
-            int levelIndex = i + 1;
+            int levelIndex = i;
             Button button = levelButtons[i];
 
             if (levelIndex <= unlockedLevel)

@@ -100,6 +100,7 @@ public class GameUIManager : MonoBehaviour
     private IEnumerator Countdown()
     {
         // Oyunu duraklat
+        Debug.Log("countdown started");
         Time.timeScale = 0f;
         countdownText.transform.parent.parent.gameObject.SetActive(true);
         float remainingTime = countdownTime;
@@ -126,7 +127,7 @@ public class GameUIManager : MonoBehaviour
 
         // Oyunu baþlat
         Time.timeScale = 1f;
-        countdownText.transform.parent.gameObject.SetActive(false);
+   //     countdownText.transform.parent.gameObject.SetActive(false);
         countdownText.transform.parent.parent.gameObject.SetActive(false);
         gameManager.currentGameState = GameState.InGame;
 
@@ -276,6 +277,12 @@ public class GameUIManager : MonoBehaviour
 
     public void OnExitToMainMenuButtonClicked()
     {
+        Time.timeScale = 1f;
+        GameManager.Instance.currentGameState = GameState.InGame;
+        GameManager.Instance.selectedLevelIndex = 0;
+        GameManager.Instance.currentSaveData = null;
+        GameManager.Instance.DestroyPlayerCharacter();
+        LevelManager.Instance.UnloadCurrentLevel(); 
         SceneManager.LoadScene("MainMenuScene");
     }
 }

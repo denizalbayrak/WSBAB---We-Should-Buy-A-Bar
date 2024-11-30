@@ -2769,6 +2769,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6577605098691302582, guid: 18953321b3af535439d4ab5a6f8b9d53, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.631
+      objectReference: {fileID: 0}
     - target: {fileID: 6911678195281547234, guid: 18953321b3af535439d4ab5a6f8b9d53, type: 3}
       propertyPath: m_Name
       value: BeerStation

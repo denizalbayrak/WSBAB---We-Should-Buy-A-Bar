@@ -15,8 +15,7 @@ public class LevelButton : MonoBehaviour
 
     private void OnButtonClick()
     {
-        GameManager.Instance.selectedLevelIndex = levelIndex-1;
-        Debug.Log("levelIndex " + levelIndex);
+        GameManager.Instance.selectedLevelIndex = levelIndex;
         // Load the GameScene
         SceneManager.LoadScene("GameScene");
     }

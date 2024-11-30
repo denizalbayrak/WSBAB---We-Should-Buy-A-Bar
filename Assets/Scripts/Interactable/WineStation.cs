@@ -7,8 +7,8 @@ public class WineStation : PlacableInteractable, IHoldInteractable
 {
     private bool isFilling = false;
     private float fillProgress = 0f;
-    private float fillDuration = 5f; // Sabit doldurma süresi (örneðin 5 saniye)
-    private BeerGlass glassBeingFilled;
+    private float fillDuration = 4f; // Sabit doldurma süresi (örneðin 5 saniye)
+    private WineGlass glassBeingFilled;
     private Animator glassAnimator;
 
     // UI Elements
@@ -32,7 +32,7 @@ public class WineStation : PlacableInteractable, IHoldInteractable
                         {
                             // Place the glass on the station
                             base.Interact(player); // This places the object and sets placedObject
-                            Debug.Log("Placed a clean, empty beer glass on the beer station.");
+                            Debug.Log("Placed a clean, empty wine glass on the wine station.");
                             // The filling process does NOT start automatically
                             // Player can start filling by holding the Ctrl key
                         }
@@ -43,12 +43,12 @@ public class WineStation : PlacableInteractable, IHoldInteractable
                     }
                     else
                     {
-                        Debug.Log("You can only place a clean, empty beer glass here.");
+                        Debug.Log("You can only place a clean, empty wine glass here.");
                     }
                 }
                 else
                 {
-                    Debug.Log("You need to carry a beer glass to place it here.");
+                    Debug.Log("You need to carry a wine glass to place it here.");
                 }
             }
             else if (playerInteraction.CarriedObject == null)
@@ -82,7 +82,7 @@ public class WineStation : PlacableInteractable, IHoldInteractable
         // Check if there is a glass on the station
         if (placedObject != null)
         {
-            // Get the BeerGlass component from placedObject
+            // Get the WineGlass component from placedObject
             WineGlass wineGlass = placedObject.GetComponent<WineGlass>();
 
             if (isFilling)
@@ -131,7 +131,7 @@ public class WineStation : PlacableInteractable, IHoldInteractable
                     isFillStart = false;
                     animationController.SetFillingBeer(false);
                 }
-                player.GetComponent<Animator>().Play("WineFill", 0, normalizedTime);
+                player.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
             }
 
             if (fillProgress >= fillDuration)
@@ -163,7 +163,7 @@ public class WineStation : PlacableInteractable, IHoldInteractable
             // Start filling process
             isFilling = true;
             fillProgress = 0f;
-            glassBeingFilled = placedObject.GetComponent<BeerGlass>();
+            glassBeingFilled = placedObject.GetComponent<WineGlass>();
 
             // Get the Animator component from the glass
             glassAnimator = glassBeingFilled.GetComponent<Animator>();

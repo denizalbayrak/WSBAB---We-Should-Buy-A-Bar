@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BeerGlass : Carryable
+public class BeerGlass : Carryable, IWashableGlass
 {
     public enum GlassState
     {
@@ -19,7 +19,10 @@ public class BeerGlass : Carryable
     {
         UpdateVisuals();
     }
-
+    public bool IsDirty
+{
+    get { return CurrentState == GlassState.DirtyEmpty; }
+}
     public void Dirty()
     {
         CurrentState = GlassState.DirtyEmpty;

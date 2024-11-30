@@ -1,5 +1,9 @@
 using UnityEngine;
-
+public interface IWashableGlass
+{
+    bool IsDirty { get; }
+    void Clean();
+}
 public class Carryable : MonoBehaviour
 {
     private Collider objectCollider;

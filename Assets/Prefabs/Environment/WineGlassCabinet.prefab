@@ -681,8 +681,8 @@ Transform:
   - {fileID: 258451962404509442}
   - {fileID: 6182297656405335474}
   - {fileID: 9125668467330018837}
-  - {fileID: 1701989831878540344}
-  - {fileID: 7545153557342950533}
+  - {fileID: 4808743516845451895}
+  - {fileID: 4438153753312936650}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -732,11 +732,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0da6613a99ee3c644b7dc79af5fc2e1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placementPoint: {fileID: 0}
+  placementPoint: {fileID: 3358294193479799930}
   wineGlassObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  wineGlassPrefab: {fileID: 0}
+  - {fileID: 8022616538884279658}
+  - {fileID: 1188216582633874903}
+  wineGlassPrefab: {fileID: 7704563198753660459, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
 --- !u!1 &7654877714433065804
 GameObject:
   m_ObjectHideFlags: 0
@@ -1003,14 +1003,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: WineGlass
       objectReference: {fileID: 0}
+    - target: {fileID: 5117780861694277942, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.089
+      objectReference: {fileID: 0}
+    - target: {fileID: 5117780861694277942, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.805
+      objectReference: {fileID: 0}
+    - target: {fileID: 5117780861694277942, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.176
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
---- !u!4 &1701989831878540344 stripped
+--- !u!4 &4808743516845451895 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 1307375298084286329, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5117780861694277942, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+  m_PrefabInstance: {fileID: 412664667574195009}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8022616538884279658 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7704563198753660459, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
   m_PrefabInstance: {fileID: 412664667574195009}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8831980837451643900
@@ -1069,13 +1086,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: WineGlass (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5117780861694277942, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5117780861694277942, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5117780861694277942, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.164
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
---- !u!4 &7545153557342950533 stripped
+--- !u!1 &1188216582633874903 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7704563198753660459, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+  m_PrefabInstance: {fileID: 8831980837451643900}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4438153753312936650 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 1307375298084286329, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5117780861694277942, guid: 0286de4dfefbb4c4f88e85df192d3466, type: 3}
   m_PrefabInstance: {fileID: 8831980837451643900}
   m_PrefabAsset: {fileID: 0}

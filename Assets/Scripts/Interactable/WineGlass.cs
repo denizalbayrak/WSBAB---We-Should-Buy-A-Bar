@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class WineGlass : Carryable
+public class WineGlass : Carryable, IWashableGlass
 {
     public enum GlassState
     {
@@ -9,7 +9,7 @@ public class WineGlass : Carryable
         Filled
     }
 
-    public GlassState CurrentState = GlassState.DirtyEmpty;
+    public GlassState CurrentState = GlassState.CleanEmpty;
     public GlassType glassType = GlassType.Wine;
     public GameObject cleanVisual; // Temiz bardak görseli
     public GameObject dirtyVisual; // Kirli bardak görseli
@@ -25,7 +25,7 @@ public class WineGlass : Carryable
         CurrentState = GlassState.DirtyEmpty;
         isReady = false;
         UpdateVisuals();
-        Debug.Log("The beer glass is now dirty.");
+        Debug.Log("The wine glass is now dirty.");
     }
 
     public void Clean()
@@ -33,7 +33,7 @@ public class WineGlass : Carryable
         CurrentState = GlassState.CleanEmpty;
         isReady = false;
         UpdateVisuals();
-        Debug.Log("The beer glass is now clean.");
+        Debug.Log("The wine glass is now clean.");
     }
 
     public void Fill()
@@ -43,11 +43,11 @@ public class WineGlass : Carryable
             CurrentState = GlassState.Filled;
             isReady = true;
             //UpdateVisuals();
-            Debug.Log("Filled the beer glass with beer.");
+            Debug.Log("Filled the wine glass with wine.");
         }
         else
         {
-            Debug.Log("Cannot fill the beer glass in its current state.");
+            Debug.Log("Cannot fill the wine glass in its current state.");
         }
     }
 
@@ -67,16 +67,19 @@ public class WineGlass : Carryable
             dirtyVisual.SetActive(CurrentState == GlassState.DirtyEmpty);
 
     }
-
+    public bool IsDirty
+    {
+        get { return CurrentState == GlassState.DirtyEmpty; }
+    }
     public override void OnPickUp()
     {
         base.OnPickUp();
-        Debug.Log("Picked up a beer glass.");
+        Debug.Log("Picked up a wine glass.");
     }
 
     public override void OnDrop()
     {
         base.OnDrop();
-        Debug.Log("Dropped the beer glass.");
+        Debug.Log("Dropped the wine glass.");
     }
 }

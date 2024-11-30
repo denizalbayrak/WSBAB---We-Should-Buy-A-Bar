@@ -9,6 +9,7 @@ public class DeliveryPoint : PlacableInteractable
     // Bira ve þarap için ayrý DirtyPoint'ler
     public DirtyPoint beerDirtyPoint;
     public DirtyPoint wineDirtyPoint;
+    public DirtyPoint mojitoDirtyPoint;
 
     public override void Interact(GameObject player)
     {
@@ -78,6 +79,10 @@ public class DeliveryPoint : PlacableInteractable
             else if (prefabToSpawn.name.Contains("Wine"))
             {
                 targetDirtyPoint = wineDirtyPoint;
+            }
+            else if (prefabToSpawn.name.Contains("Mojito"))
+            {
+                targetDirtyPoint = mojitoDirtyPoint;
             }
 
             if (targetDirtyPoint != null)

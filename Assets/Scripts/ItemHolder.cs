@@ -4,6 +4,7 @@ public enum GlassType
 {
     Beer,
     Wine,
+    Mojito,
     Whiskey
 }
 

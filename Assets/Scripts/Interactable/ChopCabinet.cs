@@ -96,7 +96,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                 return true;
             }
         }
-
+ 
         return false;
     }
 
@@ -127,7 +127,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             //    glassAnimator.Play("WineFill", 0, normalizedTime);
               //  glassAnimator.speed = 0f; // Keep the animator paused
                 if (isChopStart)
-                {
+                {                   
                     isChopStart = false;
                     animationController.SetChopping(false);
                 }

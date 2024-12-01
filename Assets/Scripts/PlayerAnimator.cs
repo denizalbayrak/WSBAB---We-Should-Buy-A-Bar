@@ -27,6 +27,13 @@ public class PlayerAnimator : MonoBehaviour
         {
             animator.SetBool("isFillingBeer", isFilling);
         }
+    } 
+    public void SetChopping(bool isFilling)
+    {
+        if (animator != null)
+        {
+            animator.SetBool("isChopping", isFilling);
+        }
     }
 
     /// <summary>
@@ -36,7 +43,14 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (animator != null)
         {
-            animator.SetTrigger("FillBeer");
+            animator.SetTrigger("Chop");
+        }
+    }
+    public void TriggerChopping()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger("Chop");
         }
     }
 

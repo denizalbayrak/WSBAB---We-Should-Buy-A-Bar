@@ -230,11 +230,20 @@ public class PlayerInteraction : MonoBehaviour
 
         // Parent the object to carryPoint
         carriedObject.transform.SetParent(carryPoint);
-        carriedObject.transform.localPosition = Vector3.zero;
+
         carriedObject.transform.localRotation = Quaternion.identity;
+        Debug.Log("carriedObject " + carriedObject.name);
         if (carriedObject.GetComponent<WineGlass>() !=null)
         {
             carriedObject.transform.localPosition = new Vector3(-0.621f, 0.874f, 0);
+        } 
+        else if (carriedObject.GetComponent<Lime>() !=null)
+        {
+            carriedObject.transform.position = new Vector3(0, 0.5f, 0);
+        }
+        else
+        {
+            carriedObject.transform.localPosition = Vector3.zero;
         }
         isCarrying = true;
         // Set the carried object's state

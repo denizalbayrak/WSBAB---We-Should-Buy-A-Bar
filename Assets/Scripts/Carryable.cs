@@ -4,6 +4,10 @@ public interface IWashableGlass
     bool IsDirty { get; }
     void Clean();
 }
+public interface IInteractableItem
+{
+    void InteractWith(GameObject target, EmptyCabinet cabinet);
+}
 public class Carryable : MonoBehaviour
 {
     private Collider objectCollider;

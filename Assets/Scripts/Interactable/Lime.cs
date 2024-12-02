@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lime : Carryable
+public class Lime : Carryable, IInteractableItem
 {
     public enum LimeState
     {
@@ -42,6 +42,30 @@ public class Lime : Carryable
         if (choppedVisual != null)
             choppedVisual.SetActive(CurrentState == LimeState.ChoppedLime);
 
+    }
+    public void InteractWith(GameObject target, EmptyCabinet cabinet)
+    {
+        MojitoGlass glass = target.GetComponent<MojitoGlass>();
+        if (glass != null)
+        {
+            if (CurrentState == LimeState.ChoppedLime)
+        {
+            if (!glass.HasLime)
+            {
+                glass.AddLime();
+                Debug.Log("Lime added to the glass.");
+                Destroy(gameObject); // Lime'ý yok et
+            }
+            else
+            {
+                Debug.Log("Glass already has lime.");
+            }
+        }
+        else
+        {
+            Debug.Log("You need to chop the lime first.");
+        }
+        }
     }
     public override void OnPickUp()
     {

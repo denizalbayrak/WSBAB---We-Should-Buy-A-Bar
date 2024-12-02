@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MojitoGlass : Carryable, IWashableGlass
+public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
 {
     public enum GlassState
     {
@@ -12,10 +12,14 @@ public class MojitoGlass : Carryable, IWashableGlass
     }
 
     public GlassState CurrentState = GlassState.CleanEmpty;
-    public GlassType glassType = GlassType.Wine;
+    public GlassType glassType = GlassType.Mojito;
     public GameObject cleanVisual; // Temiz bardak görseli
     public GameObject dirtyVisual; // Kirli bardak görseli
     public GameObject filledVisual; // Kirli bardak görseli
+    public GameObject ice;
+    public GameObject lime;
+    public bool HasIce = false;
+    public bool HasLime = false;
 
     private void Start()
     {
@@ -37,8 +41,95 @@ public class MojitoGlass : Carryable, IWashableGlass
         UpdateVisuals();
         Debug.Log("The mojito glass is now clean.");
     }
+    public void AddIce()
+    {
+        HasIce = true;
+        ice.SetActive(true);
+    }
+    public void AddLime()
+    {
+        HasLime = true;
+        lime.SetActive(true);
+    }
+    public void InteractWith(GameObject target, EmptyCabinet cabinet)
+    {
+        // Hedef nesne Ice ise
+        Ice ice = target.GetComponent<Ice>();
+        if (ice != null)
+        {
+            if (!HasIce)
+            {
+                AddIce();
+                Debug.Log("Ice added to the glass.");
 
-    public void Fill()
+                // Kabindeki buzu yok et
+                Destroy(target);
+
+                // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
+                PlaceGlassOnCabinet(cabinet);
+            }
+            else
+            {
+                Debug.Log("Glass already has ice.");
+            }
+            return;
+        }
+
+        // Hedef nesne Lime ise
+        Lime lime = target.GetComponent<Lime>();
+        if (lime != null && lime.CurrentState == Lime.LimeState.ChoppedLime)
+        {
+            if (!HasLime)
+            {
+                AddLime();
+                Debug.Log("Lime added to the glass.");
+
+                // Kabindeki lime'ý yok et
+                Destroy(target);
+
+                // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
+                PlaceGlassOnCabinet(cabinet);
+            }
+            else
+            {
+                Debug.Log("Glass already has lime.");
+            }
+            return;
+        }
+
+        Debug.Log("MojitoGlass cannot interact with this object.");
+    }
+
+    private void PlaceGlassOnCabinet(EmptyCabinet cabinet)
+    {
+        // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
+        PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
+        if (playerInteraction != null)
+        {
+            // Oyuncunun elindeki bardaðý býrak
+            playerInteraction.DropCarriedObject();
+
+            // Bardak kabine yerleþtirilir
+            if (cabinet != null)
+            {
+                cabinet.PlaceObject(gameObject);
+                playerInteraction.CarriedObject = null;
+                playerInteraction.isCarrying = false; // Merkezi yönetim için
+                playerInteraction.animator.SetBool("isCarry", false);
+                Debug.Log("Placed glass on cabinet.");
+            }
+            else
+            {
+                Debug.LogError("EmptyCabinet is null.");
+            }
+        }
+        else
+        {
+            Debug.LogError("PlayerInteraction not found.");
+        }
+    }
+
+public void Fill()
     {
         if (CurrentState == GlassState.CleanEmpty)
         {

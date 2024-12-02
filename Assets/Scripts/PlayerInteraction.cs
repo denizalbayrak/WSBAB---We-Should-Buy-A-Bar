@@ -112,7 +112,6 @@ public class PlayerInteraction : MonoBehaviour
     {
         // Highlighting and Carrying State Management
         UpdateHighlighting();
-
         if (carriedObject != null)
         {
             UpdateCarriedObjectPosition();
@@ -169,10 +168,22 @@ public class PlayerInteraction : MonoBehaviour
             // No interactable object found
             if (carriedObject != null)
             {
-                // Player is carrying something but not near an interactable
-                // Do not allow dropping the object
-                Debug.Log("Cannot drop the object here.");
-                // Optionally, provide feedback to the player (e.g., UI message or sound)
+                IInteractableItem interactableItem = carriedObject.GetComponent<IInteractableItem>();
+                if (interactableItem != null)
+                {
+                    MojitoGlass glass = GetGlassInFront();
+                    if (glass != null)
+                    {
+                        interactableItem.InteractWith(glass.gameObject, null);
+                        // Nesne etkileþim sonrasý yok edildiyse carriedObject'i sýfýrla
+                        if (carriedObject == null)
+                        {
+                            isCarrying = false;
+                            animator.SetBool("isCarry", false);
+                        }
+                        return;
+                    }
+                }
             }
             else
             {
@@ -212,7 +223,27 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
     }
+    private MojitoGlass GetGlassInFront()
+    {
+        Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
+        Collider[] hitColliders = Physics.OverlapBox(
+            boxCenter,
+            overlapBoxSize / 2,
+            transform.rotation,
+            interactableLayer
+        );
 
+        foreach (var hitCollider in hitColliders)
+        {
+            MojitoGlass glass = hitCollider.GetComponent<MojitoGlass>();
+            if (glass != null)
+            {
+                return glass;
+            }
+        }
+
+        return null;
+    }
     /// <summary>
     /// Picks up the specified object.
     /// </summary>
@@ -460,4 +491,15 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     #endregion
+    public void DropCarriedObject()
+    {
+        if (carriedObject != null)
+        {
+            carriedObject.transform.SetParent(null);
+            carriedObject = null;
+            isCarrying = false;
+            animator.SetBool("isCarry", false);
+        }
+    }
+
 }

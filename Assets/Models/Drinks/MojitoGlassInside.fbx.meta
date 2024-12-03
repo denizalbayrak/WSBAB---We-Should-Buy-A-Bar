@@ -1,14 +1,9 @@
 fileFormatVersion: 2
-guid: 56780db4ee224b049bb77f3cb5aab030
+guid: b53df019e65f5a6478c926f5498df708
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Solid_-_25%.034
-    second: {fileID: 2100000, guid: 2e587d9b31850ec468d98253bc8905ca, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

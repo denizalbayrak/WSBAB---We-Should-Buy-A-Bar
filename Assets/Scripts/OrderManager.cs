@@ -170,12 +170,14 @@ public class OrderManager : MonoBehaviour
             Debug.LogError("ProcessDeliveredItem called with null deliveredObject.");
             return;
         }
-
+        Debug.Log("deliveredObject " + deliveredObject);
         // Aktif sipariþler arasýnda, teslim edilen objeye uygun sipariþi bul
         ActiveOrder matchingActiveOrder = null;
 
         foreach (var activeOrder in activeOrders)
         {
+                Debug.Log("deliveredObject " + deliveredObject);
+                Debug.Log("activeOrder " + activeOrder.order);
             if (DoesDeliveredObjectMatchOrder(deliveredObject, activeOrder.order))
             {
                 matchingActiveOrder = activeOrder;

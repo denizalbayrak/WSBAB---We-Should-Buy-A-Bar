@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChopCabinet : PlacableInteractable, IHoldInteractable
+public class AlcoholPoint : PlacableInteractable, IHoldInteractable
 {
-    private bool isChopping = false;
-    private float chopProgress = 0f;
-    private float chopDuration = 4f;
-    private Lime limeBeingChopped;
+    private bool isFilling = false;
+    private bool isCompleted = false;
+    private float fillProgress = 0f;
+    private float fillDuration = 4f;
+    private MojitoGlass mojitoBeingFilled;
+    public Animator alcoholPointAnimator;
 
     // UI Elements
     public Image fillProgressUI; // Assign this in the Inspector (clock image)
     private bool isClockVisible = false;
-    private bool isChopStart = false;
-
+    private bool isFillStart = false;
+   
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
@@ -23,31 +25,26 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             if (playerInteraction.CarriedObject != null)
             {
                 // Player is carrying an object
-                Lime lime = playerInteraction.CarriedObject.GetComponent<Lime>();
+                if (playerInteraction.CarriedObject.GetComponent<MojitoGlass>())
+                {                
+                MojitoGlass lime = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 if (lime != null)
-                {
-                    if (lime.CurrentState == Lime.LimeState.FullLime)
-                    {
+                {                   
                         if (placedObject == null)
                         {
-                            // Place the lime on the station
                             base.Interact(player);
-                            Debug.Log("Placed a clean, full lime on the chop station.");
+                            Debug.Log("Placed a mojito glass on the alcohol fill station.");
                         }
                         else
                         {
                             Debug.Log("Cannot place object. Placement point is already occupied.");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("You can only place a full lime here.");
-                    }
+                        }                  
                 }
                 else
                 {
-                    Debug.Log("You need to carry a lime to place it here.");
+                    Debug.Log("You need to carry a mojito glass to place it here.");
                 }
+            }
             }
             else if (playerInteraction.CarriedObject == null)
             {
@@ -55,15 +52,15 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                 if (placedObject != null)
                 {
                     // Check if filling has started
-                    if (!isChopping)
+                    if (!isFilling)
                     {
                         // Player picks up the glass
                         base.Interact(player); // This picks up the placed object
-                        Debug.Log("Picked up the lime from the chop station.");
+                        Debug.Log("Picked up the mojito from the alcohol station.");
                     }
                     else
                     {
-                        Debug.Log("Cannot pick up the lime. Chopping in progress.");
+                        Debug.Log("Cannot pick up the glass. Filling in progress.");
                     }
                 }
                 else
@@ -80,21 +77,21 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
         // Check if there is a glass on the station
         if (placedObject != null)
         {
-            // Get the WineGlass component from placedObject
-            Lime lime = placedObject.GetComponent<Lime>();
+            // Get the MojitoGlass component from placedObject
+            MojitoGlass mojitoGlass = placedObject.GetComponent<MojitoGlass>();
 
-            if (isChopping)
+            if (isFilling)
             {
                 // Allow holding if filling is in progress
                 return true;
             }
-            else if (lime != null && lime.CurrentState == Lime.LimeState.FullLime)
+            else if (mojitoGlass != null)
             {
                 // Allow holding to start filling process
                 return true;
             }
         }
- 
+
         return false;
     }
 
@@ -106,14 +103,18 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             Debug.LogError("PlayerAnimator is missing on player!");
             return;
         }
+        if (isCompleted)
+        {
+            return;
+        }
 
-        if (isChopping)
+        if (isFilling)
         {
             // Filling process in progress
-            chopProgress += deltaTime;
-            if (chopProgress > chopDuration)
+            fillProgress += deltaTime;
+            if (fillProgress > fillDuration)
             {
-                chopProgress = chopDuration;
+                fillProgress = fillDuration;
             }
             // Update the fill progress UI
             UpdateFillProgressUI();
@@ -121,25 +122,32 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             // Update the Animator's playback time
             if (placedObject != null)
             {
-                float normalizedTime = chopProgress / chopDuration;
-                if (isChopStart)
-                {                   
-                    isChopStart = false;
-                    animationController.SetChopping(false);
+                float normalizedTime = fillProgress / fillDuration;
+
+                if (isFillStart)
+                {
+                    isFillStart = false;
+                    animationController.SetFillingBeer(false);
                 }
-                player.GetComponent<Animator>().Play("Chop", 0, normalizedTime);
+                Debug.Log("11");
+                player.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
+                alcoholPointAnimator.Play("Fill", 0, normalizedTime);
             }
 
-            if (chopProgress >= chopDuration)
+            if (fillProgress >= fillDuration)
             {
-                isChopping = false;
-                limeBeingChopped.Chop();
-                if (isChopStart)
+                isFilling = false;
+                mojitoBeingFilled.AddJuice();
+              
+                if (isFillStart)
                 {
-                    isChopStart = false;
-                    animationController.SetChopping(false);
+                    isFillStart = false;
+                    Debug.Log("222");
+                    alcoholPointAnimator.Play("Fill", 0, 1f); // Ensure animation is complete
+                    alcoholPointAnimator.speed = 0f;
+                    animationController.SetFillingBeer(false);
                 }
-                limeBeingChopped = null;
+                mojitoBeingFilled = null;
                 Debug.Log("Finished filling the wine glass.");
 
                 if (fillProgressUI != null)
@@ -147,28 +155,35 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                     fillProgressUI.gameObject.SetActive(false);
                 }
                 isClockVisible = false;
+                isCompleted = true;
             }
         }
         else
         {
-            isChopping = true;
-            chopProgress = 0f;
-            limeBeingChopped = placedObject.GetComponent<Lime>();
-
-            if (!isChopStart)
+            if (!isCompleted)
             {
-                isChopStart = true;
-                animationController.SetChopping(true);
-                animationController.TriggerChopping();
-            }
-            Debug.Log("Started filling the wine glass. Hold Ctrl for " + chopDuration + " seconds.");
+                isFilling = true;
+                fillProgress = 0f;
+                mojitoBeingFilled = placedObject.GetComponent<MojitoGlass>();
 
-            // Show the fill progress UI
-            if (fillProgressUI != null)
-            {
-                fillProgressUI.gameObject.SetActive(true);
+                if (!isFillStart)
+                {
+                    isFillStart = true;
+                    alcoholPointAnimator.Play("Fill", 0, 0f);
+                    alcoholPointAnimator.speed = 0f;
+                    animationController.SetFillingBeer(true);
+                    animationController.TriggerFillingBeer();
+                }
+                Debug.Log("Started filling the wine glass. Hold Ctrl for " + fillDuration + " seconds.");
+
+                // Show the fill progress UI
+                if (fillProgressUI != null)
+                {
+                    fillProgressUI.gameObject.SetActive(true);
+                }
+                isClockVisible = true;
             }
-            isClockVisible = true;
+           
         }
     }
 
@@ -178,7 +193,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
         if (fillProgressUI != null)
         {
             // Assuming the UI Image is a circular fill (e.g., radial progress bar)
-            float fillAmount = chopProgress / chopDuration;
+            float fillAmount = fillProgress / fillDuration;
             fillProgressUI.fillAmount = fillAmount;
         }
     }
@@ -191,8 +206,8 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             if (playerInteraction.CarriedObject != null)
             {
                 // Player is carrying something
-                Lime lime = playerInteraction.CarriedObject.GetComponent<Lime>();
-                return lime != null && lime.CurrentState == Lime.LimeState.FullLime && placedObject == null;
+                MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
+                return mojitoGlass != null && placedObject == null;
             }
             else
             {
@@ -200,10 +215,11 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                 if (placedObject != null)
                 {
                     // Can pick up the glass if filling hasn't started
-                    return !isChopping;
+                    return !isFilling;
                 }
             }
         }
         return false;
     }
 }
+

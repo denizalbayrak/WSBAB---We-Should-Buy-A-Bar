@@ -18,8 +18,10 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     public GameObject filledVisual; // Kirli bardak görseli
     public GameObject ice;
     public GameObject lime;
+    public GameObject juice;
     public bool HasIce = false;
     public bool HasLime = false;
+    public bool HasJuice = false;
 
     private void Start()
     {
@@ -45,11 +47,27 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     {
         HasIce = true;
         ice.SetActive(true);
+        isDone();
     }
     public void AddLime()
     {
         HasLime = true;
         lime.SetActive(true);
+        isDone();
+    } 
+    public void AddJuice()
+    {
+        HasJuice = true;
+        juice.SetActive(true);
+        isDone();
+    }  
+    public void isDone()
+    {
+        if (HasJuice && HasLime && HasIce)
+        {
+            isReady = true; return;
+        }
+        isReady = false;
     }
     public void InteractWith(GameObject target, EmptyCabinet cabinet)
     {
@@ -157,7 +175,12 @@ public void Fill()
 
 
         if (dirtyVisual != null)
+        {
             dirtyVisual.SetActive(CurrentState == GlassState.DirtyEmpty);
+            ice.SetActive(false);
+            lime.SetActive(false);
+            juice.SetActive(false);
+        }
 
     }
     public bool IsDirty

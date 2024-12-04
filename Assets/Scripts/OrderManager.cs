@@ -170,14 +170,10 @@ public class OrderManager : MonoBehaviour
             Debug.LogError("ProcessDeliveredItem called with null deliveredObject.");
             return;
         }
-        Debug.Log("deliveredObject " + deliveredObject);
         // Aktif sipariþler arasýnda, teslim edilen objeye uygun sipariþi bul
         ActiveOrder matchingActiveOrder = null;
-
         foreach (var activeOrder in activeOrders)
-        {
-                Debug.Log("deliveredObject " + deliveredObject);
-                Debug.Log("activeOrder " + activeOrder.order);
+        {           
             if (DoesDeliveredObjectMatchOrder(deliveredObject, activeOrder.order))
             {
                 matchingActiveOrder = activeOrder;
@@ -222,6 +218,15 @@ public class OrderManager : MonoBehaviour
             if (wineGlass != null && wineGlass.CurrentState == WineGlass.GlassState.Filled)
             {
                 // Teslim edilen obje dolu bir þarap bardaðý, sipariþle eþleþiyor
+                return true;
+            }
+        } 
+        else if (order.orderType == OrderType.DeliverMojitoGlass)
+        {
+            MojitoGlass mojitoGlass = deliveredObject.GetComponent<MojitoGlass>();
+            if (mojitoGlass != null && mojitoGlass.CurrentState == MojitoGlass.GlassState.Filled)
+            {
+                // Teslim edilen obje dolu bir mojito bardaðý, sipariþle eþleþiyor
                 return true;
             }
         }

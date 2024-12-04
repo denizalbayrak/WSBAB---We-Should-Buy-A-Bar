@@ -10,8 +10,6 @@ public class Recipe : ScriptableObject
     [Tooltip("Tarifin resmi")]
     public Sprite recipeImage;
 
-    [Tooltip("Tarif için gerekli objeler")]
-    public List<RequiredObject> requiredObjects;
 }
 
 [System.Serializable]
@@ -26,11 +24,5 @@ public class RequiredObject
     [Tooltip("Bu obje bara taþýnmalý mý?")]
     public bool moveToBar; // Newly added property
 
-    // Constructor (optional)
-    public RequiredObject(GameObject prefab, int qty, bool moveToBar)
-    {
-        objectPrefab = prefab;
-        quantity = qty;
-        this.moveToBar = moveToBar;
-    }
+   
 }

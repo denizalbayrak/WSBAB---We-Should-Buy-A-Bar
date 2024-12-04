@@ -20,12 +20,12 @@ MonoBehaviour:
     description: Beer
     orderImage: {fileID: 21300000, guid: 96687351255dab841b99ba988773c693, type: 3}
     timeLimit: 50
-  - orderID: 0
+  - orderID: 1
     orderType: 1
     description: Wine
     orderImage: {fileID: 21300000, guid: ad47ffaa2692cca41bf1055a0052627c, type: 3}
     timeLimit: 49
-  - orderID: 0
+  - orderID: 2
     orderType: 2
     description: Mojito
     orderImage: {fileID: 21300000, guid: fef519ca5cc8efd48ae87ca95049c046, type: 3}

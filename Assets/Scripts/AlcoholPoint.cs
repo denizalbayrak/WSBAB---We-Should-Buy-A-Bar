@@ -129,7 +129,6 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     isFillStart = false;
                     animationController.SetFillingBeer(false);
                 }
-                Debug.Log("11");
                 player.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
                 alcoholPointAnimator.Play("Fill", 0, normalizedTime);
             }
@@ -142,7 +141,6 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                 if (isFillStart)
                 {
                     isFillStart = false;
-                    Debug.Log("222");
                     alcoholPointAnimator.Play("Fill", 0, 1f); // Ensure animation is complete
                     alcoholPointAnimator.speed = 0f;
                     animationController.SetFillingBeer(false);

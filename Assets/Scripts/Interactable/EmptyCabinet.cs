@@ -29,7 +29,8 @@ public class EmptyCabinet : PlacableInteractable
                     if (carriedItem != null)
                     {
                         carriedItem.InteractWith(placedObject, this);
-
+                        playerInteraction.isCarrying = false;
+                        playerInteraction.animator.SetBool("isCarry", false);
                         // Eðer taþýdýðý nesne etkileþim sonrasý yok edildiyse, carriedObject'i sýfýrla
                         if (playerInteraction.CarriedObject == null)
                         {

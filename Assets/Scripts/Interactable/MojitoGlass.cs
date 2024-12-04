@@ -65,7 +65,10 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     {
         if (HasJuice && HasLime && HasIce)
         {
-            isReady = true; return;
+            isReady = true;
+            CurrentState = GlassState.Filled;
+            return;
+
         }
         isReady = false;
     }

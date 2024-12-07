@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lime : Carryable, IInteractableItem
+public class Lime : Carryable, IInteractableItem, IChoppable
 {
     public enum LimeState
     {
@@ -11,12 +11,16 @@ public class Lime : Carryable, IInteractableItem
     }
     public LimeState CurrentState = LimeState.FullLime;
     public GameObject fullVisual; 
-    public GameObject choppedVisual; 
+    public GameObject choppedVisual;
+    public bool IsFull => CurrentState == LimeState.FullLime;
+    public bool IsChopped => CurrentState == LimeState.ChoppedLime;
     private void Start()
     {
         UpdateVisuals();
     }
-    public void Full()
+   
+
+public void Full()
     {
         CurrentState = LimeState.FullLime;
         isReady = false;
@@ -31,7 +35,7 @@ public class Lime : Carryable, IInteractableItem
         UpdateVisuals();
         Debug.Log("The lime is now chop.");
     }
-    private void UpdateVisuals()
+    public void UpdateVisuals()
     {
         if (fullVisual != null)
         {
@@ -50,7 +54,7 @@ public class Lime : Carryable, IInteractableItem
         {
             if (CurrentState == LimeState.ChoppedLime)
         {
-            if (!glass.HasLime)
+            if (!glass.HasChocolate)
             {
                 glass.AddLime();
                 Debug.Log("Lime added to the glass.");

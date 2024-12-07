@@ -42,7 +42,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5650004871853977872}
   - component: {fileID: 7693274920877228420}
-  - component: {fileID: 2428679445519628437}
   m_Layer: 0
   m_Name: Lime
   m_TagString: Carryable
@@ -83,27 +82,6 @@ MonoBehaviour:
   CurrentState: 0
   fullVisual: {fileID: 3670912820848906359}
   choppedVisual: {fileID: 262124768997962039}
---- !u!135 &2428679445519628437
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 416058587257012161}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1.0994585
-  m_Center: {x: 0, y: 0.025092602, z: 0}
 --- !u!1 &2135654393681833353
 GameObject:
   m_ObjectHideFlags: 0

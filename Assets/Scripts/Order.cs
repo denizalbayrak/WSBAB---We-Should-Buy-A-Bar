@@ -16,5 +16,6 @@ public enum OrderType
     DeliverBeerGlass,
     DeliverWineGlass,
     DeliverMojitoGlass,
+    DeliverMimosaGlass,
     // Diðer sipariþ türlerini ekleyin
 }

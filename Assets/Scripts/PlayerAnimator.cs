@@ -34,6 +34,13 @@ public class PlayerAnimator : MonoBehaviour
         {
             animator.SetBool("isChopping", isFilling);
         }
+    }  
+    public void SetBlending(bool isFilling)
+    {
+        if (animator != null)
+        {
+            animator.SetBool("isBlending", isFilling);
+        }
     }
 
     /// <summary>
@@ -51,6 +58,12 @@ public class PlayerAnimator : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger("Chop");
+        }
+    } public void TriggerBlending()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger("Blend");
         }
     }
 

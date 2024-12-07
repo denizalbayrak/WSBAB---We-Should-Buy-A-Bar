@@ -223,8 +223,8 @@ public class OrderManager : MonoBehaviour
         } 
         else if (order.orderType == OrderType.DeliverMojitoGlass)
         {
-            MojitoGlass mojitoGlass = deliveredObject.GetComponent<MojitoGlass>();
-            if (mojitoGlass != null && mojitoGlass.CurrentState == MojitoGlass.GlassState.Filled)
+            MimosaGlass mojitoGlass = deliveredObject.GetComponent<MimosaGlass>();
+            if (mojitoGlass != null && mojitoGlass.CurrentState == MimosaGlass.GlassState.Filled)
             {
                 // Teslim edilen obje dolu bir mojito bardaðý, sipariþle eþleþiyor
                 return true;

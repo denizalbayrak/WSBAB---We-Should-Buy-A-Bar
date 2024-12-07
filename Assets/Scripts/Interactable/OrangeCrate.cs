@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LimeCrate : PlacableInteractable
+public class OrangeCrate : PlacableInteractable
 {
-   
+
     [Header("Cabinet Settings")]
     [Tooltip("References to the lime objects inside the cabinet.")]
-    public GameObject limePrefab;
+    public GameObject orangePrefab;
 
     public override void Interact(GameObject player)
     {
@@ -16,43 +16,43 @@ public class LimeCrate : PlacableInteractable
         if (playerInteraction != null)
         {
             if (playerInteraction.CarriedObject == null)
-            {                              
-               
-                // Instantiate a new lime and give it to the player
-                GameObject limeObj = Instantiate(limePrefab);
-                Lime lime = limeObj.GetComponent<Lime>();
-                Debug.Log("1");
-                if (lime != null)
-                {
-                    // Have the player pick up the wine glass
-                    playerInteraction.PickUpObject(limeObj);
+            {
 
-                    Debug.Log("Picked up a lime from the crate.");
+                // Instantiate a new orange and give it to the player
+                GameObject orangeObj = Instantiate(orangePrefab);
+                Orange orange = orangeObj.GetComponent<Orange>();
+                Debug.Log("1");
+                if (orange != null)
+                {
+                    // Have the player pick up the mimosa glass
+                    playerInteraction.PickUpObject(orangeObj);
+
+                    Debug.Log("Picked up a orange from the crate.");
                     Debug.Log("2");
                 }
                 else
                 {
-                    Debug.LogError("The lime does not have a Lime component.");
+                    Debug.LogError("The orange does not have a Orange component.");
                     Debug.Log("3");
-                    Destroy(limeObj);
+                    Destroy(orangeObj);
                 }
             }
             else
             {
                 // Player is carrying something
-                // Check if it's a clean, empty wine glass
+                // Check if it's a clean, empty mimosa glass
                 Debug.Log("4");
-                Lime lime = playerInteraction.CarriedObject.GetComponent<Lime>();
-                if (lime != null)
+                Orange orange = playerInteraction.CarriedObject.GetComponent<Orange>();
+                if (orange != null)
                 {
-                   
+
                     Destroy(playerInteraction.CarriedObject);
 
                     // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
-                    
-                    Debug.Log("Placed a lime into the cabinet.");
-                }                
+
+                    Debug.Log("Placed a orange into the cabinet.");
+                }
             }
         }
         else
@@ -71,8 +71,8 @@ public class LimeCrate : PlacableInteractable
             {
                 return true;
             }
-            }
-       
+        }
+
         return false;
     }
 

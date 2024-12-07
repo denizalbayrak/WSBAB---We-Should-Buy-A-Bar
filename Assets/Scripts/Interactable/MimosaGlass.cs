@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
+public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
 {
     public enum GlassState
     {
@@ -12,15 +12,13 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     }
 
     public GlassState CurrentState = GlassState.CleanEmpty;
-    public GlassType glassType = GlassType.Mojito;
+    public GlassType glassType = GlassType.Mimosa;
     public GameObject cleanVisual; // Temiz bardak görseli
     public GameObject dirtyVisual; // Kirli bardak görseli
     public GameObject filledVisual; // Kirli bardak görseli
-    public GameObject ice;
-    public GameObject lime;
+    public GameObject orangeJuice;
     public GameObject juice;
-    public bool HasIce = false;
-    public bool HasChocolate = false;
+    public bool HasOrangeJuice = false;
     public bool HasJuice = false;
 
     private void Start()
@@ -43,27 +41,22 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
         UpdateVisuals();
         Debug.Log("The mojito glass is now clean.");
     }
-    public void AddIce()
+    public void AddOrangeJuice()
     {
-        HasIce = true;
-        ice.SetActive(true);
+        HasOrangeJuice = true;
+        orangeJuice.SetActive(true);
         isDone();
     }
-    public void AddLime()
-    {
-        HasChocolate = true;
-        lime.SetActive(true);
-        isDone();
-    } 
+   
     public void AddJuice()
     {
         HasJuice = true;
         juice.SetActive(true);
         isDone();
-    }  
+    }
     public void isDone()
     {
-        if (HasJuice && HasChocolate && HasIce)
+        if (HasJuice && HasOrangeJuice)
         {
             isReady = true;
             CurrentState = GlassState.Filled;
@@ -74,16 +67,16 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     }
     public void InteractWith(GameObject target, EmptyCabinet cabinet)
     {
-        // Hedef nesne Ice ise
-        Ice ice = target.GetComponent<Ice>();
-        if (ice != null)
+        // Hedef nesne Orange ise
+        Orange orange = target.GetComponent<Orange>();
+        if (orange != null && orange.CurrentState == Orange.OrangeState.ChoppedOrange)
         {
-            if (!HasIce)
+            if (!HasOrangeJuice)
             {
-                AddIce();
-                Debug.Log("Ice added to the glass.");
+                AddOrangeJuice();
+                Debug.Log("Orange added to the glass.");
 
-                // Kabindeki buzu yok et
+                // Kabindeki orange'ý yok et
                 Destroy(target);
 
                 // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
@@ -91,34 +84,12 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
             }
             else
             {
-                Debug.Log("Glass already has ice.");
+                Debug.Log("Glass already has orange.");
             }
             return;
         }
 
-        // Hedef nesne Lime ise
-        Lime lime = target.GetComponent<Lime>();
-        if (lime != null && lime.CurrentState == Lime.LimeState.ChoppedLime)
-        {
-            if (!HasChocolate)
-            {
-                AddLime();
-                Debug.Log("Lime added to the glass.");
-
-                // Kabindeki lime'ý yok et
-                Destroy(target);
-
-                // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
-                PlaceGlassOnCabinet(cabinet);
-            }
-            else
-            {
-                Debug.Log("Glass already has lime.");
-            }
-            return;
-        }
-
-        Debug.Log("MojitoGlass cannot interact with this object.");
+        Debug.Log("MimosaGlass cannot interact with this object.");
     }
 
     private void PlaceGlassOnCabinet(EmptyCabinet cabinet)
@@ -150,7 +121,7 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
         }
     }
 
-public void Fill()
+    public void Fill()
     {
         if (CurrentState == GlassState.CleanEmpty)
         {
@@ -180,8 +151,7 @@ public void Fill()
         if (dirtyVisual != null)
         {
             dirtyVisual.SetActive(CurrentState == GlassState.DirtyEmpty);
-            ice.SetActive(false);
-            lime.SetActive(false);
+            orangeJuice.SetActive(false);
             juice.SetActive(false);
         }
 
@@ -193,12 +163,12 @@ public void Fill()
     public override void OnPickUp()
     {
         base.OnPickUp();
-        Debug.Log("Picked up a mojito glass.");
+        Debug.Log("Picked up a mimosa glass.");
     }
 
     public override void OnDrop()
     {
         base.OnDrop();
-        Debug.Log("Dropped the mojito glass.");
+        Debug.Log("Dropped the mimosa glass.");
     }
 }

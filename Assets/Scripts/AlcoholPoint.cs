@@ -9,7 +9,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
     private bool isCompleted = false;
     private float fillProgress = 0f;
     private float fillDuration = 4f;
-    private MojitoGlass mojitoBeingFilled;
+    private MimosaGlass mojitoBeingFilled;
     public Animator alcoholPointAnimator;
 
     // UI Elements
@@ -25,9 +25,9 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
             if (playerInteraction.CarriedObject != null)
             {
                 // Player is carrying an object
-                if (playerInteraction.CarriedObject.GetComponent<MojitoGlass>())
+                if (playerInteraction.CarriedObject.GetComponent<MimosaGlass>())
                 {                
-                MojitoGlass lime = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
+                MimosaGlass lime = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
                 if (lime != null)
                 {                   
                         if (placedObject == null)
@@ -78,7 +78,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
         if (placedObject != null)
         {
             // Get the MojitoGlass component from placedObject
-            MojitoGlass mojitoGlass = placedObject.GetComponent<MojitoGlass>();
+            MimosaGlass mojitoGlass = placedObject.GetComponent<MimosaGlass>();
 
             if (isFilling)
             {
@@ -162,7 +162,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
             {
                 isFilling = true;
                 fillProgress = 0f;
-                mojitoBeingFilled = placedObject.GetComponent<MojitoGlass>();
+                mojitoBeingFilled = placedObject.GetComponent<MimosaGlass>();
 
                 if (!isFillStart)
                 {
@@ -204,7 +204,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
             if (playerInteraction.CarriedObject != null)
             {
                 // Player is carrying something
-                MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
+                MimosaGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
                 return mojitoGlass != null && placedObject == null;
             }
             else

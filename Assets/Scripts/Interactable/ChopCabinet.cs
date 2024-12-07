@@ -8,10 +8,10 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
     private bool isChopping = false;
     private float chopProgress = 0f;
     private float chopDuration = 4f;
-    private Lime limeBeingChopped;
 
-    // UI Elements
-    public Image fillProgressUI; // Assign this in the Inspector (clock image)
+    private IChoppable choppableItem;
+
+    public Image fillProgressUI;
     private bool isClockVisible = false;
     private bool isChopStart = false;
 
@@ -20,50 +20,37 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         if (playerInteraction != null)
         {
-            if (playerInteraction.CarriedObject != null)
+            GameObject carriedObject = playerInteraction.CarriedObject;
+
+            if (carriedObject != null)
             {
-                // Player is carrying an object
-                Lime lime = playerInteraction.CarriedObject.GetComponent<Lime>();
-                if (lime != null)
+                // Oyuncu bir nesne taþýyor
+                IChoppable choppable = carriedObject.GetComponent<IChoppable>();
+                if (choppable != null && placedObject == null)
                 {
-                    if (lime.CurrentState == Lime.LimeState.FullLime)
-                    {
-                        if (placedObject == null)
-                        {
-                            // Place the lime on the station
-                            base.Interact(player);
-                            Debug.Log("Placed a clean, full lime on the chop station.");
-                        }
-                        else
-                        {
-                            Debug.Log("Cannot place object. Placement point is already occupied.");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("You can only place a full lime here.");
-                    }
+                    // Kabin boþ, hem full hem de chopped item koyabiliriz
+                    // Ama sadece full item chop yapýlabilir. Chopped itemi koymak depolama amaçlý olur.
+                    base.Interact(player);
+                    Debug.Log($"Placed a {carriedObject.name} on the chop station. (Full: {choppable.IsFull}, Chopped: {choppable.IsChopped})");
                 }
                 else
                 {
-                    Debug.Log("You need to carry a lime to place it here.");
+                    Debug.Log("You need to carry a choppable item (lime, orange, chocolate) to place it here.");
                 }
             }
-            else if (playerInteraction.CarriedObject == null)
+            else
             {
-                // Player is not carrying anything
+                // Oyuncu bir þey taþýmýyor
                 if (placedObject != null)
                 {
-                    // Check if filling has started
                     if (!isChopping)
                     {
-                        // Player picks up the glass
-                        base.Interact(player); // This picks up the placed object
-                        Debug.Log("Picked up the lime from the chop station.");
+                        base.Interact(player);
+                        Debug.Log("Picked up the item from the chop station.");
                     }
                     else
                     {
-                        Debug.Log("Cannot pick up the lime. Chopping in progress.");
+                        Debug.Log("Cannot pick up the item. Chopping in progress.");
                     }
                 }
                 else
@@ -74,27 +61,27 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
         }
     }
 
-    // Implement IHoldInteractable
     public bool CanHoldInteract(GameObject player)
     {
-        // Check if there is a glass on the station
         if (placedObject != null)
         {
-            // Get the WineGlass component from placedObject
-            Lime lime = placedObject.GetComponent<Lime>();
-
-            if (isChopping)
+            IChoppable choppable = placedObject.GetComponent<IChoppable>();
+            if (choppable != null)
             {
-                // Allow holding if filling is in progress
-                return true;
-            }
-            else if (lime != null && lime.CurrentState == Lime.LimeState.FullLime)
-            {
-                // Allow holding to start filling process
-                return true;
+                if (isChopping)
+                {
+                    // Chop devam ediyorsa basýlý tutabilir
+                    return true;
+                }
+                else if (choppable.IsFull)
+                {
+                    // Eðer item full ise chop baþlatýlabilir
+                    return true;
+                }
+                // Eðer chopped item ise, chop yapýlamaz ama oyuncu basýlý tutmasý gerekmiyor
+                // Bu durumda chopped item ile OnHoldInteract'tan bir iþlem yapmayýz.
             }
         }
- 
         return false;
     }
 
@@ -109,21 +96,18 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
 
         if (isChopping)
         {
-            // Filling process in progress
             chopProgress += deltaTime;
             if (chopProgress > chopDuration)
             {
                 chopProgress = chopDuration;
             }
-            // Update the fill progress UI
             UpdateFillProgressUI();
 
-            // Update the Animator's playback time
             if (placedObject != null)
             {
                 float normalizedTime = chopProgress / chopDuration;
                 if (isChopStart)
-                {                   
+                {
                     isChopStart = false;
                     animationController.SetChopping(false);
                 }
@@ -133,14 +117,19 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             if (chopProgress >= chopDuration)
             {
                 isChopping = false;
-                limeBeingChopped.Chop();
+
+                if (choppableItem != null)
+                {
+                    choppableItem.Chop();
+                    choppableItem = null;
+                }
+
                 if (isChopStart)
                 {
                     isChopStart = false;
                     animationController.SetChopping(false);
                 }
-                limeBeingChopped = null;
-                Debug.Log("Finished filling the wine glass.");
+                Debug.Log("Finished chopping the item.");
 
                 if (fillProgressUI != null)
                 {
@@ -151,33 +140,42 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
         }
         else
         {
-            isChopping = true;
-            chopProgress = 0f;
-            limeBeingChopped = placedObject.GetComponent<Lime>();
+            // Chop baþlatmak için placedObject'teki itemin full olmasý gerekir.
+            choppableItem = placedObject != null ? placedObject.GetComponent<IChoppable>() : null;
 
-            if (!isChopStart)
+            if (choppableItem != null && choppableItem.IsFull)
             {
-                isChopStart = true;
-                animationController.SetChopping(true);
-                animationController.TriggerChopping();
-            }
-            Debug.Log("Started filling the wine glass. Hold Ctrl for " + chopDuration + " seconds.");
+                isChopping = true;
+                chopProgress = 0f;
 
-            // Show the fill progress UI
-            if (fillProgressUI != null)
-            {
-                fillProgressUI.gameObject.SetActive(true);
+                if (!isChopStart)
+                {
+                    isChopStart = true;
+                    animationController.SetChopping(true);
+                    animationController.TriggerChopping();
+                }
+                Debug.Log("Started chopping. Hold Ctrl for " + chopDuration + " seconds.");
+
+                if (fillProgressUI != null)
+                {
+                    fillProgressUI.gameObject.SetActive(true);
+                }
+                isClockVisible = true;
             }
-            isClockVisible = true;
+            else
+            {
+                // Eðer item full deðilse chop baþlatýlmaz
+                // Chopped itemi koyduk diyelim, OnHoldInteract çaðrýldýðýnda full deðil diye chop yok.
+                // Bu durumda chop iþlemi baþlamaz.
+                Debug.Log("Object cannot be chopped (item is not full).");
+            }
         }
     }
-
 
     private void UpdateFillProgressUI()
     {
         if (fillProgressUI != null)
         {
-            // Assuming the UI Image is a circular fill (e.g., radial progress bar)
             float fillAmount = chopProgress / chopDuration;
             fillProgressUI.fillAmount = fillAmount;
         }
@@ -188,18 +186,22 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         if (playerInteraction != null)
         {
-            if (playerInteraction.CarriedObject != null)
+            GameObject carriedObject = playerInteraction.CarriedObject;
+            if (carriedObject != null)
             {
-                // Player is carrying something
-                Lime lime = playerInteraction.CarriedObject.GetComponent<Lime>();
-                return lime != null && lime.CurrentState == Lime.LimeState.FullLime && placedObject == null;
+                IChoppable choppable = carriedObject.GetComponent<IChoppable>();
+                // Kabin boþsa hem full hem de chopped choppable item koyabiliriz
+                if (choppable != null && placedObject == null)
+                {
+                    return true;
+                }
             }
             else
             {
-                // Player is not carrying anything
+                // Oyuncu bir þey taþýmýyor
                 if (placedObject != null)
                 {
-                    // Can pick up the glass if filling hasn't started
+                    // Eðer chopping yapýlmýyorsa itemi alabilir
                     return !isChopping;
                 }
             }

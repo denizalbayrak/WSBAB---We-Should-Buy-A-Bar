@@ -118,6 +118,40 @@ public class DirtyPoint : PlacableInteractable
                         Debug.Log("Cannot place object. Only dirty glasses can be placed on DirtyPoint.");
                     }
                 }
+                if (allowedGlassTypes == carriedGlassType && allowedGlassTypes == GlassType.Mojito)
+                {
+                    // Oyuncu bir þey taþýyor, pis bardak yerleþtirmeye çalýþ
+                    MimosaGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
+                    if (mojitoGlass != null && mojitoGlass.CurrentState == MimosaGlass.GlassState.DirtyEmpty)
+                    {
+                        // Pis bardaðý DirtyPoint'e yerleþtir
+                        AddPlacedObject(playerInteraction.CarriedObject);
+                        playerInteraction.CarriedObject = null;
+                        playerInteraction.isCarrying = false; // Merkezi yönetim için
+                        playerInteraction.animator.SetBool("isCarry", false);
+                    }
+                    else
+                    {
+                        Debug.Log("Cannot place object. Only dirty glasses can be placed on DirtyPoint.");
+                    }
+                } 
+                if (allowedGlassTypes == carriedGlassType && allowedGlassTypes == GlassType.Mimosa)
+                {
+                    // Oyuncu bir þey taþýyor, pis bardak yerleþtirmeye çalýþ
+                    MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
+                    if (mimosaGlass != null && mimosaGlass.CurrentState == MimosaGlass.GlassState.DirtyEmpty)
+                    {
+                        // Pis bardaðý DirtyPoint'e yerleþtir
+                        AddPlacedObject(playerInteraction.CarriedObject);
+                        playerInteraction.CarriedObject = null;
+                        playerInteraction.isCarrying = false; // Merkezi yönetim için
+                        playerInteraction.animator.SetBool("isCarry", false);
+                    }
+                    else
+                    {
+                        Debug.Log("Cannot place object. Only dirty glasses can be placed on DirtyPoint.");
+                    }
+                }
             }
         }
         else
@@ -169,6 +203,36 @@ public class DirtyPoint : PlacableInteractable
                             }
                         }
                     }
+                } 
+                if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Mojito)
+                {
+                    MimosaGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
+                    if (mojitoGlass != null && mojitoGlass.CurrentState == MimosaGlass.GlassState.DirtyEmpty)
+                    {
+                        // Boþ bir slot var mý kontrol et
+                        foreach (Transform slot in slotTransforms)
+                        {
+                            if (slot.childCount == 0)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Mimosa)
+                {
+                    MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
+                    if (mimosaGlass != null && mimosaGlass.CurrentState == MimosaGlass.GlassState.DirtyEmpty)
+                    {
+                        // Boþ bir slot var mý kontrol et
+                        foreach (Transform slot in slotTransforms)
+                        {
+                            if (slot.childCount == 0)
+                            {
+                                return true;
+                            }
+                        }
+                    }
                 }
                 return false;
             }
@@ -184,6 +248,14 @@ public class DirtyPoint : PlacableInteractable
         else if (obj.TryGetComponent<WineGlass>(out var wineGlass))
         {
             return wineGlass.glassType;
+        } 
+        else if (obj.TryGetComponent<MimosaGlass>(out var mojitoGlass))
+        {
+            return mojitoGlass.glassType;
+        } 
+        else if (obj.TryGetComponent<MimosaGlass>(out var mimosaGlass))
+        {
+            return mimosaGlass.glassType;
         }
         //else if (obj.TryGetComponent<WhiskeyGlass>(out var whiskeyGlass))
         //{

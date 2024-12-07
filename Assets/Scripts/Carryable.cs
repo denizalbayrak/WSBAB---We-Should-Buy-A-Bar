@@ -4,6 +4,23 @@ public interface IWashableGlass
     bool IsDirty { get; }
     void Clean();
 }
+
+public interface IChoppable
+{
+    bool IsFull { get; }     
+    bool IsChopped { get; }  
+
+    void Chop();             
+    void UpdateVisuals(); 
+}
+public interface IBlendable
+{
+    bool IsBlendable { get; } 
+    bool IsBlended { get; }   
+
+    void Blend();            
+    void UpdateVisuals();   
+}
 public interface IInteractableItem
 {
     void InteractWith(GameObject target, EmptyCabinet cabinet);

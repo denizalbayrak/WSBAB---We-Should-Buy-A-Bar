@@ -1,6 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+public enum GlassType
+{
+    Beer,
+    Wine,
+    Mojito,
+    Mimosa,
+    Whiskey
+}
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;

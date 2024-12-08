@@ -42,9 +42,8 @@ public class PlayerInteraction : MonoBehaviour
     private Vector3 carriedObjectOriginalLocalPosition;
     private HashSet<GameObject> highlightedObjects = new HashSet<GameObject>();
     public bool isCarrying = false;
-    public List<Renderer> objectRenderers = new List<Renderer>(); // Tüm Renderer'lar
-    private List<List<Color>> originalColors = new List<List<Color>>(); // Her Renderer için orijinal renkler listesi
-
+    // public List<Renderer> objectRenderers = new List<Renderer>(); // Unused in this class
+    // private List<List<Color>> originalColors = new List<List<Color>>(); // Unused in this class
     #endregion
 
     #region Properties
@@ -61,7 +60,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Awake()
     {
-       
         // Component References
         rb = GetComponent<Rigidbody>();
         movementController = GetComponent<PlayerMovement>();
@@ -116,6 +114,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             UpdateCarriedObjectPosition();
         }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (GameManager.Instance != null)
@@ -130,6 +129,7 @@ public class PlayerInteraction : MonoBehaviour
                 }
             }
         }
+
         // Handle holdAction input
         HandleHoldAction();
     }
@@ -143,9 +143,8 @@ public class PlayerInteraction : MonoBehaviour
     /// </summary>
     private void Interact()
     {
-
-        // Try to find an interactable object in front
-        Interactable interactable = GetInteractableInFront();
+        // En uygun etkileþimli objeyi bul
+        Interactable interactable = GetTopInteractableInFront();
 
         if (interactable != null)
         {
@@ -154,8 +153,7 @@ public class PlayerInteraction : MonoBehaviour
             if (interactable.CanInteract(gameObject))
             {
                 Debug.Log("Can interact with: " + interactable.name);
-
-                // Interact with the object
+                // Objeyle etkileþime gir
                 interactable.Interact(gameObject);
             }
             else
@@ -165,36 +163,40 @@ public class PlayerInteraction : MonoBehaviour
         }
         else
         {
-            // No interactable object found
+            // Etkileþimli obje bulunamadýysa
             if (carriedObject != null)
             {
                 IInteractableItem interactableItem = carriedObject.GetComponent<IInteractableItem>();
                 if (interactableItem != null)
                 {
-                    MojitoGlass glass = GetGlassInFront();
-                    if (glass != null)
-                    {
-                        interactableItem.InteractWith(glass.gameObject, null);
-                        // Nesne etkileþim sonrasý yok edildiyse carriedObject'i sýfýrla
-                        if (carriedObject == null)
-                        {
-                            isCarrying = false;
-                            animator.SetBool("isCarry", false);
-                        }
-                        return;
-                    }
+                    // Eðer elinizde bir bardak taþýyorsanýz ve baþka bir objeyle etkileþime geçmek istiyorsanýz
+                    // Örneðin, bir blender ile etkileþim
+                    // Bu kýsmý kendi oyun mekaniklerinize göre düzenleyin
+                    // Örnek:
+                    // BlenderPoint blender = GetBlenderInFront();
+                    // if (blender != null)
+                    // {
+                    //     interactableItem.InteractWith(blender.gameObject, null);
+                    //     // Eðer nesne yok edildiyse carriedObject'i sýfýrla
+                    //     if (carriedObject == null)
+                    //     {
+                    //         isCarrying = false;
+                    //         animator.SetBool("isCarry", false);
+                    //     }
+                    //     return;
+                    // }
+
+                    Debug.Log("Carried object can interact with something else.");
                 }
             }
             else
             {
-                // Player is not carrying anything
-                // Try to pick up a carryable object if one is in front
-                Carryable carryable = GetCarryableInFront();
+                // Taþýyýcý nesne yoksa, bir carryable obje olup olmadýðýný kontrol et
+                Carryable carryable = GetTopCarryableInFront();
                 if (carryable != null)
                 {
                     Debug.Log("Picking up carryable object: " + carryable.name);
-
-                    // Pick up the carryable object
+                    // Carryable objeyi al
                     PickUpObject(carryable.gameObject);
                 }
             }
@@ -208,42 +210,22 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (holdAction.IsPressed())
         {
-            // Check for interactable objects in front
-            Interactable interactable = GetInteractableInFront();
+            // En uygun etkileþimli objeyi bul
+            Interactable interactable = GetTopInteractableInFront();
 
             if (interactable != null)
             {
-                // Check if the interactable can handle hold actions
+                // Etkileþimli objenin hold etme yeteneði olup olmadýðýný kontrol et
                 IHoldInteractable holdInteractable = interactable as IHoldInteractable;
                 if (holdInteractable != null && holdInteractable.CanHoldInteract(gameObject))
                 {
-                    // Pass the hold action to the interactable
+                    // Hold etme iþlemini objeye geçir
                     holdInteractable.OnHoldInteract(gameObject, Time.deltaTime);
                 }
             }
         }
     }
-    private MojitoGlass GetGlassInFront()
-    {
-        Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
-        Collider[] hitColliders = Physics.OverlapBox(
-            boxCenter,
-            overlapBoxSize / 2,
-            transform.rotation,
-            interactableLayer
-        );
 
-        foreach (var hitCollider in hitColliders)
-        {
-            MojitoGlass glass = hitCollider.GetComponent<MojitoGlass>();
-            if (glass != null)
-            {
-                return glass;
-            }
-        }
-
-        return null;
-    }
     /// <summary>
     /// Picks up the specified object.
     /// </summary>
@@ -264,11 +246,13 @@ public class PlayerInteraction : MonoBehaviour
 
         carriedObject.transform.localRotation = Quaternion.identity;
         Debug.Log("carriedObject " + carriedObject.name);
-        if (carriedObject.GetComponent<WineGlass>() !=null)
+
+        // Objeyi doðru pozisyona yerleþtir
+        if (carriedObject.GetComponent<WineGlass>() != null)
         {
             carriedObject.transform.localPosition = new Vector3(-0.621f, 0.874f, 0);
-        } 
-        else if (carriedObject.GetComponent<Lime>() !=null)
+        }
+        else if (carriedObject.GetComponent<Lime>() != null)
         {
             carriedObject.transform.position = new Vector3(0, 0.5f, 0);
         }
@@ -276,15 +260,18 @@ public class PlayerInteraction : MonoBehaviour
         {
             carriedObject.transform.localPosition = Vector3.zero;
         }
+
         isCarrying = true;
-        // Set the carried object's state
+        animator.SetBool("isCarry", true);
+
+        // Carryable objenin durumunu ayarla
         Carryable carryable = carriedObject.GetComponent<Carryable>();
         if (carryable != null)
         {
             carryable.OnPickUp();
         }
 
-        // Remove highlighting
+        // Highlight'ý kaldýr
         RemoveHighlightFromObject(carriedObject);
     }
 
@@ -293,10 +280,10 @@ public class PlayerInteraction : MonoBehaviour
     #region Detection Methods
 
     /// <summary>
-    /// Gets the interactable object in front of the player.
+    /// Gets the top interactable object in front of the player based on priority.
     /// </summary>
-    /// <returns>The Interactable object, or null if none found.</returns>
-    private Interactable GetInteractableInFront()
+    /// <returns>The top Interactable object, or null if none found.</returns>
+    private Interactable GetTopInteractableInFront()
     {
         Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
 
@@ -307,7 +294,16 @@ public class PlayerInteraction : MonoBehaviour
             interactableLayer
         );
 
-        foreach (var hitCollider in hitColliders)
+        // Objeleri uzaklýða göre sýrala
+        List<Collider> sortedColliders = new List<Collider>(hitColliders);
+        sortedColliders.Sort((a, b) =>
+        {
+            float distanceA = Vector3.Distance(boxCenter, a.transform.position);
+            float distanceB = Vector3.Distance(boxCenter, b.transform.position);
+            return distanceA.CompareTo(distanceB);
+        });
+
+        foreach (var hitCollider in sortedColliders)
         {
             if (hitCollider.CompareTag("InteractableStatic"))
             {
@@ -323,10 +319,10 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the carryable object in front of the player.
+    /// Gets the top carryable object in front of the player based on priority.
     /// </summary>
-    /// <returns>The Carryable object, or null if none found.</returns>
-    private Carryable GetCarryableInFront()
+    /// <returns>The top Carryable object, or null if none found.</returns>
+    private Carryable GetTopCarryableInFront()
     {
         Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
 
@@ -337,7 +333,16 @@ public class PlayerInteraction : MonoBehaviour
             interactableLayer
         );
 
-        foreach (var hitCollider in hitColliders)
+        // Objeleri uzaklýða göre sýrala
+        List<Collider> sortedColliders = new List<Collider>(hitColliders);
+        sortedColliders.Sort((a, b) =>
+        {
+            float distanceA = Vector3.Distance(boxCenter, a.transform.position);
+            float distanceB = Vector3.Distance(boxCenter, b.transform.position);
+            return distanceA.CompareTo(distanceB);
+        });
+
+        foreach (var hitCollider in sortedColliders)
         {
             if (hitCollider.CompareTag("Carryable"))
             {
@@ -357,41 +362,36 @@ public class PlayerInteraction : MonoBehaviour
     #region Highlighting Methods
 
     /// <summary>
-    /// Detects and highlights carryable and interactable objects.
+    /// Detects and highlights the top interactable or carryable object.
     /// </summary>
     private void UpdateHighlighting()
     {
-        Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
-        Collider[] hitColliders = Physics.OverlapBox(
-            boxCenter,
-            overlapBoxSize / 2,
-            transform.rotation,
-            interactableLayer
-        );
+        // En uygun objeyi bul
+        Interactable topInteractable = GetTopInteractableInFront();
+        Carryable topCarryable = GetTopCarryableInFront();
+
+        GameObject selectedObject = null;
+
+        if (topInteractable != null)
+        {
+            selectedObject = topInteractable.gameObject;
+        }
+        else if (topCarryable != null)
+        {
+            selectedObject = topCarryable.gameObject;
+        }
+
         List<GameObject> detectedObjects = new List<GameObject>();
 
-        foreach (var hitCollider in hitColliders)
+        if (selectedObject != null)
         {
-            GameObject obj = hitCollider.gameObject;
+            detectedObjects.Add(selectedObject);
 
-            // Etkileþimli objeyi parent'larda ara
-            GameObject interactableObj = FindInteractableInParents(obj);
-
-            if (interactableObj != null)
+            if (!highlightedObjects.Contains(selectedObject))
             {
-                if (interactableObj == carriedObject)
-                {
-                    continue;
-                }
-
-                detectedObjects.Add(interactableObj);
-
-                if (!highlightedObjects.Contains(interactableObj))
-                {
-                    // Highlight the object
-                    HighlightObject(interactableObj);
-                    highlightedObjects.Add(interactableObj);
-                }
+                // Highlight the object
+                HighlightObject(selectedObject);
+                highlightedObjects.Add(selectedObject);
             }
         }
 
@@ -405,6 +405,7 @@ public class PlayerInteraction : MonoBehaviour
             highlightedObjects.Remove(obj);
         }
     }
+
     private GameObject FindInteractableInParents(GameObject obj)
     {
         Transform t = obj.transform;
@@ -418,6 +419,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         return null;
     }
+
     private void HighlightObject(GameObject obj)
     {
         Highlightable highlightable = obj.GetComponent<Highlightable>();
@@ -474,8 +476,6 @@ public class PlayerInteraction : MonoBehaviour
         // Keep the carried object at the carry point
         carriedObject.transform.localPosition = Vector3.zero;
         carriedObject.transform.localRotation = Quaternion.identity;
-
-
     }
 
     #endregion
@@ -491,6 +491,9 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     #endregion
+
+    #region Drop Carried Object
+
     public void DropCarriedObject()
     {
         if (carriedObject != null)
@@ -502,4 +505,5 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+    #endregion
 }

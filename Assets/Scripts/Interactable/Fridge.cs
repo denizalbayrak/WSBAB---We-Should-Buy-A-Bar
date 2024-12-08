@@ -43,7 +43,8 @@ public class Fridge : PlacableInteractable
 
                     // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
-
+                    playerInteraction.isCarrying = false;
+                    playerInteraction.animator.SetBool("isCarry", false);
                     Debug.Log("Placed a Ice into the cabinet.");
                 }
                 MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();

@@ -18,7 +18,7 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
     // Blender içindeki görseller
     public GameObject emptyBlender;
     public GameObject orangeBlender;
-
+    public Animator blenderAnimator;
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
@@ -58,20 +58,15 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                 Orange blendedObj = placedObject.GetComponent<Orange>();
                 if (blendedObj != null && blendedObj.IsBlended)
                 {
-                    Debug.Log("giriyorrrrrrrrrr");
-                    // Blend tamamlandý, MimosaGlass gerekli
                     MimosaGlass mimosaGlass = playerInteraction.CarriedObject != null ? playerInteraction.CarriedObject.GetComponent<MimosaGlass>() : null;
                     if (mimosaGlass != null)
                     {
-                        // MimosaGlass var, blend edilmiþ juice'ý ekle
                         mimosaGlass.AddOrangeJuice();
                         Debug.Log("Transferred blended orange juice into MimosaGlass.");
 
-                        // Blender'ý boþalt
                         Destroy(placedObject);
                         placedObject = null;
 
-                        // Görselleri resetle
                         emptyBlender.SetActive(true);
                         orangeBlender.SetActive(false);
                     }
@@ -85,7 +80,6 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
         }
         else
         {
-            // Oyuncu elinde bir þey taþýmýyor
             if (placedObject != null)
             {
                 if (isBlending)
@@ -97,19 +91,15 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                 IBlendable blendable = placedObject.GetComponent<IBlendable>();
                 if (blendable != null && blendable.IsBlended)
                 {
-                    // Blend tamamlandý, MimosaGlass gerekli
                     MimosaGlass mimosaGlass = playerInteraction.CarriedObject != null ? playerInteraction.CarriedObject.GetComponent<MimosaGlass>() : null;
                     if (mimosaGlass != null)
                     {
-                        // MimosaGlass var, blend edilmiþ juice'ý ekle
                         mimosaGlass.AddOrangeJuice();
                         Debug.Log("Transferred blended orange juice into MimosaGlass.");
 
-                        // Blender'ý boþalt
                         Destroy(placedObject);
                         placedObject = null;
 
-                        // Görselleri resetle
                         emptyBlender.SetActive(true);
                         orangeBlender.SetActive(false);
                     }
@@ -118,20 +108,7 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                         Debug.Log("You need to have a MimosaGlass to pick up the blended juice.");
                     }
                 }
-                //else
-                //{
-                //    // Blend edilmemiþ veya IsBlended olmayan bir itemi geri almak isterseniz
-                //    base.Interact(player);
-                //    Debug.Log("Picked up the unblended item from the blender station.");
-
-                //    // Blender'ý boþalt
-                //    Destroy(placedObject);
-                //    placedObject = null;
-
-                //    // Görselleri resetle
-                //    emptyBlender.SetActive(true);
-                //    orangeBlender.SetActive(false);
-                //}
+              
             }
             else
             {
@@ -151,11 +128,10 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
             {
                 if (isBlending)
                 {
-                    return true; // Blending devam ediyorsa basýlý tutabilir
+                    return true;
                 }
                 else if (blendable.IsBlendable && !blendable.IsBlended)
                 {
-                    // Chop edilmiþ ama henüz blend edilmemiþse blend baþlatýlabilir
                     return true;
                 }
             }
@@ -189,7 +165,8 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                     isBlendStart = false;
                     animationController.SetBlending(false);
                 }
-                player.GetComponent<Animator>().Play("Blend", 0, normalizedTime);
+                player.GetComponent<Animator>().Play("BlenderAnim", 0, normalizedTime);
+                blenderAnimator.Play("BlenderAnim", 0, normalizedTime);
             }
 
             if (blendProgress >= blendDuration)
@@ -206,6 +183,8 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                 {
                     isBlendStart = false;
                     animationController.SetBlending(false);
+                    blenderAnimator.Play("BlenderAnim", 0, 1f);
+                    blenderAnimator.speed = 0f;
                 }
                 Debug.Log("Finished blending the item.");
 
@@ -214,16 +193,7 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                     fillProgressUI.gameObject.SetActive(false);
                 }
                 isClockVisible = false;
-
-                // Blend tamamlandýktan sonra orangeBlender görselini kapatýp emptyBlender aç
-                //if (orangeBlender != null)
-                //{
-                //    orangeBlender.SetActive(false);
-                //}
-                //if (emptyBlender != null)
-                //{
-                //    emptyBlender.SetActive(true);
-                //}
+              
             }
         }
         else
@@ -268,22 +238,17 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
 
     public override bool CanInteract(GameObject player)
     {
-        Debug.Log("000000000");
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         if (playerInteraction != null)
         {
-            Debug.Log("11111111");
             GameObject carriedObject = playerInteraction.CarriedObject;
             if (carriedObject != null)
             {
-                Debug.Log("222222222");
                 IBlendable blendable = carriedObject.GetComponent<IBlendable>();
-                Debug.Log(" carriedObject " + carriedObject);
 
                 // Blender için item chop edilmiþ (IsBlendable = true) ve henüz blend edilmemiþ olmalý
                 if (blendable != null && blendable.IsBlendable && !blendable.IsBlended && placedObject == null)
                 {
-                    Debug.Log("3333333");
                     return true;
                 }
 
@@ -293,24 +258,17 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                     IBlendable blendableInBlender = placedObject.GetComponent<IBlendable>();
                     if (blendableInBlender != null && blendableInBlender.IsBlended)
                     {
-                        Debug.Log("9999999");
                         return true;
                     }
                 }
             }
             else
             {
-                Debug.Log("444444");
-                // Oyuncu bir þey taþýmýyor
                 if (placedObject != null)
                 {
-                    Debug.Log("5555555");
                     IBlendable blendable = placedObject.GetComponent<IBlendable>();
                     if (blendable != null && blendable.IsBlended)
                     {
-                        Debug.Log("6666");
-                        // Blend tamamlanmýþ itemi almak için MimosaGlass gerekli
-                        // Oyuncunun elinde hiçbir þey yok -> MimosaGlass yok -> false
                         return false;
                     }
                     else

@@ -8,7 +8,7 @@ public class Highlightable : MonoBehaviour
 
     private void Awake()
     {
-        // Tüm child objelerdeki Renderer bileþenlerini al
+        // Sadece ana objedeki Renderer bileþenlerini al
         objectRenderers.AddRange(GetComponentsInChildren<Renderer>());
 
         // Tüm materyallerin orijinal renklerini sakla
@@ -34,7 +34,6 @@ public class Highlightable : MonoBehaviour
     /// <param name="highlightColor">Vurgu rengi. Orijinal renge çarpan olarak uygulanýr. Vurguyu kaldýrmak için Color.white kullanýlabilir.</param>
     public void SetHighlight(Color highlightColor)
     {
-
         for (int rendererIndex = 0; rendererIndex < objectRenderers.Count; rendererIndex++)
         {
             var renderer = objectRenderers[rendererIndex];
@@ -48,7 +47,6 @@ public class Highlightable : MonoBehaviour
                 Color originalColor = originalColors[rendererIndex][i];
                 Color newColor = originalColor * highlightColor;
                 mats[i].color = newColor;
-
             }
 
             // Deðiþiklikleri Renderer'a geri ata
@@ -56,4 +54,22 @@ public class Highlightable : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Objeyi orijinal rengine döndürür.
+    /// </summary>
+    public void ResetHighlight()
+    {
+        for (int rendererIndex = 0; rendererIndex < objectRenderers.Count; rendererIndex++)
+        {
+            var renderer = objectRenderers[rendererIndex];
+            Material[] mats = renderer.materials;
+
+            for (int i = 0; i < mats.Length; i++)
+            {
+                mats[i].color = originalColors[rendererIndex][i];
+            }
+
+            renderer.materials = mats;
+        }
+    }
 }

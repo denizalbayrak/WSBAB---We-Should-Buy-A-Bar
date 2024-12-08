@@ -32,7 +32,10 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     {
         CurrentState = GlassState.DirtyEmpty;
         isReady = false;
-        UpdateVisuals();
+        HasIce = false;
+     HasLime = false;
+   HasJuice = false;
+    UpdateVisuals();
         Debug.Log("The mojito glass is now dirty.");
     }
 

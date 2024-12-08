@@ -150,7 +150,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     }
                     else if (mimosaBeingFilled != null)
                     {
-                        animationController.SetFillingBeer(false); // Doðru metodu çaðýrýn
+                        animationController.SetFillingBeer(false);
                     }
                 }
                 player.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
@@ -184,7 +184,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     }
                     else if (mimosaBeingFilled != null)
                     {
-                        animationController.SetFillingBeer(false); // Doðru metodu çaðýrýn
+                        animationController.SetFillingBeer(false);
                     }
                 }
                 Debug.Log("Finished filling the glass.");
@@ -196,6 +196,9 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                 isClockVisible = false;
                 isCompleted = true;
 
+                // Blender görsellerini sýfýrla (Bu kýsýmlarý kendi projenize göre düzenleyin)
+                // emptyBlender.SetActive(true);
+                // orangeBlender.SetActive(false);
             }
         }
         else
@@ -227,8 +230,8 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     }
                     else if (mimosaBeingFilled != null)
                     {
-                        animationController.SetFillingBeer(true); // Doðru metodu çaðýrýn
-                        animationController.TriggerFillingBeer(); // Doðru metodu çaðýrýn
+                        animationController.SetFillingBeer(true);
+                        animationController.TriggerFillingBeer();
                     }
                 }
                 Debug.Log("Started filling the glass. Hold Ctrl for " + fillDuration + " seconds.");

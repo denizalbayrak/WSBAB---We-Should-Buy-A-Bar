@@ -16,8 +16,8 @@ public class OrderManager : MonoBehaviour
     public Transform orderUIContainer; // Sipariþlerin gösterileceði UI container'ý
 
     [Header("Scoring Settings")]
-    public int scorePerSuccess = 10;
-    public int scorePerFailure = -5;
+    // public int scorePerSuccess = 10; // Global skor ayarýný kaldýrýn
+    // public int scorePerFailure = -5;
     public TextMeshProUGUI scoreText;
 
     [Header("Order Spawn Settings")]
@@ -65,13 +65,6 @@ public class OrderManager : MonoBehaviour
         if (!isLevelActive)
             return;
 
-        //// Level zamanýný güncelle
-        //levelTimer -= Time.deltaTime;
-        //if (levelTimer <= 0f)
-        //{
-        //    EndLevel();
-        //}
-
         // Aktif sipariþlerin zamanýný kontrol et
         List<ActiveOrder> ordersToFail = new List<ActiveOrder>();
 
@@ -91,12 +84,11 @@ public class OrderManager : MonoBehaviour
             // Sipariþi baþarýsýz olarak iþle
             activeOrders.Remove(order);
             order.orderUI.RemoveUI();
-            currentScore += scorePerFailure;
+            currentScore += order.order.scorePerFailure; // Her sipariþin kendi baþarýsýz puanýný ekleyin
             Debug.Log($"Order Failed! Score: {currentScore}");
             UpdateScoreUI();
         }
     }
-
 
     public void StopLevel()
     {
@@ -104,6 +96,7 @@ public class OrderManager : MonoBehaviour
         StopAllCoroutines(); // Coroutine'leri durdur
         ClearActiveOrders(); // Aktif sipariþleri temizle
     }
+
     private void ClearActiveOrders()
     {
         // Aktif sipariþ listesini temizle
@@ -116,6 +109,7 @@ public class OrderManager : MonoBehaviour
         }
         activeOrders.Clear(); // Listeyi tamamen temizle
     }
+
     private IEnumerator SpawnOrders()
     {
         while (isLevelActive)
@@ -149,10 +143,13 @@ public class OrderManager : MonoBehaviour
         // Yeni bir Order nesnesi oluþtur
         Order newOrder = new Order
         {
+            orderID = orderTemplate.orderID,
             orderType = orderTemplate.orderType,
             description = orderTemplate.description,
             orderImage = orderTemplate.orderImage,
-            timeLimit = orderTemplate.timeLimit
+            timeLimit = orderTemplate.timeLimit,
+            scorePerSuccess = orderTemplate.scorePerSuccess,
+            scorePerFailure = orderTemplate.scorePerFailure
         };
 
         GameObject orderUIObj = Instantiate(orderUIPrefab, orderUIContainer);
@@ -173,7 +170,7 @@ public class OrderManager : MonoBehaviour
         // Aktif sipariþler arasýnda, teslim edilen objeye uygun sipariþi bul
         ActiveOrder matchingActiveOrder = null;
         foreach (var activeOrder in activeOrders)
-        {           
+        {
             if (DoesDeliveredObjectMatchOrder(deliveredObject, activeOrder.order))
             {
                 matchingActiveOrder = activeOrder;
@@ -186,15 +183,18 @@ public class OrderManager : MonoBehaviour
             // Sipariþi baþarýlý olarak iþle
             activeOrders.Remove(matchingActiveOrder);
             matchingActiveOrder.orderUI.RemoveUI();
-            currentScore += scorePerSuccess;
+            currentScore += matchingActiveOrder.order.scorePerSuccess; // Her sipariþin kendi baþarý puanýný ekleyin
             Debug.Log($"Order Successful! Score: {currentScore}");
             UpdateScoreUI();
         }
         else
         {
             // Eþleþen sipariþ bulunamadý, baþarýsýz say
-            currentScore += scorePerFailure;
-            Debug.Log($"Order Failed! No matching order. Score: {currentScore}");
+            // Eðer teslim edilen objenin bir sipariþle eþleþmediðini düþünüyorsanýz, bu durumu nasýl ele alacaðýnýzý belirleyin
+            // Örneðin, global bir baþarýsýz puan ekleyebilirsiniz veya hiçbir þey yapmayabilirsiniz
+            Debug.Log($"Order Failed! No matching order.");
+            // Optionally, you can have a global failure score
+            // currentScore += scorePerFailure;
             UpdateScoreUI();
         }
     }
@@ -220,7 +220,7 @@ public class OrderManager : MonoBehaviour
                 // Teslim edilen obje dolu bir þarap bardaðý, sipariþle eþleþiyor
                 return true;
             }
-        } 
+        }
         else if (order.orderType == OrderType.DeliverMojitoGlass)
         {
             MojitoGlass mojitoGlass = deliveredObject.GetComponent<MojitoGlass>();
@@ -235,7 +235,7 @@ public class OrderManager : MonoBehaviour
             MimosaGlass mimosaGlass = deliveredObject.GetComponent<MimosaGlass>();
             if (mimosaGlass != null && mimosaGlass.CurrentState == MimosaGlass.GlassState.Filled)
             {
-                // Teslim edilen obje dolu bir mojito bardaðý, sipariþle eþleþiyor
+                // Teslim edilen obje dolu bir mimosa bardaðý, sipariþle eþleþiyor
                 return true;
             }
         }
@@ -266,11 +266,12 @@ public class OrderManager : MonoBehaviour
             this.timeLeft = order.timeLimit;
         }
     }
+
     public void ResetOrderManager()
     {
         StopLevel();
         currentScore = 0;
         UpdateScoreUI();
     }
-
 }
+

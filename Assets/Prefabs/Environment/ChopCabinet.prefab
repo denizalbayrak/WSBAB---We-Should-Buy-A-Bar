@@ -164,6 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placementPoint: {fileID: 6096704913258148686}
   fillProgressUI: {fileID: 3471513920926305976}
+  knife: {fileID: 3992132558197921338}
 --- !u!1 &4086145580990437433
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,5 +658,10 @@ PrefabInstance:
 --- !u!4 &2418739639202279303 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1194201198442450347, guid: 2b0d0bbe503786f4b870a33960d2c174, type: 3}
+  m_PrefabInstance: {fileID: 3531861467014685228}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3992132558197921338 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 460869248334722070, guid: 2b0d0bbe503786f4b870a33960d2c174, type: 3}
   m_PrefabInstance: {fileID: 3531861467014685228}
   m_PrefabAsset: {fileID: 0}

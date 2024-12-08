@@ -171,7 +171,7 @@ public class PlayerInteraction : MonoBehaviour
                 IInteractableItem interactableItem = carriedObject.GetComponent<IInteractableItem>();
                 if (interactableItem != null)
                 {
-                    MimosaGlass glass = GetGlassInFront();
+                    MojitoGlass glass = GetGlassInFront();
                     if (glass != null)
                     {
                         interactableItem.InteractWith(glass.gameObject, null);
@@ -223,7 +223,7 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
     }
-    private MimosaGlass GetGlassInFront()
+    private MojitoGlass GetGlassInFront()
     {
         Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
         Collider[] hitColliders = Physics.OverlapBox(
@@ -235,7 +235,7 @@ public class PlayerInteraction : MonoBehaviour
 
         foreach (var hitCollider in hitColliders)
         {
-            MimosaGlass glass = hitCollider.GetComponent<MimosaGlass>();
+            MojitoGlass glass = hitCollider.GetComponent<MojitoGlass>();
             if (glass != null)
             {
                 return glass;

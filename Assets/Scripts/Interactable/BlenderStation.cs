@@ -15,53 +15,132 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
     private bool isClockVisible = false;
     private bool isBlendStart = false;
 
+    // Blender içindeki görseller
+    public GameObject emptyBlender;
+    public GameObject orangeBlender;
+
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
-        if (playerInteraction != null)
+        if (playerInteraction == null) return;
+
+        GameObject carriedObject = playerInteraction.CarriedObject;
+
+        if (carriedObject != null)
         {
-            GameObject carriedObject = playerInteraction.CarriedObject;
+            // Oyuncu bir nesne taþýyor
+            IBlendable blendable = carriedObject.GetComponent<IBlendable>();
 
-            if (carriedObject != null)
+            if (blendable != null && blendable.IsBlendable && !blendable.IsBlended && placedObject == null)
             {
-                IBlendable blendable = carriedObject.GetComponent<IBlendable>();
-                // BlenderStation'a hem full hem de chopped item koymayacaðýz.
-                // Sadece IsBlendable = true olan, yani chop edilmiþ ama blend edilmemiþ itemleri koyacaðýz.
-                // Böylece blenderda sadece chop edilmiþ itemler iþlenir.
+                // Chop edilmiþ ve blend edilmemiþ itemi blendera koyma
+                base.Interact(player);
+                Debug.Log($"Placed a {carriedObject.name} in the blender.");
 
-                if (blendable != null && blendable.IsBlendable && !blendable.IsBlended && placedObject == null)
+                // Orange ise chopped haldeyse orangeBlender aktif
+                Orange orange = placedObject.GetComponent<Orange>();
+                if (orange != null && orange.IsChopped)
                 {
-                    // Blend edilebilir bir item ve daha önce blend yapýlmamýþ
-                    base.Interact(player);
-                    Debug.Log($"Placed a {carriedObject.name} in the blender.");
+                    placedObject.transform.GetChild(0).gameObject.SetActive(false);
+                    emptyBlender.SetActive(false);
+                    orangeBlender.SetActive(true);
                 }
                 else
                 {
-                    Debug.Log("You need to carry a blendable (and chopped) item to place it here.");
+                    // Ýleride farklý blendable itemler için benzer mantýk
+                    emptyBlender.SetActive(false);
+                    orangeBlender.SetActive(true);
                 }
+
             }
             else
             {
-                // Oyuncu bir þey taþýmýyor
-                if (placedObject != null)
+                Orange blendedObj = placedObject.GetComponent<Orange>();
+                if (blendedObj != null && blendedObj.IsBlended)
                 {
-                    if (!isBlending)
+                    Debug.Log("giriyorrrrrrrrrr");
+                    // Blend tamamlandý, MimosaGlass gerekli
+                    MimosaGlass mimosaGlass = playerInteraction.CarriedObject != null ? playerInteraction.CarriedObject.GetComponent<MimosaGlass>() : null;
+                    if (mimosaGlass != null)
                     {
-                        base.Interact(player);
-                        Debug.Log("Picked up the blended item from the blender station.");
+                        // MimosaGlass var, blend edilmiþ juice'ý ekle
+                        mimosaGlass.AddOrangeJuice();
+                        Debug.Log("Transferred blended orange juice into MimosaGlass.");
+
+                        // Blender'ý boþalt
+                        Destroy(placedObject);
+                        placedObject = null;
+
+                        // Görselleri resetle
+                        emptyBlender.SetActive(true);
+                        orangeBlender.SetActive(false);
                     }
                     else
                     {
-                        Debug.Log("Cannot pick up the item. Blending in progress.");
+                        Debug.Log("You need to have a MimosaGlass to pick up the blended juice.");
                     }
                 }
-                else
+                Debug.Log("You need to carry a chopped, blendable item (like chopped orange) to place it here.");
+            }
+        }
+        else
+        {
+            // Oyuncu elinde bir þey taþýmýyor
+            if (placedObject != null)
+            {
+                if (isBlending)
                 {
-                    Debug.Log("Nothing to pick up here.");
+                    Debug.Log("Cannot pick up the item. Blending in progress.");
+                    return;
                 }
+
+                IBlendable blendable = placedObject.GetComponent<IBlendable>();
+                if (blendable != null && blendable.IsBlended)
+                {
+                    // Blend tamamlandý, MimosaGlass gerekli
+                    MimosaGlass mimosaGlass = playerInteraction.CarriedObject != null ? playerInteraction.CarriedObject.GetComponent<MimosaGlass>() : null;
+                    if (mimosaGlass != null)
+                    {
+                        // MimosaGlass var, blend edilmiþ juice'ý ekle
+                        mimosaGlass.AddOrangeJuice();
+                        Debug.Log("Transferred blended orange juice into MimosaGlass.");
+
+                        // Blender'ý boþalt
+                        Destroy(placedObject);
+                        placedObject = null;
+
+                        // Görselleri resetle
+                        emptyBlender.SetActive(true);
+                        orangeBlender.SetActive(false);
+                    }
+                    else
+                    {
+                        Debug.Log("You need to have a MimosaGlass to pick up the blended juice.");
+                    }
+                }
+                //else
+                //{
+                //    // Blend edilmemiþ veya IsBlended olmayan bir itemi geri almak isterseniz
+                //    base.Interact(player);
+                //    Debug.Log("Picked up the unblended item from the blender station.");
+
+                //    // Blender'ý boþalt
+                //    Destroy(placedObject);
+                //    placedObject = null;
+
+                //    // Görselleri resetle
+                //    emptyBlender.SetActive(true);
+                //    orangeBlender.SetActive(false);
+                //}
+            }
+            else
+            {
+                Debug.Log("Nothing to pick up here.");
             }
         }
     }
+
+
 
     public bool CanHoldInteract(GameObject player)
     {
@@ -76,7 +155,7 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                 }
                 else if (blendable.IsBlendable && !blendable.IsBlended)
                 {
-                    // Item blend edilebilir durumda ve henüz blend edilmemiþse blend baþlatabilir
+                    // Chop edilmiþ ama henüz blend edilmemiþse blend baþlatýlabilir
                     return true;
                 }
             }
@@ -110,7 +189,6 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                     isBlendStart = false;
                     animationController.SetBlending(false);
                 }
-                // Player animasyonu örnek olarak FillBeer animasyonu yerine bir Blend animasyonu yapabilirsiniz.
                 player.GetComponent<Animator>().Play("Blend", 0, normalizedTime);
             }
 
@@ -136,6 +214,16 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                     fillProgressUI.gameObject.SetActive(false);
                 }
                 isClockVisible = false;
+
+                // Blend tamamlandýktan sonra orangeBlender görselini kapatýp emptyBlender aç
+                //if (orangeBlender != null)
+                //{
+                //    orangeBlender.SetActive(false);
+                //}
+                //if (emptyBlender != null)
+                //{
+                //    emptyBlender.SetActive(true);
+                //}
             }
         }
         else
@@ -168,6 +256,7 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
         }
     }
 
+
     private void UpdateFillProgressUI()
     {
         if (fillProgressUI != null)
@@ -179,28 +268,59 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
 
     public override bool CanInteract(GameObject player)
     {
+        Debug.Log("000000000");
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         if (playerInteraction != null)
         {
+            Debug.Log("11111111");
             GameObject carriedObject = playerInteraction.CarriedObject;
             if (carriedObject != null)
             {
+                Debug.Log("222222222");
                 IBlendable blendable = carriedObject.GetComponent<IBlendable>();
-                // Blender için item'in chop edilmiþ (IsBlendable = true) ama henüz blend edilmemiþ olmasý gerekiyor.
+                Debug.Log(" carriedObject " + carriedObject);
+
+                // Blender için item chop edilmiþ (IsBlendable = true) ve henüz blend edilmemiþ olmalý
                 if (blendable != null && blendable.IsBlendable && !blendable.IsBlended && placedObject == null)
                 {
+                    Debug.Log("3333333");
                     return true;
+                }
+
+                MimosaGlass mimosaGlass = carriedObject.GetComponent<MimosaGlass>();
+                if (mimosaGlass != null && placedObject != null)
+                {
+                    IBlendable blendableInBlender = placedObject.GetComponent<IBlendable>();
+                    if (blendableInBlender != null && blendableInBlender.IsBlended)
+                    {
+                        Debug.Log("9999999");
+                        return true;
+                    }
                 }
             }
             else
             {
-                // Oyuncu bir þey taþýmýyor, eðer placedObject varsa ve blending yapýlmýyorsa alabilir
+                Debug.Log("444444");
+                // Oyuncu bir þey taþýmýyor
                 if (placedObject != null)
                 {
-                    return !isBlending;
+                    Debug.Log("5555555");
+                    IBlendable blendable = placedObject.GetComponent<IBlendable>();
+                    if (blendable != null && blendable.IsBlended)
+                    {
+                        Debug.Log("6666");
+                        // Blend tamamlanmýþ itemi almak için MimosaGlass gerekli
+                        // Oyuncunun elinde hiçbir þey yok -> MimosaGlass yok -> false
+                        return false;
+                    }
+                    else
+                    {
+                        return !isBlending;
+                    }
                 }
             }
         }
         return false;
     }
+
 }

@@ -37,11 +37,11 @@ public class MojitoGlassCabinet : PlacableInteractable
 
                 // Instantiate a new mojito glass and give it to the player
                 GameObject newMojitoGlass = Instantiate(mojitoGlassPrefab);
-                MimosaGlass mojitoGlass = newMojitoGlass.GetComponent<MimosaGlass>();
+                MojitoGlass mojitoGlass = newMojitoGlass.GetComponent<MojitoGlass>();
                 if (mojitoGlass != null)
                 {
                     // Set the mojito glass to be clean and empty
-                    mojitoGlass.CurrentState = MimosaGlass.GlassState.CleanEmpty;
+                    mojitoGlass.CurrentState = MojitoGlass.GlassState.CleanEmpty;
 
                     // Have the player pick up the mojito glass
                     playerInteraction.PickUpObject(newMojitoGlass);
@@ -58,8 +58,8 @@ public class MojitoGlassCabinet : PlacableInteractable
             {
                 // Player is carrying something
                 // Check if it's a clean, empty mojito glass
-                MimosaGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
-                if (mojitoGlass != null && mojitoGlass.CurrentState == MimosaGlass.GlassState.CleanEmpty)
+                MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
+                if (mojitoGlass != null && mojitoGlass.CurrentState == MojitoGlass.GlassState.CleanEmpty)
                 {
                     if (GetAvailableSlotsInCabinet() <= 0)
                     {
@@ -110,9 +110,9 @@ public class MojitoGlassCabinet : PlacableInteractable
             else
             {
                 // Can place a clean, empty mojito glass if there's room in the cabinet
-                MimosaGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
+                MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 return mojitoGlass != null &&
-                       mojitoGlass.CurrentState == MimosaGlass.GlassState.CleanEmpty &&
+                       mojitoGlass.CurrentState == MojitoGlass.GlassState.CleanEmpty &&
                        GetAvailableSlotsInCabinet() > 0;
             }
         }

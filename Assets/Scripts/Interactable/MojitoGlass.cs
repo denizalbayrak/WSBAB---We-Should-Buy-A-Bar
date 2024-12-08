@@ -20,7 +20,7 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     public GameObject lime;
     public GameObject juice;
     public bool HasIce = false;
-    public bool HasChocolate = false;
+    public bool HasLime = false;
     public bool HasJuice = false;
 
     private void Start()
@@ -51,7 +51,7 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     }
     public void AddLime()
     {
-        HasChocolate = true;
+        HasLime = true;
         lime.SetActive(true);
         isDone();
     } 
@@ -63,7 +63,7 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     }  
     public void isDone()
     {
-        if (HasJuice && HasChocolate && HasIce)
+        if (HasJuice && HasLime && HasIce)
         {
             isReady = true;
             CurrentState = GlassState.Filled;
@@ -100,7 +100,7 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
         Lime lime = target.GetComponent<Lime>();
         if (lime != null && lime.CurrentState == Lime.LimeState.ChoppedLime)
         {
-            if (!HasChocolate)
+            if (!HasLime)
             {
                 AddLime();
                 Debug.Log("Lime added to the glass.");

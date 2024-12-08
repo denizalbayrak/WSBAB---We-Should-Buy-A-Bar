@@ -17,9 +17,9 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
     public GameObject dirtyVisual; // Kirli bardak görseli
     public GameObject filledVisual; // Kirli bardak görseli
     public GameObject orangeJuice;
-    public GameObject juice;
+    public GameObject champagne;
     public bool HasOrangeJuice = false;
-    public bool HasJuice = false;
+    public bool HasChampagne = false;
 
     private void Start()
     {
@@ -50,13 +50,13 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
    
     public void AddJuice()
     {
-        HasJuice = true;
-        juice.SetActive(true);
+        HasChampagne = true;
+        champagne.SetActive(true);
         isDone();
     }
     public void isDone()
     {
-        if (HasJuice && HasOrangeJuice)
+        if (HasChampagne && HasOrangeJuice)
         {
             isReady = true;
             CurrentState = GlassState.Filled;
@@ -152,7 +152,7 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
         {
             dirtyVisual.SetActive(CurrentState == GlassState.DirtyEmpty);
             orangeJuice.SetActive(false);
-            juice.SetActive(false);
+            champagne.SetActive(false);
         }
 
     }

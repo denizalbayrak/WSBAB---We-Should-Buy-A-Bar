@@ -54,7 +54,7 @@ public void Full()
         {
             if (CurrentState == LimeState.ChoppedLime)
         {
-            if (!glass.HasChocolate)
+            if (!glass.HasLime)
             {
                 glass.AddLime();
                 Debug.Log("Lime added to the glass.");

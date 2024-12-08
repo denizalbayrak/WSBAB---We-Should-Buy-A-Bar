@@ -14,6 +14,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
     public Image fillProgressUI;
     private bool isClockVisible = false;
     private bool isChopStart = false;
+    public GameObject knife;
 
     public override void Interact(GameObject player)
     {
@@ -96,6 +97,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
 
         if (isChopping)
         {
+            knife.SetActive(false);
             chopProgress += deltaTime;
             if (chopProgress > chopDuration)
             {
@@ -140,7 +142,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
         }
         else
         {
-            // Chop baþlatmak için placedObject'teki itemin full olmasý gerekir.
+            knife.SetActive(true);
             choppableItem = placedObject != null ? placedObject.GetComponent<IChoppable>() : null;
 
             if (choppableItem != null && choppableItem.IsFull)

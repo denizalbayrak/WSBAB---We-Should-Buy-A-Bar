@@ -53,9 +53,7 @@ public class Orange : Carryable, IInteractableItem, IChoppable, IBlendable
         if (choppedVisual != null)
             choppedVisual.SetActive(CurrentState == OrangeState.ChoppedOrange);
 
-        if (blendedOrangeVisual != null)
-            blendedOrangeVisual.SetActive(CurrentState == OrangeState.BlendedOrange);
-
+       
     }
     public void InteractWith(GameObject target, EmptyCabinet cabinet)
     {

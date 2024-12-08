@@ -436,7 +436,7 @@ MonoBehaviour:
   lime: {fileID: 5202303961404957846}
   juice: {fileID: 8899174529614465566}
   HasIce: 0
-  HasLime: 0
+  HasChocolate: 0
   HasJuice: 0
 --- !u!1 &1574090925929075315
 GameObject:
@@ -1153,7 +1153,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7122177785393328032
 Transform:
   m_ObjectHideFlags: 0

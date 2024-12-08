@@ -38,6 +38,20 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                 {
                     Debug.Log("You need to carry a choppable item (lime, orange, chocolate) to place it here.");
                 }
+                if (placedObject.GetComponent<Lime>() != null)
+                {
+                    if (placedObject.GetComponent<Lime>().IsChopped)
+                    {
+                        MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
+                        if (mojitoGlass != null && !mojitoGlass.HasLime)
+                        {
+                            mojitoGlass.AddLime();
+                            placedObject.gameObject.SetActive(false);
+                            placedObject = null;
+                            Debug.Log("Placed a Lime into the cabinet.");
+                        }
+                    }
+                }
             }
             else
             {
@@ -132,7 +146,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                     animationController.SetChopping(false);
                 }
                 Debug.Log("Finished chopping the item.");
-
+                knife.SetActive(true);
                 if (fillProgressUI != null)
                 {
                     fillProgressUI.gameObject.SetActive(false);
@@ -192,8 +206,11 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             if (carriedObject != null)
             {
                 IChoppable choppable = carriedObject.GetComponent<IChoppable>();
-                // Kabin boþsa hem full hem de chopped choppable item koyabiliriz
                 if (choppable != null && placedObject == null)
+                {
+                    return true;
+                }
+                if (playerInteraction.CarriedObject.GetComponent<MojitoGlass>() != null)
                 {
                     return true;
                 }
@@ -203,6 +220,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                 // Oyuncu bir þey taþýmýyor
                 if (placedObject != null)
                 {
+                    knife.SetActive(true);
                     // Eðer chopping yapýlmýyorsa itemi alabilir
                     return !isChopping;
                 }

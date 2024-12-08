@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 3978862651846773598}
   - component: {fileID: 5412899292956021564}
   m_Layer: 0
-  m_Name: ChampagneGlass
+  m_Name: MimosaGlass
   m_TagString: Carryable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

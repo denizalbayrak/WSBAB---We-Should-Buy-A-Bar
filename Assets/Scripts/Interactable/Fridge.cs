@@ -16,7 +16,6 @@ public class Fridge : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-
                 // Instantiate a new Ice and give it to the player
                 GameObject IceObj = Instantiate(IcePrefab);
                 Ice Ice = IceObj.GetComponent<Ice>();
@@ -40,11 +39,17 @@ public class Fridge : PlacableInteractable
                 Ice Ice = playerInteraction.CarriedObject.GetComponent<Ice>();
                 if (Ice != null)
                 {
-
                     Destroy(playerInteraction.CarriedObject);
 
                     // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
+
+                    Debug.Log("Placed a Ice into the cabinet.");
+                }
+                MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
+                if (mojitoGlass != null && !mojitoGlass.HasIce)
+                {
+                    mojitoGlass.AddIce();
 
                     Debug.Log("Placed a Ice into the cabinet.");
                 }
@@ -62,6 +67,14 @@ public class Fridge : PlacableInteractable
         if (playerInteraction != null)
         {
             if (playerInteraction.CarriedObject == null)
+            {
+                return true;
+            }
+            if (playerInteraction.CarriedObject.GetComponent<MojitoGlass>() !=null)
+            {
+                return true;
+            }
+            if (playerInteraction.CarriedObject.GetComponent<Ice>() != null)
             {
                 return true;
             }

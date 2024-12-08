@@ -48,7 +48,7 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
         isDone();
     }
    
-    public void AddJuice()
+    public void AddChampagne()
     {
         HasChampagne = true;
         champagne.SetActive(true);
@@ -59,6 +59,9 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
         if (HasChampagne && HasOrangeJuice)
         {
             isReady = true;
+            orangeJuice.SetActive(false);
+           champagne.SetActive(false);
+            filledVisual.SetActive(true);
             CurrentState = GlassState.Filled;
             return;
 

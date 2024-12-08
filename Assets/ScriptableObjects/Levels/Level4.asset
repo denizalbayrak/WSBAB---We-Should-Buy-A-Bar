@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level4
   m_EditorClassIdentifier: 
   levelName: 2
-  levelDuration: 130
+  levelDuration: 200
   availableOrders:
   - orderID: 0
     orderType: 0

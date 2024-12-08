@@ -49,6 +49,14 @@ public class DirtyPoint : PlacableInteractable
         {
             obj.GetComponent<WineGlass>().Dirty();
         }
+        if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Mojito)
+        {
+            obj.GetComponent<MojitoGlass>().Dirty();
+        }
+        if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Mimosa)
+        {
+            obj.GetComponent<MimosaGlass>().Dirty();
+        }
         obj.SetActive(true);
 
         Debug.Log("Placed dirty glass on DirtyPoint.");
@@ -138,8 +146,8 @@ public class DirtyPoint : PlacableInteractable
                 if (allowedGlassTypes == carriedGlassType && allowedGlassTypes == GlassType.Mimosa)
                 {
                     // Oyuncu bir þey taþýyor, pis bardak yerleþtirmeye çalýþ
-                    MojitoGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
-                    if (mimosaGlass != null && mimosaGlass.CurrentState == MojitoGlass.GlassState.DirtyEmpty)
+                    MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
+                    if (mimosaGlass != null && mimosaGlass.CurrentState == MimosaGlass.GlassState.DirtyEmpty)
                     {
                         // Pis bardaðý DirtyPoint'e yerleþtir
                         AddPlacedObject(playerInteraction.CarriedObject);
@@ -221,8 +229,8 @@ public class DirtyPoint : PlacableInteractable
                 }
                 if (allowedGlassTypes == carriedGlassType && carriedGlassType == GlassType.Mimosa)
                 {
-                    MojitoGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
-                    if (mimosaGlass != null && mimosaGlass.CurrentState == MojitoGlass.GlassState.DirtyEmpty)
+                    MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
+                    if (mimosaGlass != null && mimosaGlass.CurrentState == MimosaGlass.GlassState.DirtyEmpty)
                     {
                         // Boþ bir slot var mý kontrol et
                         foreach (Transform slot in slotTransforms)
@@ -253,7 +261,7 @@ public class DirtyPoint : PlacableInteractable
         {
             return mojitoGlass.glassType;
         } 
-        else if (obj.TryGetComponent<MojitoGlass>(out var mimosaGlass))
+        else if (obj.TryGetComponent<MimosaGlass>(out var mimosaGlass))
         {
             return mimosaGlass.glassType;
         }

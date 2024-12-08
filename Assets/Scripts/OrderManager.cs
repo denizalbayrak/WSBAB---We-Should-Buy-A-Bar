@@ -230,6 +230,15 @@ public class OrderManager : MonoBehaviour
                 return true;
             }
         }
+        else if (order.orderType == OrderType.DeliverMimosaGlass)
+        {
+            MimosaGlass mimosaGlass = deliveredObject.GetComponent<MimosaGlass>();
+            if (mimosaGlass != null && mimosaGlass.CurrentState == MimosaGlass.GlassState.Filled)
+            {
+                // Teslim edilen obje dolu bir mojito bardaðý, sipariþle eþleþiyor
+                return true;
+            }
+        }
 
         // Diðer sipariþ türleri ve eþleþtirme mantýðýný ekleyebilirsiniz
 

@@ -10,6 +10,7 @@ public class DeliveryPoint : PlacableInteractable
     public DirtyPoint beerDirtyPoint;
     public DirtyPoint wineDirtyPoint;
     public DirtyPoint mojitoDirtyPoint;
+    public DirtyPoint mimosaDirtyPoint;
 
     public override void Interact(GameObject player)
     {
@@ -84,6 +85,11 @@ public class DeliveryPoint : PlacableInteractable
             {
                 targetDirtyPoint = mojitoDirtyPoint;
             }
+            else if (prefabToSpawn.name.Contains("Mimosa"))
+            {
+                Debug.Log("00000000000");
+                targetDirtyPoint = mimosaDirtyPoint;
+            }
 
             if (targetDirtyPoint != null)
             {
@@ -93,7 +99,7 @@ public class DeliveryPoint : PlacableInteractable
                     Debug.Log("DirtyPoint is full. Cannot add more dirty glasses.");
                     yield break;
                 }
-
+                Debug.Log("111111111");
                 // Yeni bir nesne oluþtur ve DirtyPoint'e yerleþtir
                 GameObject dirtyGlassObj = Instantiate(prefabToSpawn, targetDirtyPoint.transform.position, Quaternion.identity, targetDirtyPoint.transform);
                 dirtyGlassObj.name = prefabToSpawn.name; // Ýsimlendirmeyi koru
@@ -104,7 +110,7 @@ public class DeliveryPoint : PlacableInteractable
                 {
                     dirtyGlass.isReady = false;
                 }
-
+                Debug.Log("2222222222222");
                 // DirtyPoint'e bardaðý ekle
                 targetDirtyPoint.AddPlacedObject(dirtyGlassObj);
             }

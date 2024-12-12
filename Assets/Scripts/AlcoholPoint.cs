@@ -11,6 +11,8 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
     private float fillDuration = 4f;
     private MojitoGlass mojitoBeingFilled;
     private MimosaGlass mimosaBeingFilled;
+    private WhiskeyGlass whiskeyBeingFilled; // Yeni eklenen
+
     public Animator alcoholPointAnimator;
 
     // UI Elements
@@ -28,6 +30,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                 // Oyuncu bir nesne taþýyor
                 MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
+                WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>(); // Yeni eklenen
 
                 if (mojitoGlass != null)
                 {
@@ -53,9 +56,21 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                         Debug.Log("Cannot place object. Placement point is already occupied.");
                     }
                 }
+                else if (whiskeyGlass != null) // Yeni eklenen
+                {
+                    if (placedObject == null)
+                    {
+                        base.Interact(player);
+                        Debug.Log("Placed a Whiskey glass on the alcohol fill station.");
+                    }
+                    else
+                    {
+                        Debug.Log("Cannot place object. Placement point is already occupied.");
+                    }
+                }
                 else
                 {
-                    Debug.Log("You need to carry a Mojito or Mimosa glass to place it here.");
+                    Debug.Log("You need to carry a Mojito, Mimosa, or Whiskey glass to place it here.");
                 }
             }
             else if (playerInteraction.CarriedObject == null)
@@ -95,13 +110,14 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
             // Bardak türünü kontrol et
             MojitoGlass mojitoGlass = placedObject.GetComponent<MojitoGlass>();
             MimosaGlass mimosaGlass = placedObject.GetComponent<MimosaGlass>();
+            WhiskeyGlass whiskeyGlass = placedObject.GetComponent<WhiskeyGlass>(); // Yeni eklenen
 
             if (isFilling)
             {
                 // Doldurma devam ediyorsa basýlý tutabilir
                 return true;
             }
-            else if (mojitoGlass != null || mimosaGlass != null)
+            else if (mojitoGlass != null || mimosaGlass != null || whiskeyGlass != null) // Yeni eklenen
             {
                 // Doldurma iþlemini baþlatmak için basýlý tutulabilir
                 return true;
@@ -150,10 +166,14 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     }
                     else if (mimosaBeingFilled != null)
                     {
+                        animationController.SetFillingBeer(false); 
+                    }
+                    else if (whiskeyBeingFilled != null) 
+                    {
                         animationController.SetFillingBeer(false);
                     }
                 }
-                player.GetComponent<Animator>().Play("FillBeer", 0, normalizedTime);
+                player.GetComponent<Animator>().Play("Fill", 0, normalizedTime);
                 alcoholPointAnimator.Play("Fill", 0, normalizedTime);
             }
 
@@ -173,6 +193,12 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     mimosaBeingFilled = null;
                 }
 
+                if (whiskeyBeingFilled != null) 
+                {
+                    whiskeyBeingFilled.AddWhiskey();
+                    whiskeyBeingFilled = null;
+                }
+
                 if (isFillStart)
                 {
                     isFillStart = false;
@@ -183,6 +209,10 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                         animationController.SetFillingBeer(false);
                     }
                     else if (mimosaBeingFilled != null)
+                    {
+                        animationController.SetFillingBeer(false); 
+                    }
+                    else if (whiskeyBeingFilled != null) 
                     {
                         animationController.SetFillingBeer(false);
                     }
@@ -210,10 +240,11 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
 
                 mojitoBeingFilled = placedObject.GetComponent<MojitoGlass>();
                 mimosaBeingFilled = placedObject.GetComponent<MimosaGlass>();
+                whiskeyBeingFilled = placedObject.GetComponent<WhiskeyGlass>(); 
 
-                if (mojitoBeingFilled == null && mimosaBeingFilled == null)
+                if (mojitoBeingFilled == null && mimosaBeingFilled == null && whiskeyBeingFilled == null) 
                 {
-                    Debug.LogError("Placed object does not have MojitoGlass or MimosaGlass component.");
+                    Debug.LogError("Placed object does not have MojitoGlass, MimosaGlass, or WhiskeyGlass component.");
                     isFilling = false;
                     return;
                 }
@@ -229,6 +260,11 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                         animationController.TriggerFillingBeer();
                     }
                     else if (mimosaBeingFilled != null)
+                    {
+                        animationController.SetFillingBeer(true);
+                        animationController.TriggerFillingBeer();
+                    }
+                    else if (whiskeyBeingFilled != null) // Yeni eklenen
                     {
                         animationController.SetFillingBeer(true);
                         animationController.TriggerFillingBeer();
@@ -266,7 +302,8 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                 // Player bir þey taþýyor
                 MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
-                bool canPlace = (mojitoGlass != null || mimosaGlass != null) && placedObject == null;
+                WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>(); 
+                bool canPlace = (mojitoGlass != null || mimosaGlass != null || whiskeyGlass != null) && placedObject == null; 
                 Debug.Log($"CanInteract (Carrying): {canPlace}");
                 return canPlace;
             }

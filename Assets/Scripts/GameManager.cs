@@ -92,7 +92,6 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == "GameScene")
         {
-            Debug.Log("SCENE LOADED");
             SpawnPlayerCharacter();
             LevelManager.Instance.LoadLevel(selectedLevelIndex);
             GameUIManager.Instance.StartCountdown();
@@ -120,7 +119,6 @@ public class GameManager : MonoBehaviour
         {
             currentSaveData.selectedCharacter = selectedCharacter;
             SaveSystem.SaveGame(currentSaveData, currentSlot);
-            Debug.Log("data saved");
             Debug.Log("currentSaveData " + currentSaveData);
         }
     }
@@ -135,7 +133,6 @@ public class GameManager : MonoBehaviour
         GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
         Vector3 spawnPosition = Vector3.zero; // Adjust spawn position as needed
         playerInstance = Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
-        Debug.Log("player spawned");
     }
     public void DestroyPlayerCharacter()
     {

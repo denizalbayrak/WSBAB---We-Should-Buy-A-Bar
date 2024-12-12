@@ -239,8 +239,16 @@ public class OrderManager : MonoBehaviour
                 return true;
             }
         }
+        else if (order.orderType == OrderType.DeliverWhiskeyGlass)
+        {
+            WhiskeyGlass whiskeyGlass = deliveredObject.GetComponent<WhiskeyGlass>();
+            if (whiskeyGlass != null && whiskeyGlass.CurrentState == WhiskeyGlass.GlassState.Filled)
+            {
+                // Teslim edilen obje dolu bir mimosa bardaðý, sipariþle eþleþiyor
+                return true;
+            }
+        }
 
-        // Diðer sipariþ türleri ve eþleþtirme mantýðýný ekleyebilirsiniz
 
         return false;
     }

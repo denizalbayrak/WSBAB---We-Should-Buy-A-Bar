@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c71fc6a5e6024844c8619ea2c9e53e20, type: 3}
-  m_Name: Level4
+  m_Name: Level5
   m_EditorClassIdentifier: 
-  levelName: 3
+  levelName: 4
   levelDuration: 200
   availableOrders:
   - orderID: 0
@@ -43,7 +43,14 @@ MonoBehaviour:
     timeLimit: 70
     scorePerSuccess: 20
     scorePerFailure: -5
-  levelMapPrefab: {fileID: 7345529607415524228, guid: bd6e18c0b4840e348a2ad19284633270, type: 3}
-  targetScore: 40
-  twoStarScore: 50
-  threeStarScore: 60
+  - orderID: 4
+    orderType: 4
+    description: Whiskey
+    orderImage: {fileID: 21300000, guid: fe3c4f38acfe8a245a3140a4ee322972, type: 3}
+    timeLimit: 70
+    scorePerSuccess: 20
+    scorePerFailure: -5
+  levelMapPrefab: {fileID: 7345529607415524228, guid: c948e797a892a5c4c9bde558de2c4510, type: 3}
+  targetScore: 50
+  twoStarScore: 60
+  threeStarScore: 70

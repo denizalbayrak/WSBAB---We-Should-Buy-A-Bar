@@ -66,7 +66,6 @@ public class WhiskeyGlass : Carryable, IWashableGlass, IInteractableItem
     }
     public void InteractWith(GameObject target, EmptyCabinet cabinet)
     {
-        // Hedef nesne Lime ise
         Chocolate chocolate = target.GetComponent<Chocolate>();
         if (chocolate != null && chocolate.CurrentState == Chocolate.ChocolateState.ChoppedChocolate)
         {

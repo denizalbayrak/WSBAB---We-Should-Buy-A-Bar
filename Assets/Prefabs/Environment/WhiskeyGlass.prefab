@@ -56,8 +56,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2777629, y: 0.49076378, z: 0.28083277}
-  m_Center: {x: 0.020856857, y: 0.19931573, z: -0.020536065}
+  m_Size: {x: 0.2777629, y: 0.28581917, z: 0.28083277}
+  m_Center: {x: 0.020856857, y: 0.12833935, z: -0.020536065}
 --- !u!95 &5991617808140751557
 Animator:
   serializedVersion: 5
@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa94537fd4d68ff4c932a408a4132c6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectTransform: {fileID: 0}
   isReady: 0
   CurrentState: 1
   glassType: 4
@@ -144,7 +145,6 @@ GameObject:
   - component: {fileID: 1931984190864401587}
   - component: {fileID: 8544734116182593503}
   - component: {fileID: 8924394501180351351}
-  - component: {fileID: 4610321975140618303}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -217,29 +217,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4610321975140618303
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5683844982622538718}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000002
-  m_Height: 2.0000002
-  m_Direction: 1
-  m_Center: {x: 0.00000005960465, y: 0, z: -0.00000008940698}
 --- !u!1 &6248113161283764767
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,7 +297,6 @@ GameObject:
   - component: {fileID: 6874338635723032657}
   - component: {fileID: 4043917589632911968}
   - component: {fileID: 3206305749670040201}
-  - component: {fileID: 4448737586841608094}
   m_Layer: 6
   m_Name: Cylinder
   m_TagString: Untagged
@@ -393,29 +369,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4448737586841608094
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8124797788358456183}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000002
-  m_Height: 2.0000002
-  m_Direction: 1
-  m_Center: {x: 0.00000005960465, y: 0, z: -0.00000008940698}
 --- !u!1 &8899174529614465566
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,19 +649,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e0e11caff610b047b2c3a76afef0ad8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.00008857777
+      value: 0.00010501781
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e0e11caff610b047b2c3a76afef0ad8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.000044325207
+      value: 0.000052551968
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e0e11caff610b047b2c3a76afef0ad8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.00008857777
+      value: 0.00010501781
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e0e11caff610b047b2c3a76afef0ad8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.767
+      value: -0.906
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e0e11caff610b047b2c3a76afef0ad8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -716,7 +669,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e0e11caff610b047b2c3a76afef0ad8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.904
+      value: -1.092
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2e0e11caff610b047b2c3a76afef0ad8, type: 3}
       propertyPath: m_LocalRotation.w

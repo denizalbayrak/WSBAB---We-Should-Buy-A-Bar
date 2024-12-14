@@ -44,14 +44,18 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                     Lime lime = placedObject.GetComponent<Lime>();
                     if (lime.IsChopped)
                     {
-                        MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
-                        if (mojitoGlass != null && !mojitoGlass.HasLime)
+                        if (playerInteraction.CarriedObject != null && playerInteraction.CarriedObject.GetComponent<MojitoGlass>() != null)
                         {
-                            mojitoGlass.AddLime();
-                            placedObject.gameObject.SetActive(false);
-                            placedObject = null;
-                            Debug.Log("Added a chopped Lime to the MojitoGlass.");
+                            MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
+                            if (mojitoGlass != null && !mojitoGlass.HasLime)
+                            {
+                                mojitoGlass.AddLime();
+                                placedObject.gameObject.SetActive(false);
+                                placedObject = null;
+                                Debug.Log("Added a chopped Lime to the MojitoGlass.");
+                            }
                         }
+                        
                     }
                 } 
                 if (placedObject != null && placedObject.GetComponent<Chocolate>() != null)
@@ -59,13 +63,16 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                     Chocolate chocolate = placedObject.GetComponent<Chocolate>();
                     if (chocolate.IsChopped)
                     {
-                        WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>();
+                        if (playerInteraction.CarriedObject != null && playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>() != null)
+                        {
+                            WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>();
                         if (whiskeyGlass != null && !whiskeyGlass.HasChocolate)
                         {
                             whiskeyGlass.AddChocolate();
                             placedObject.gameObject.SetActive(false);
                             placedObject = null;
                             Debug.Log("Added a chopped Chocolate to the WhiskeyGlass.");
+                        }
                         }
                     }
                 }

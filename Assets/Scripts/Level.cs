@@ -9,7 +9,7 @@ public class Level : ScriptableObject
     public List<Order> availableOrders; 
     public GameObject levelMapPrefab;
 
-    public int targetScore; // one star score
-    public int twoStarScore; // two star score
-    public int threeStarScore; // three star score
+    public int scoreFor1Star; // one star score
+    public int scoreFor2Stars; // two star score
+    public int scoreFor3Stars; // three star score
 }

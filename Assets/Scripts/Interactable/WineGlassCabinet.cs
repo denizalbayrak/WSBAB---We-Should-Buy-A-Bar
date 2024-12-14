@@ -82,7 +82,8 @@ public class WineGlassCabinet : PlacableInteractable
                             break;
                         }
                     }
-
+                    playerInteraction.isCarrying = false;
+                    playerInteraction.animator.SetBool("isCarry", false);
                     Debug.Log("Placed an empty wine glass into the cabinet.");
                 }
                 else

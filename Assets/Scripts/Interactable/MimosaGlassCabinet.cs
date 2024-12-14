@@ -82,7 +82,8 @@ public class MimosaGlassCabinet : PlacableInteractable
                             break;
                         }
                     }
-
+                    playerInteraction.isCarrying = false;
+                    playerInteraction.animator.SetBool("isCarry", false);
                     Debug.Log("Placed an empty mimosaGlass into the cabinet.");
                 }
                 else

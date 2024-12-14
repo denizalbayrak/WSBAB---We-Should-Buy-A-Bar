@@ -6,7 +6,7 @@ public class Sink : PlacableInteractable, IHoldInteractable
     private bool isWashing = false;
     private bool isWashingAnimStarted = false;
     private float washProgress = 0f;
-    private float washDuration = 5f; // Sabit yýkama süresi (örneðin 5 saniye)
+    private float washDuration = 4f; // Sabit yýkama süresi (örneðin 5 saniye)
     private IWashableGlass glassBeingWashed;
     [SerializeField] private Animator animator;
     public Image washProgressUI; // Yýkama ilerlemesini göstermek için

@@ -13,19 +13,27 @@ MonoBehaviour:
   m_Name: Level2
   m_EditorClassIdentifier: 
   levelName: 1
-  levelDuration: 130
+  levelDuration: 120
   availableOrders:
   - orderID: 0
     orderType: 0
     description: Beer
     orderImage: {fileID: 21300000, guid: 96687351255dab841b99ba988773c693, type: 3}
     timeLimit: 50
+    quickTimeLimit: 10
+    scorePerSuccess: 12
+    scorePerSuccessQuick: 18
+    scorePerFailure: -5
   - orderID: 1
     orderType: 1
     description: Wine
     orderImage: {fileID: 21300000, guid: ad47ffaa2692cca41bf1055a0052627c, type: 3}
-    timeLimit: 49
+    timeLimit: 50
+    quickTimeLimit: 10
+    scorePerSuccess: 12
+    scorePerSuccessQuick: 18
+    scorePerFailure: -5
   levelMapPrefab: {fileID: 7345529607415524228, guid: 9345c8406a7ef2b489f3721cd585a988, type: 3}
-  targetScore: 20
-  twoStarScore: 30
-  threeStarScore: 40
+  scoreFor1Star: 50
+  scoreFor2Stars: 70
+  scoreFor3Stars: 90

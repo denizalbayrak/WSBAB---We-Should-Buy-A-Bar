@@ -68,6 +68,46 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                         Debug.Log("Cannot place object. Placement point is already occupied.");
                     }
                 }
+
+
+                else if (placedObject != null && placedObject.GetComponent<MojitoGlass>() != null)
+                {
+                    MojitoGlass mojitoGlassplaced = placedObject.GetComponent<MojitoGlass>();
+
+                    if (playerInteraction.CarriedObject != null && playerInteraction.CarriedObject.GetComponent<Lime>() != null)
+                    {
+                        Lime lime = playerInteraction.CarriedObject.GetComponent<Lime>();
+                        if (mojitoGlassplaced != null && !mojitoGlassplaced.HasLime && lime.CurrentState == Lime.LimeState.ChoppedLime)
+                        {
+                            mojitoGlassplaced.AddLime();
+                            Destroy(playerInteraction.CarriedObject.gameObject);
+                            playerInteraction.CarriedObject = null;
+                            playerInteraction.isCarrying = false;
+                            playerInteraction.animator.SetBool("isCarry", false);
+                            Debug.Log("Added a chopped Lime to the MojitoGlass.");
+                        }
+                    }
+
+                }
+                
+                else if (placedObject != null && placedObject.GetComponent<WhiskeyGlass>() != null)
+                {
+                    WhiskeyGlass whiskeyGlassplaced = placedObject.GetComponent<WhiskeyGlass>();
+
+                    if (playerInteraction.CarriedObject != null && playerInteraction.CarriedObject.GetComponent<Chocolate>() != null)
+                    {
+                        Chocolate chocolate = playerInteraction.CarriedObject.GetComponent<Chocolate>();
+                        if (whiskeyGlassplaced != null && !whiskeyGlassplaced.HasChocolate && chocolate.CurrentState == Chocolate.ChocolateState.ChoppedChocolate)
+                        {
+                            whiskeyGlassplaced.AddChocolate();
+                           Destroy( playerInteraction.CarriedObject.gameObject);
+                            playerInteraction.CarriedObject = null;
+                            playerInteraction.isCarrying = false;
+                            playerInteraction.animator.SetBool("isCarry", false);
+                            Debug.Log("Added a chopped chocolate to the WhiskeyGlass.");
+                        }
+                    }
+                }
                 else
                 {
                     Debug.Log("You need to carry a Mojito, Mimosa, or Whiskey glass to place it here.");
@@ -166,9 +206,9 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     }
                     else if (mimosaBeingFilled != null)
                     {
-                        animationController.SetFillingBeer(false); 
+                        animationController.SetFillingBeer(false);
                     }
-                    else if (whiskeyBeingFilled != null) 
+                    else if (whiskeyBeingFilled != null)
                     {
                         animationController.SetFillingBeer(false);
                     }
@@ -193,7 +233,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     mimosaBeingFilled = null;
                 }
 
-                if (whiskeyBeingFilled != null) 
+                if (whiskeyBeingFilled != null)
                 {
                     whiskeyBeingFilled.AddWhiskey();
                     whiskeyBeingFilled = null;
@@ -210,9 +250,9 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                     }
                     else if (mimosaBeingFilled != null)
                     {
-                        animationController.SetFillingBeer(false); 
+                        animationController.SetFillingBeer(false);
                     }
-                    else if (whiskeyBeingFilled != null) 
+                    else if (whiskeyBeingFilled != null)
                     {
                         animationController.SetFillingBeer(false);
                     }
@@ -240,9 +280,9 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
 
                 mojitoBeingFilled = placedObject.GetComponent<MojitoGlass>();
                 mimosaBeingFilled = placedObject.GetComponent<MimosaGlass>();
-                whiskeyBeingFilled = placedObject.GetComponent<WhiskeyGlass>(); 
+                whiskeyBeingFilled = placedObject.GetComponent<WhiskeyGlass>();
 
-                if (mojitoBeingFilled == null && mimosaBeingFilled == null && whiskeyBeingFilled == null) 
+                if (mojitoBeingFilled == null && mimosaBeingFilled == null && whiskeyBeingFilled == null)
                 {
                     Debug.LogError("Placed object does not have MojitoGlass, MimosaGlass, or WhiskeyGlass component.");
                     isFilling = false;
@@ -302,9 +342,17 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                 // Player bir þey taþýyor
                 MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
-                WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>(); 
-                bool canPlace = (mojitoGlass != null || mimosaGlass != null || whiskeyGlass != null) && placedObject == null; 
+                WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>();
+                bool canPlace = (mojitoGlass != null || mimosaGlass != null || whiskeyGlass != null) && placedObject == null;
                 Debug.Log($"CanInteract (Carrying): {canPlace}");
+                if (playerInteraction.CarriedObject.GetComponent<Lime>() != null)
+                {
+                    return true;
+                }
+                if (playerInteraction.CarriedObject.GetComponent<Chocolate>() != null)
+                {
+                    return true;
+                }
                 return canPlace;
             }
             else

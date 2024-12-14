@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: 
   levelName: 0
-  levelDuration: 70
+  levelDuration: 100
   availableOrders:
   - orderID: 0
     orderType: 0
     description: Beer
     orderImage: {fileID: 21300000, guid: 96687351255dab841b99ba988773c693, type: 3}
     timeLimit: 50
+    quickTimeLimit: 10
+    scorePerSuccess: 12
+    scorePerSuccessQuick: 15
+    scorePerFailure: -5
   levelMapPrefab: {fileID: 8245031962848058786, guid: 738a32bcd5e44d0449f5620a725d611a, type: 3}
-  targetScore: 10
-  twoStarScore: 20
-  threeStarScore: 30
+  scoreFor1Star: 20
+  scoreFor2Stars: 30
+  scoreFor3Stars: 40

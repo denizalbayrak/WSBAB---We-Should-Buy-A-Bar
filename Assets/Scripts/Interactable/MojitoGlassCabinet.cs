@@ -82,7 +82,8 @@ public class MojitoGlassCabinet : PlacableInteractable
                             break;
                         }
                     }
-
+                    playerInteraction.isCarrying = false;
+                    playerInteraction.animator.SetBool("isCarry", false);
                     Debug.Log("Placed an empty mojito glass into the cabinet.");
                 }
                 else

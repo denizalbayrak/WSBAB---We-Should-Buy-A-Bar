@@ -49,27 +49,27 @@ public class Chocolate : Carryable, IInteractableItem, IChoppable
     }
     public void InteractWith(GameObject target, EmptyCabinet cabinet)
     {
-        //WhiskeyGlass glass = target.GetComponent<WhiskeyGlass>();
-        //if (glass != null)
-        //{
-        //    if (CurrentState == ChocolateState.ChoppedChocolate)
-        //    {
-        //        if (!glass.HasChocolate)
-        //        {
-        //            glass.AddChocolate();
-        //            Debug.Log("chocolate added to the glass.");
-        //            Destroy(gameObject); // chocolate'ý yok et
-        //        }
-        //        else
-        //        {
-        //            Debug.Log("Glass already has chocolate.");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Debug.Log("You need to chop the chocolate first.");
-        //    }
-        //}
+        WhiskeyGlass glass = target.GetComponent<WhiskeyGlass>();
+        if (glass != null)
+        {
+            if (CurrentState == ChocolateState.ChoppedChocolate)
+            {
+                if (!glass.HasChocolate)
+                {
+                    glass.AddChocolate();
+                    Debug.Log("chocolate added to the glass.");
+                    Destroy(gameObject); // chocolate'ý yok et
+                }
+                else
+                {
+                    Debug.Log("Glass already has chocolate.");
+                }
+            }
+            else
+            {
+                Debug.Log("You need to chop the chocolate first.");
+            }
+        }
     }
     public override void OnPickUp()
     {

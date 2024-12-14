@@ -1399,10 +1399,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   placementPoint: {fileID: 9078925927432886502}
   maxCapacity: 2
-  placedObjects:
-  - {fileID: 7021962863422929813}
-  - {fileID: 2811088508894260028}
-  slotTransforms: []
+  placedObjects: []
+  slotTransforms:
+  - {fileID: 9078925927432886502}
+  - {fileID: 8016049217881202915}
   allowedGlassTypes: 4
 --- !u!114 &1679175502266955940
 MonoBehaviour:

@@ -27,11 +27,13 @@ public interface IInteractableItem
 }
 public class Carryable : MonoBehaviour
 {
+    public Transform objectTransform;
     private Collider objectCollider;
     public bool isReady = false;
     private void Awake()
     {
         objectCollider = GetComponent<Collider>();
+        objectTransform = GetComponent<Transform>();
     }
 
     public virtual void OnPickUp()
@@ -52,6 +54,7 @@ public class Carryable : MonoBehaviour
         if (objectCollider != null)
         {
             objectCollider.isTrigger = false;
+       
         }
 
         // Additional logic for when the object is dropped

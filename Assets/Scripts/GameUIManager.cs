@@ -193,15 +193,15 @@ public class GameUIManager : MonoBehaviour
         {
             if (i == 0)
             {
-                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.targetScore.ToString();
+                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.scoreFor1Star.ToString();
             }
             if (i == 1)
             {
-                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.twoStarScore.ToString();
+                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.scoreFor2Stars.ToString();
             }
             if (i == 2)
             {
-                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.threeStarScore.ToString();
+                stars[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentLevel.scoreFor3Stars.ToString();
             }
 
             Image starImage = stars[i].GetComponent<Image>();
@@ -245,11 +245,11 @@ public class GameUIManager : MonoBehaviour
     }
     private int CalculateStarCount(int score, Level currentLevel)
     {
-        if (score >= currentLevel.threeStarScore)
+        if (score >= currentLevel.scoreFor3Stars)
             return 3;
-        else if (score >= currentLevel.twoStarScore)
+        else if (score >= currentLevel.scoreFor2Stars)
             return 2;
-        else if (score >= currentLevel.targetScore)
+        else if (score >= currentLevel.scoreFor1Star)
             return 1;
         else
             return 0;

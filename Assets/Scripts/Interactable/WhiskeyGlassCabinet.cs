@@ -82,7 +82,8 @@ public class WhiskeyGlassCabinet : PlacableInteractable
                             break;
                         }
                     }
-
+                    playerInteraction.isCarrying = false;
+                    playerInteraction.animator.SetBool("isCarry", false);
                     Debug.Log("Placed an empty whiskeyGlass into the cabinet.");
                 }
                 else

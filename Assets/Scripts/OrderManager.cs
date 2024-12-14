@@ -16,8 +16,7 @@ public class OrderManager : MonoBehaviour
     public Transform orderUIContainer; // Sipariþlerin gösterileceði UI container'ý
 
     [Header("Scoring Settings")]
-    // public int scorePerSuccess = 10; // Global skor ayarýný kaldýrýn
-    // public int scorePerFailure = -5;
+    // Global skor ayarlarýný kaldýrdýk, her sipariþ kendi skorunu yönetecek
     public TextMeshProUGUI scoreText;
 
     [Header("Order Spawn Settings")]
@@ -148,7 +147,9 @@ public class OrderManager : MonoBehaviour
             description = orderTemplate.description,
             orderImage = orderTemplate.orderImage,
             timeLimit = orderTemplate.timeLimit,
+            quickTimeLimit = orderTemplate.quickTimeLimit, // Yeni alaný ekle
             scorePerSuccess = orderTemplate.scorePerSuccess,
+            scorePerSuccessQuick = orderTemplate.scorePerSuccessQuick, // Yeni alaný ekle
             scorePerFailure = orderTemplate.scorePerFailure
         };
 
@@ -180,21 +181,34 @@ public class OrderManager : MonoBehaviour
 
         if (matchingActiveOrder != null)
         {
+            // Hesaplama için deliveryTime'ý belirle
+            float deliveryTime = Time.time - matchingActiveOrder.spawnTime;
+
             // Sipariþi baþarýlý olarak iþle
             activeOrders.Remove(matchingActiveOrder);
             matchingActiveOrder.orderUI.RemoveUI();
-            currentScore += matchingActiveOrder.order.scorePerSuccess; // Her sipariþin kendi baþarý puanýný ekleyin
-            Debug.Log($"Order Successful! Score: {currentScore}");
+
+            if (deliveryTime <= matchingActiveOrder.order.quickTimeLimit)
+            {
+                // Hýzlý teslimat
+                currentScore += matchingActiveOrder.order.scorePerSuccessQuick;
+                Debug.Log($"Quick Order Successful! +{matchingActiveOrder.order.scorePerSuccessQuick} points. Total Score: {currentScore}");
+            }
+            else
+            {
+                // Normal teslimat
+                currentScore += matchingActiveOrder.order.scorePerSuccess;
+                Debug.Log($"Order Successful! +{matchingActiveOrder.order.scorePerSuccess} points. Total Score: {currentScore}");
+            }
+
             UpdateScoreUI();
         }
         else
         {
             // Eþleþen sipariþ bulunamadý, baþarýsýz say
-            // Eðer teslim edilen objenin bir sipariþle eþleþmediðini düþünüyorsanýz, bu durumu nasýl ele alacaðýnýzý belirleyin
-            // Örneðin, global bir baþarýsýz puan ekleyebilirsiniz veya hiçbir þey yapmayabilirsiniz
             Debug.Log($"Order Failed! No matching order.");
-            // Optionally, you can have a global failure score
-            // currentScore += scorePerFailure;
+            // Ýsteðe baðlý: Global bir baþarýsýz puan ekleyebilirsiniz
+            // currentScore += someGlobalFailureScore;
             UpdateScoreUI();
         }
     }
@@ -244,11 +258,10 @@ public class OrderManager : MonoBehaviour
             WhiskeyGlass whiskeyGlass = deliveredObject.GetComponent<WhiskeyGlass>();
             if (whiskeyGlass != null && whiskeyGlass.CurrentState == WhiskeyGlass.GlassState.Filled)
             {
-                // Teslim edilen obje dolu bir mimosa bardaðý, sipariþle eþleþiyor
+                // Teslim edilen obje dolu bir whiskey bardaðý, sipariþle eþleþiyor
                 return true;
             }
         }
-
 
         return false;
     }
@@ -266,12 +279,14 @@ public class OrderManager : MonoBehaviour
         public Order order;
         public OrderUI orderUI;
         public float timeLeft;
+        public float spawnTime; // Sipariþin oluþturulduðu zaman
 
         public ActiveOrder(Order order, OrderUI orderUI)
         {
             this.order = order;
             this.orderUI = orderUI;
             this.timeLeft = order.timeLimit;
+            this.spawnTime = Time.time; // Þu anki oyun zamanýný kaydet
         }
     }
 
@@ -282,4 +297,3 @@ public class OrderManager : MonoBehaviour
         UpdateScoreUI();
     }
 }
-

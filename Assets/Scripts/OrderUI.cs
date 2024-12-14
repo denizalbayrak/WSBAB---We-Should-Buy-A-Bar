@@ -7,6 +7,7 @@ public class OrderUI : MonoBehaviour
     public Image orderImage;
     public TextMeshProUGUI orderNameText;
     public Image timerImage; // Renk deðiþimi için
+    public Slider timeSlider; // Renk deðiþimi için
 
     private Order currentOrder;
     private OrderManager orderManager;
@@ -33,6 +34,7 @@ public class OrderUI : MonoBehaviour
 
         if (timerImage != null)
         {
+            timeSlider.value = 1;
             timerImage.fillAmount = 1f; // Baþlangýçta tam dolu
             timerImage.color = Color.green; // Baþlangýç rengi yeþil
         }
@@ -47,7 +49,7 @@ public class OrderUI : MonoBehaviour
         if (timerImage != null)
         {
             timerImage.fillAmount = fillAmount;
-
+            timeSlider.value = fillAmount;
             // Renk geçiþi: Yeþilden Kýrmýzýya
             timerImage.color = Color.Lerp(Color.red, Color.green, fillAmount);
         }

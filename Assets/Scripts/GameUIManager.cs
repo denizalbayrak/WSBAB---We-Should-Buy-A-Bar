@@ -27,6 +27,8 @@ public class GameUIManager : MonoBehaviour
     public GameObject failurePanel;
     public Button nextLevelButton;
     public GameObject[] stars;
+    public GameObject[]  tutorialList;
+    public GameObject tutorialPanel;
 
     private int finalScore;
     private void Awake()
@@ -138,6 +140,18 @@ public class GameUIManager : MonoBehaviour
     public void StartCountdown()
     {
         StartCoroutine(Countdown());
+    }
+    public void OpenTutorial()
+    {
+        tutorialPanel.SetActive(true);
+        foreach (var item in tutorialList)
+        {
+            item.SetActive(false);
+        }
+        if (LevelManager.Instance.currentLevelIndex <5)
+        {
+                tutorialList[LevelManager.Instance.currentLevelIndex].SetActive(true);
+        }
     }
     private IEnumerator UpdateLevelTimer()
     {

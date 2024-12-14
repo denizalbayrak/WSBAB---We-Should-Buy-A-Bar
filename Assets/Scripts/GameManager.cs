@@ -94,9 +94,15 @@ public class GameManager : MonoBehaviour
         {
             SpawnPlayerCharacter();
             LevelManager.Instance.LoadLevel(selectedLevelIndex);
-
-            GameUIManager.Instance.StartCountdown();
-            Time.timeScale = 1f;            
+            if (selectedLevelIndex <= 4)
+            {
+                GameUIManager.Instance.OpenTutorial();
+            }
+            else
+            {
+                GameUIManager.Instance.StartCountdown();
+            }
+            Time.timeScale = 1f;
             GameUIManager.Instance.ResetUI();
         }
     }

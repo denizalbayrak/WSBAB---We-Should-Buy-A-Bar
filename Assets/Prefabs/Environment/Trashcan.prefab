@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8727088414500297557}
   - component: {fileID: 2146150448596752042}
-  - component: {fileID: 7219034141784587134}
+  - component: {fileID: 8851052193444239372}
+  - component: {fileID: 3103852490673801694}
   m_Layer: 6
   m_Name: Trashcan
-  m_TagString: Portable
+  m_TagString: InteractableStatic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,12 +28,13 @@ Transform:
   m_GameObject: {fileID: 5734869995566069190}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.87, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.45, y: 1.45, z: 1.45}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4940743982299712993}
+  - {fileID: 2022604734739647023}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2146150448596752042
 BoxCollider:
@@ -53,9 +55,9 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.57410264, y: 1, z: 0.43713266}
-  m_Center: {x: 0.02049458, y: 0, z: 0.031042702}
---- !u!114 &7219034141784587134
+  m_Size: {x: 1.1989543, y: 0.9052183, z: 0.6131148}
+  m_Center: {x: -0.34160262, y: -0.04739872, z: 0.17492747}
+--- !u!114 &8851052193444239372
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,13 +66,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 5734869995566069190}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67e28838b984c34296eaaf08d15eaa4, type: 3}
+  m_Script: {fileID: 11500000, guid: fe55308403be1c24da2585873f67c42e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Trashcan
-  isMandatory: 0
-  dropYOffset: 0
   objectRenderers: []
+--- !u!114 &3103852490673801694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5734869995566069190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfe11c0d190f67143afca279485f146a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placementPoint: {fileID: 2022604734739647023}
 --- !u!1 &6309387706156317094
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,8 +109,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6309387706156317094}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: -0.476, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalPosition: {x: -0.29, y: -0.476, z: 0}
+  m_LocalScale: {x: 130.05, y: 130.05, z: 130.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8727088414500297557}
@@ -155,3 +167,34 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7340809868774359265
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2022604734739647023}
+  m_Layer: 6
+  m_Name: PlacementPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2022604734739647023
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7340809868774359265}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.509, y: 1.322, z: 0.65}
+  m_LocalScale: {x: 0.001, y: 0.0001, z: 0.001}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8727088414500297557}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

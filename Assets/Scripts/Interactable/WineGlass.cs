@@ -8,7 +8,7 @@ public class WineGlass : Carryable, IWashableGlass
         CleanEmpty,
         Filled
     }
-
+    public GlassType Type => GlassType.Wine;
     public GlassState CurrentState = GlassState.CleanEmpty;
     public GlassType glassType = GlassType.Wine;
     public GameObject cleanVisual; // Temiz bardak görseli

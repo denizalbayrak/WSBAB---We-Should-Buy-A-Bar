@@ -10,7 +10,7 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
         CleanEmpty,
         Filled
     }
-
+    public GlassType Type => GlassType.Mimosa;
     public GlassState CurrentState = GlassState.CleanEmpty;
     public GlassType glassType = GlassType.Mimosa;
     public GameObject cleanVisual; // Temiz bardak görseli

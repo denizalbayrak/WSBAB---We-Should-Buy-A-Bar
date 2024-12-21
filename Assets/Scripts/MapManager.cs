@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class MapManager : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class MapManager : MonoBehaviour
         InitializeLevelButtons();
     }
 
+    public void SceneChange()
+    {
+        SceneManager.LoadScene("MainMenuScene");
+    }
     private void InitializeLevelButtons()
     {
         int unlockedLevel = GameManager.Instance.currentSaveData.level;

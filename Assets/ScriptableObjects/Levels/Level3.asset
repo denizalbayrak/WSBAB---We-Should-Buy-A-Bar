@@ -43,6 +43,6 @@ MonoBehaviour:
     scorePerSuccessQuick: 18
     scorePerFailure: -5
   levelMapPrefab: {fileID: 7345529607415524228, guid: 8d24d15fd1ec16b4ab13652e3590155a, type: 3}
-  scoreFor1Star: 80
-  scoreFor2Stars: 90
+  scoreFor1Star: 70
+  scoreFor2Stars: 80
   scoreFor3Stars: 100

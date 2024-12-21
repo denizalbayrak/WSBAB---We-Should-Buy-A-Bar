@@ -8,7 +8,7 @@ public class WhiskeyGlass : Carryable, IWashableGlass, IInteractableItem
         CleanEmpty,
         Filled
     }
-
+    public GlassType Type => GlassType.Whiskey;
     public GlassState CurrentState = GlassState.CleanEmpty;
     public GlassType glassType = GlassType.Whiskey;
     public GameObject cleanVisual;

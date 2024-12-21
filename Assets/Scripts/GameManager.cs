@@ -103,7 +103,6 @@ public class GameManager : MonoBehaviour
                 GameUIManager.Instance.StartCountdown();
             }
             Time.timeScale = 1f;
-            GameUIManager.Instance.ResetUI();
         }
     }
 

@@ -18,6 +18,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
 
     public override void Interact(GameObject player)
     {
+        var animationController = player.GetComponent<PlayerAnimator>();
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         if (playerInteraction != null)
         {
@@ -88,7 +89,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                     {
                         base.Interact(player); // Bu, yerleþtirilmiþ objeyi alýr
                         Debug.Log("Picked up the item from the chop station.");
-
+                        animationController.SetChopping(false);
                         // isCompleted bayraðýný sýfýrla
                         // Chopping ile ilgili flag'ler sýfýrlanmalý
                         isChopStart = false;

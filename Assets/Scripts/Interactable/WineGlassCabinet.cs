@@ -145,4 +145,46 @@ public class WineGlassCabinet : PlacableInteractable
         }
         return count;
     }
+    public void RespawnGlass(float delay)
+    {
+        StartCoroutine(RespawnGlassCoroutine(delay));
+    }
+    private IEnumerator RespawnGlassCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Find an inactive glass slot
+        foreach (GameObject glass in wineGlassObjects)
+        {
+            if (!glass.activeSelf)
+            {
+                glass.SetActive(true);
+                Debug.Log("Beer glass respawned in the cabinet.");
+                yield break;
+            }
+        }
+
+        if (wineGlassPrefab != null)
+        {
+            Instantiate(wineGlassPrefab, GetRespawnPosition(), Quaternion.identity);
+            Debug.Log("wine glass instantiated in the cabinet.");
+        }
+        else
+        {
+            Debug.LogError("WineGlassPrefab is not assigned in the WineGlassCabinet script.");
+        }
+    }
+    private Vector3 GetRespawnPosition()
+    {
+        foreach (Transform child in transform)
+        {
+            if (!child.gameObject.activeSelf)
+            {
+                return child.position;
+            }
+        }
+
+        // Default respawn position (modify as needed)
+        return transform.position;
+    }
 }

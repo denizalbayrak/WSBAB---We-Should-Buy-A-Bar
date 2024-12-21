@@ -1,6 +1,7 @@
 using UnityEngine;
 public interface IWashableGlass
 {
+    GlassType Type { get; }
     bool IsDirty { get; }
     void Clean();
 }

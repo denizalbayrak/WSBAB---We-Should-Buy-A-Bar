@@ -17,7 +17,6 @@ public class SaveSlot : MonoBehaviour
 
     // UI Elements
     public TextMeshProUGUI slotNumberText;
-    public TextMeshProUGUI saveDetailsText;
 
     private void Start()
     {
@@ -38,7 +37,6 @@ public class SaveSlot : MonoBehaviour
 
             // Detaylarý göster
             slotNumberText.text = "Slot " + slotNumber;
-            saveDetailsText.text = "Level: " + data.level + "\nPlay Time: " + Mathf.FloorToInt(data.playTime) + "s";
 
             // Buton iþlevlerini ekle
             loadButton.onClick.RemoveAllListeners();

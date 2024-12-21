@@ -10,7 +10,7 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
         CleanEmpty,
         Filled
     }
-
+    public GlassType Type => GlassType.Mojito;
     public GlassState CurrentState = GlassState.CleanEmpty;
     public GlassType glassType = GlassType.Mojito;
     public GameObject cleanVisual; // Temiz bardak görseli

@@ -19,7 +19,7 @@ MonoBehaviour:
     orderType: 0
     description: Beer
     orderImage: {fileID: 21300000, guid: 96687351255dab841b99ba988773c693, type: 3}
-    timeLimit: 50
+    timeLimit: 60
     quickTimeLimit: 10
     scorePerSuccess: 12
     scorePerSuccessQuick: 18
@@ -28,7 +28,7 @@ MonoBehaviour:
     orderType: 1
     description: Wine
     orderImage: {fileID: 21300000, guid: ad47ffaa2692cca41bf1055a0052627c, type: 3}
-    timeLimit: 50
+    timeLimit: 60
     quickTimeLimit: 10
     scorePerSuccess: 12
     scorePerSuccessQuick: 18
@@ -37,30 +37,30 @@ MonoBehaviour:
     orderType: 2
     description: Mojito
     orderImage: {fileID: 21300000, guid: fef519ca5cc8efd48ae87ca95049c046, type: 3}
-    timeLimit: 60
+    timeLimit: 70
     quickTimeLimit: 10
-    scorePerSuccess: 12
+    scorePerSuccess: 15
     scorePerSuccessQuick: 18
     scorePerFailure: -5
   - orderID: 3
     orderType: 3
     description: Mimosa
     orderImage: {fileID: 21300000, guid: 7fa6a1319771a2f43ba720dc7d8cce51, type: 3}
-    timeLimit: 60
+    timeLimit: 70
     quickTimeLimit: 10
-    scorePerSuccess: 12
+    scorePerSuccess: 15
     scorePerSuccessQuick: 18
     scorePerFailure: -5
   - orderID: 4
     orderType: 4
     description: Whiskey
     orderImage: {fileID: 21300000, guid: fe3c4f38acfe8a245a3140a4ee322972, type: 3}
-    timeLimit: 60
+    timeLimit: 70
     quickTimeLimit: 10
-    scorePerSuccess: 12
+    scorePerSuccess: 15
     scorePerSuccessQuick: 18
     scorePerFailure: -5
   levelMapPrefab: {fileID: 7345529607415524228, guid: c948e797a892a5c4c9bde558de2c4510, type: 3}
-  scoreFor1Star: 120
-  scoreFor2Stars: 150
-  scoreFor3Stars: 180
+  scoreFor1Star: 40
+  scoreFor2Stars: 50
+  scoreFor3Stars: 70

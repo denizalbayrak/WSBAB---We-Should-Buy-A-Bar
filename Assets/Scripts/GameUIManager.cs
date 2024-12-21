@@ -27,8 +27,9 @@ public class GameUIManager : MonoBehaviour
     public GameObject failurePanel;
     public Button nextLevelButton;
     public GameObject[] stars;
-    public GameObject[]  tutorialList;
+    public GameObject[] tutorialList;
     public GameObject tutorialPanel;
+    public GameObject finishPanel;
 
     private int finalScore;
     private void Awake()
@@ -129,7 +130,7 @@ public class GameUIManager : MonoBehaviour
 
         // Oyunu baþlat
         Time.timeScale = 1f;
-   //     countdownText.transform.parent.gameObject.SetActive(false);
+        //     countdownText.transform.parent.gameObject.SetActive(false);
         countdownText.transform.parent.parent.gameObject.SetActive(false);
         gameManager.currentGameState = GameState.InGame;
 
@@ -148,9 +149,9 @@ public class GameUIManager : MonoBehaviour
         {
             item.SetActive(false);
         }
-        if (LevelManager.Instance.currentLevelIndex <5)
+        if (LevelManager.Instance.currentLevelIndex < 5)
         {
-                tutorialList[LevelManager.Instance.currentLevelIndex].SetActive(true);
+            tutorialList[LevelManager.Instance.currentLevelIndex].SetActive(true);
         }
     }
     private IEnumerator UpdateLevelTimer()
@@ -236,7 +237,15 @@ public class GameUIManager : MonoBehaviour
         if (starCount > 0)
         {
             LevelManager.Instance.CompleteLevel();
-            successPanel.SetActive(true);
+            if (LevelManager.Instance.currentLevelIndex == 9)
+            {
+                finishPanel.SetActive(true);
+            }
+            else
+            {
+                successPanel.SetActive(true);
+
+            }
             failurePanel.SetActive(false);
 
             // Next Level butonu sadece baþarýlý olduðunda aktif
@@ -268,7 +277,10 @@ public class GameUIManager : MonoBehaviour
         else
             return 0;
     }
-
+    public void SceneChange()
+    {
+        SceneManager.LoadScene("MainMenuScene");
+    }
     public void OnNextLevelButtonClicked()
     {
         endPanel.SetActive(false);
@@ -279,10 +291,7 @@ public class GameUIManager : MonoBehaviour
         GameManager.Instance.currentGameState = GameState.InGame;
         GameUIManager.Instance.StartCountdown();
     }
-    public void ResetUI()
-    {
-        StartCountdown();      
-    }
+
     public void OnRestartLevelButtonClicked()
     {
         endPanel.SetActive(false);
@@ -296,7 +305,7 @@ public class GameUIManager : MonoBehaviour
         GameManager.Instance.selectedLevelIndex = 0;
         GameManager.Instance.currentSaveData = null;
         GameManager.Instance.DestroyPlayerCharacter();
-        LevelManager.Instance.UnloadCurrentLevel(); 
+        LevelManager.Instance.UnloadCurrentLevel();
         SceneManager.LoadScene("MainMenuScene");
     }
 }

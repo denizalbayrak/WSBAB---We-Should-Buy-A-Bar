@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class BeerGlassCabinet : PlacableInteractable
@@ -8,7 +9,48 @@ public class BeerGlassCabinet : PlacableInteractable
 
     [Tooltip("Prefab of the beer glass to give to the player.")]
     public GameObject beerGlassPrefab;
+    public void RespawnGlass(float delay)
+    {
+        StartCoroutine(RespawnGlassCoroutine(delay));
+    }
+    private IEnumerator RespawnGlassCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
 
+        // Find an inactive glass slot
+        foreach (GameObject glass in beerGlassObjects)
+        {
+            if (!glass.activeSelf)
+            {
+                glass.SetActive(true);
+                Debug.Log("Beer glass respawned in the cabinet.");
+                yield break;
+            }
+        }
+
+        if (beerGlassPrefab != null)
+        {
+            Instantiate(beerGlassPrefab, GetRespawnPosition(), Quaternion.identity);
+            Debug.Log("Beer glass instantiated in the cabinet.");
+        }
+        else
+        {
+            Debug.LogError("BeerGlassPrefab is not assigned in the BeerGlassCabinet script.");
+        }
+    }
+    private Vector3 GetRespawnPosition()
+    {
+        foreach (Transform child in transform)
+        {
+            if (!child.gameObject.activeSelf)
+            {
+                return child.position;
+            }
+        }
+
+        // Default respawn position (modify as needed)
+        return transform.position;
+    }
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();

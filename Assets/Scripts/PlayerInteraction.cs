@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using Photon.Pun;
 
 /// <summary>
 /// Manages player interaction with carryable and interactable objects.
@@ -42,6 +43,7 @@ public class PlayerInteraction : MonoBehaviour
     private Vector3 carriedObjectOriginalLocalPosition;
     private HashSet<GameObject> highlightedObjects = new HashSet<GameObject>();
     public bool isCarrying = false;
+    PhotonView view;
     // public List<Renderer> objectRenderers = new List<Renderer>(); // Unused in this class
     // private List<List<Color>> originalColors = new List<List<Color>>(); // Unused in this class
     #endregion
@@ -82,6 +84,7 @@ public class PlayerInteraction : MonoBehaviour
 
         // Initialize holdAction
         holdAction = inputActions.Player.InteractHold;
+        view = GetComponent<PhotonView>();
     }
 
     private void OnEnable()
@@ -108,30 +111,34 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        // Highlighting and Carrying State Management
-        UpdateHighlighting();
-        if (carriedObject != null)
+        if (view.IsMine)
         {
-            UpdateCarriedObjectPosition();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (GameManager.Instance != null)
+            // Highlighting and Carrying State Management
+            UpdateHighlighting();
+            if (carriedObject != null)
             {
-                if (GameManager.Instance.currentGameState == GameState.InGame)
+                UpdateCarriedObjectPosition();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (GameManager.Instance != null)
                 {
-                    GameUIManager.Instance.PauseGame();
-                }
-                else if (GameManager.Instance.currentGameState == GameState.Paused)
-                {
-                    GameUIManager.Instance.ResumeGame();
+                    if (GameManager.Instance.currentGameState == GameState.InGame)
+                    {
+                        GameUIManager.Instance.PauseGame();
+                    }
+                    else if (GameManager.Instance.currentGameState == GameState.Paused)
+                    {
+                        GameUIManager.Instance.ResumeGame();
+                    }
                 }
             }
-        }
 
-        // Handle holdAction input
-        HandleHoldAction();
+            // Handle holdAction input
+            HandleHoldAction();
+        }
+        
     }
 
     #endregion

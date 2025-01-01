@@ -5,4 +5,4 @@ All 3D objects are free to use designs.
 ![Screenshot 2025-01-01 155843](https://github.com/user-attachments/assets/cca40e45-2892-4a77-8e8a-7a2d65130fd5)
 ![Screenshot 2025-01-01 160309](https://github.com/user-attachments/assets/8b1f3115-efca-4e4a-8488-41ade80ae1c5)
 ![Screenshot 2024-12-15 191832](https://github.com/user-attachments/assets/c2815dbf-bd0c-4b1e-a918-6dfd21841c03)
-![Screenshot 2024-12-15 194804](https://github.com/user-attachments/assets/f4d2d228-d688-4e17-b6b6-02a7ed3e457b)
+![Screenshot 2024-12-15 194623](https://github.com/user-attachments/assets/c039059b-c9e2-442c-93d5-38985e381d1d)

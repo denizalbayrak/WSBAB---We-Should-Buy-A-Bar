@@ -1,4 +1,3 @@
-using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     public float speed = 5f;
     public float rotationSpeed = 720f; // Derece cinsinden dönüþ hýzý
-    PhotonView view;
+
     /// <summary>
     /// Hareket giriþlerini dýþa açar.
     /// </summary>
@@ -28,7 +27,6 @@ public class PlayerMovement : MonoBehaviour
         moveAction = inputActions.Player.Move;
         moveAction.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         moveAction.canceled += ctx => moveInput = Vector2.zero;
-        view = GetComponent<PhotonView>();
     }
 
     private void OnEnable()
@@ -43,10 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (view.IsMine)
-        {
-            Move();
-    }
+        Move();
     }
 
     /// <summary>

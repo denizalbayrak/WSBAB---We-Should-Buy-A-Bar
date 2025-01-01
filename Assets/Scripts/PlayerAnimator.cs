@@ -1,4 +1,3 @@
-using Photon.Pun;
 using UnityEngine;
 
 /// <summary>
@@ -8,10 +7,9 @@ using UnityEngine;
 public class PlayerAnimator : MonoBehaviour
 {
     private Animator animator;
-    PhotonView view;
+
     private void Awake()
     {
-        view = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
         if (animator == null)
         {
@@ -25,32 +23,23 @@ public class PlayerAnimator : MonoBehaviour
     /// <param name="isFilling">Whether the player is filling beer or not.</param>
     public void SetFillingBeer(bool isFilling)
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetBool("isFillingBeer", isFilling);
-            }
+            animator.SetBool("isFillingBeer", isFilling);
         }
-    }
+    } 
     public void SetChopping(bool isFilling)
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetBool("isChopping", isFilling);
-            }
+            animator.SetBool("isChopping", isFilling);
         }
-    }
+    }  
     public void SetBlending(bool isFilling)
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetBool("isBlending", isFilling);
-            }
+            animator.SetBool("isBlending", isFilling);
         }
     }
 
@@ -59,32 +48,22 @@ public class PlayerAnimator : MonoBehaviour
     /// </summary>
     public void TriggerFillingBeer()
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetTrigger("Chop");
-            }
+            animator.SetTrigger("Chop");
         }
     }
     public void TriggerChopping()
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetTrigger("Chop");
-            }
+            animator.SetTrigger("Chop");
         }
-    }
-    public void TriggerBlending()
+    } public void TriggerBlending()
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetTrigger("Blend");
-            }
+            animator.SetTrigger("Blend");
         }
     }
 
@@ -94,12 +73,9 @@ public class PlayerAnimator : MonoBehaviour
     /// <param name="isWashing">Whether the player is washing a glass or not.</param>
     public void SetWashingGlass(bool isWashing)
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetBool("isFillingBeer", isWashing);
-            }
+            animator.SetBool("isFillingBeer", isWashing);
         }
     }
 
@@ -109,12 +85,9 @@ public class PlayerAnimator : MonoBehaviour
     /// <param name="isCarrying">Whether the player is carrying an object or not.</param>
     public void SetCarrying(bool isCarrying)
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetBool("isCarry", isCarrying);
-            }
+            animator.SetBool("isCarry", isCarrying);
         }
     }
 
@@ -124,12 +97,9 @@ public class PlayerAnimator : MonoBehaviour
     /// <param name="isWalking">Whether the player is walking or not.</param>
     public void SetWalking(bool isWalking)
     {
-        if (view.IsMine)
+        if (animator != null)
         {
-            if (animator != null)
-            {
-                animator.SetBool("isWalking", isWalking);
-            }
+            animator.SetBool("isWalking", isWalking);
         }
     }
 }

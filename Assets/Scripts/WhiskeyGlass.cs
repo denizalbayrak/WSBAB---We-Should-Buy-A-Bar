@@ -74,10 +74,8 @@ public class WhiskeyGlass : Carryable, IWashableGlass, IInteractableItem
                 AddChocolate();
                 Debug.Log("Chocolate added to the glass.");
 
-                // Kabindeki Chocolate'ý yok et
                 Destroy(target);
 
-                // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
                 PlaceGlassOnCabinet(cabinet);
             }
             else
@@ -92,19 +90,16 @@ public class WhiskeyGlass : Carryable, IWashableGlass, IInteractableItem
 
     private void PlaceGlassOnCabinet(EmptyCabinet cabinet)
     {
-        // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
         PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
         if (playerInteraction != null)
         {
-            // Oyuncunun elindeki bardaðý býrak
             playerInteraction.DropCarriedObject();
 
-            // Bardak kabine yerleþtirilir
             if (cabinet != null)
             {
                 cabinet.PlaceObject(gameObject);
                 playerInteraction.CarriedObject = null;
-                playerInteraction.isCarrying = false; // Merkezi yönetim için
+                playerInteraction.isCarrying = false;
                 playerInteraction.animator.SetBool("isCarry", false);
                 Debug.Log("Placed glass on cabinet.");
             }
@@ -125,7 +120,6 @@ public class WhiskeyGlass : Carryable, IWashableGlass, IInteractableItem
         {
             CurrentState = GlassState.Filled;
             isReady = true;
-            //UpdateVisuals();
             Debug.Log("Filled the mojito glass with wine.");
         }
         else

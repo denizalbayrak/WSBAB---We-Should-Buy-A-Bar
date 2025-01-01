@@ -17,12 +17,10 @@ public class OrangeCrate : PlacableInteractable
             if (playerInteraction.CarriedObject == null)
             {
 
-                // Instantiate a new orange and give it to the player
                 GameObject orangeObj = Instantiate(orangePrefab);
                 Orange orange = orangeObj.GetComponent<Orange>();
                 if (orange != null)
                 {
-                    // Have the player pick up the mimosa glass
                     playerInteraction.PickUpObject(orangeObj);
 
                     Debug.Log("Picked up a orange from the crate.");
@@ -36,8 +34,6 @@ public class OrangeCrate : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty mimosa glass
                 Orange orange = playerInteraction.CarriedObject.GetComponent<Orange>();
                 if (orange != null)
                 {
@@ -46,7 +42,6 @@ public class OrangeCrate : PlacableInteractable
                     playerInteraction.CarriedObject = null;
                     playerInteraction.isCarrying = false;
                     playerInteraction.animator.SetBool("isCarry", false);
-                    // Reset the player's carried object
 
                     Debug.Log("Placed a orange into the cabinet.");
                 }

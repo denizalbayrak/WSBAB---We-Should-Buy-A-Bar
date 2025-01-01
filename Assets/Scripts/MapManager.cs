@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class MapManager : MonoBehaviour
 {
-    public List<Button> levelButtons; // Seviyelerin butonlarý
+    public List<Button> levelButtons; 
 
     private void Start()
     {
@@ -34,14 +34,12 @@ public class MapManager : MonoBehaviour
                 button.interactable = false;
             }
 
-            // Butonun LevelIndex'ini ayarla
             LevelButton levelButtonScript = button.GetComponent<LevelButton>();
             if (levelButtonScript != null)
             {
                 levelButtonScript.levelIndex = levelIndex;
             }
 
-            // Buton üzerindeki metni güncelle
             Text buttonText = button.GetComponentInChildren<Text>();
             if (buttonText != null)
             {

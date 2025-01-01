@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Oyuncunun hareketini yönetir.
-/// </summary>
+
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
@@ -12,11 +10,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveInput;
     private Rigidbody rb;
     public float speed = 5f;
-    public float rotationSpeed = 720f; // Derece cinsinden dönüþ hýzý
+    public float rotationSpeed = 720f; 
 
-    /// <summary>
-    /// Hareket giriþlerini dýþa açar.
-    /// </summary>
+
     public Vector2 MoveInput => moveInput;
 
     private void Awake()
@@ -44,9 +40,7 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
-    /// <summary>
-    /// Oyuncunun hareket ve rotasyon iþlemlerini yönetir.
-    /// </summary>
+
     private void Move()
     {
         Vector3 movement = CalculateMovement();
@@ -54,21 +48,15 @@ public class PlayerMovement : MonoBehaviour
         RotatePlayer(movement);
     }
 
-    /// <summary>
-    /// Hareket vektörünü hesaplar.
-    /// </summary>
     private Vector3 CalculateMovement()
     {
-        // Normalize edilmemiþ hareket vektörü
+      
         return new Vector3(moveInput.x, 0, moveInput.y);
     }
 
-    /// <summary>
-    /// Hareketi uygular ve yeni pozisyonu hesaplar.
-    /// </summary>
     private void ApplyMovement(Vector3 movement)
     {
-        if (movement.sqrMagnitude > 0.01f) // Hareketin küçük olup olmadýðýný kontrol eder
+        if (movement.sqrMagnitude > 0.01f) 
         {
             movement.Normalize();
             Vector3 newPosition = transform.position + movement * speed * Time.fixedDeltaTime;
@@ -76,12 +64,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Oyuncuyu hareket yönüne doðru döndürür.
-    /// </summary>
     private void RotatePlayer(Vector3 movement)
     {
-        if (movement.sqrMagnitude > 0.01f) // Hareket yoksa döndürme iþlemi yapýlmaz
+        if (movement.sqrMagnitude > 0.01f) 
         {
             Quaternion targetRotation = Quaternion.LookRotation(movement, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(

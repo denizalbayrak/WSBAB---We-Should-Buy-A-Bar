@@ -3,15 +3,15 @@ using UnityEngine;
 [System.Serializable]
 public class Order
 {
-    public int orderID; // Benzersiz sipariþ kimliði
+    public int orderID; 
     public OrderType orderType;
     public string description;
     public Sprite orderImage;
-    public float timeLimit; // Sipariþin tamamlanmasý için verilen süre (saniye)
-    public float quickTimeLimit = 10f; // Hýzlý teslimat için zaman eþiði (saniye)
-    public int scorePerSuccess = 10; // Sipariþ baþarýyla tamamlandýðýnda kazanýlan puan
-    public int scorePerSuccessQuick = 15; // Hýzlý teslimat için kazanýlan puan
-    public int scorePerFailure = -5; // Sipariþ baþarýsýz olduðunda kaybedilen puan
+    public float timeLimit; 
+    public float quickTimeLimit = 10f; 
+    public int scorePerSuccess = 10; 
+    public int scorePerSuccessQuick = 15; 
+    public int scorePerFailure = -5; 
 }
 
 public enum OrderType

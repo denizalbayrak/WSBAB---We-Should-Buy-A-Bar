@@ -15,7 +15,6 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
     private bool isClockVisible = false;
     private bool isBlendStart = false;
 
-    // Blender içindeki görseller
     public GameObject emptyBlender;
     public GameObject orangeBlender;
     public Animator blenderAnimator;
@@ -28,16 +27,13 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
 
         if (carriedObject != null)
         {
-            // Oyuncu bir nesne taþýyor
             IBlendable blendable = carriedObject.GetComponent<IBlendable>();
 
             if (blendable != null && blendable.IsBlendable && !blendable.IsBlended && placedObject == null)
             {
-                // Chop edilmiþ ve blend edilmemiþ itemi blendera koyma
                 base.Interact(player);
                 Debug.Log($"Placed a {carriedObject.name} in the blender.");
 
-                // Orange ise chopped haldeyse orangeBlender aktif
                 Orange orange = placedObject.GetComponent<Orange>();
                 if (orange != null && orange.IsChopped)
                 {
@@ -47,7 +43,6 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
                 }
                 else
                 {
-                    // Ýleride farklý blendable itemler için benzer mantýk
                     emptyBlender.SetActive(false);
                     orangeBlender.SetActive(true);
                 }
@@ -246,7 +241,6 @@ public class BlenderStation : PlacableInteractable, IHoldInteractable
             {
                 IBlendable blendable = carriedObject.GetComponent<IBlendable>();
 
-                // Blender için item chop edilmiþ (IsBlendable = true) ve henüz blend edilmemiþ olmalý
                 if (blendable != null && blendable.IsBlendable && !blendable.IsBlended && placedObject == null)
                 {
                     return true;

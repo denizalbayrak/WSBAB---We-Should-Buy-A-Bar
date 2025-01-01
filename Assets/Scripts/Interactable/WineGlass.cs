@@ -11,9 +11,9 @@ public class WineGlass : Carryable, IWashableGlass
     public GlassType Type => GlassType.Wine;
     public GlassState CurrentState = GlassState.CleanEmpty;
     public GlassType glassType = GlassType.Wine;
-    public GameObject cleanVisual; // Temiz bardak görseli
-    public GameObject dirtyVisual; // Kirli bardak görseli
-    public GameObject filledVisual; // Kirli bardak görseli
+    public GameObject cleanVisual; 
+    public GameObject dirtyVisual; 
+    public GameObject filledVisual; 
 
     private void Start()
     {
@@ -42,7 +42,6 @@ public class WineGlass : Carryable, IWashableGlass
         {
             CurrentState = GlassState.Filled;
             isReady = true;
-            //UpdateVisuals();
             Debug.Log("Filled the wine glass with wine.");
         }
         else

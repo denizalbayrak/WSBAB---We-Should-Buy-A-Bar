@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class SaveSelectionPanel : MonoBehaviour
 {
-    public Transform saveSlotsParent; // Save slotlarýnýn yerleþtirileceði parent
-    public GameObject saveSlotPrefab; // Save slot prefab'ý
+    public Transform saveSlotsParent; 
+    public GameObject saveSlotPrefab; 
 
     private List<SaveSlot> saveSlots = new List<SaveSlot>();
 
@@ -14,19 +14,14 @@ public class SaveSelectionPanel : MonoBehaviour
         RefreshSaveSlots();
     }
 
-    /// <summary>
-    /// Tüm save slotlarýný günceller.
-    /// </summary>
     public void RefreshSaveSlots()
     {
-        // Mevcut slotlarý temizle
         foreach (Transform child in saveSlotsParent)
         {
             Destroy(child.gameObject);
         }
         saveSlots.Clear();
 
-        // 3 slot oluþtur
         for (int i = 1; i <= 3; i++)
         {
             GameObject slotObj = Instantiate(saveSlotPrefab, saveSlotsParent);

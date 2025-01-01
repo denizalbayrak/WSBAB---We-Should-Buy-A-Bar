@@ -58,7 +58,7 @@ public void Full()
             {
                 glass.AddLime();
                 Debug.Log("Lime added to the glass.");
-                Destroy(gameObject); // Lime'ý yok et
+                Destroy(gameObject); 
             }
             else
             {

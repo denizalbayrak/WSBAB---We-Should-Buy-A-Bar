@@ -11,7 +11,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
 
     private IChoppable choppableItem;
 
-    public Image fillProgressUI; // Assign this in the Inspector (clock image)
+    public Image fillProgressUI; 
     private bool isClockVisible = false;
     private bool isChopStart = false;
     public GameObject knife;
@@ -26,11 +26,10 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
 
             if (carriedObject != null)
             {
-                // Oyuncu bir nesne taþýyor
                 IChoppable choppable = carriedObject.GetComponent<IChoppable>();
                 if (choppable != null && placedObject == null)
                 {
-                    // Kabin boþ, objeyi yerleþtir
+                    
                     base.Interact(player);
                     Debug.Log($"Placed a {carriedObject.name} on the chop station. (Full: {choppable.IsFull}, Chopped: {choppable.IsChopped})");
                 }
@@ -39,7 +38,7 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                     Debug.Log("You need to carry a choppable item (lime, orange, chocolate) to place it here or the placement point is already occupied.");
                 }
 
-                // Eðer yerleþtirilmiþ obje Lime ise ve doðranmýþsa, MojitoGlass'e ekle
+               
                 if (placedObject != null && placedObject.GetComponent<Lime>() != null)
                 {
                     Lime lime = placedObject.GetComponent<Lime>();
@@ -81,17 +80,13 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
 
             else
             {
-                // Oyuncu bir þey taþýmýyor
                 if (placedObject != null)
                 {
-                    // Doldurma iþlemi baþlamadýysa, bardak alýnabilir
                     if (!isChopping)
                     {
-                        base.Interact(player); // Bu, yerleþtirilmiþ objeyi alýr
+                        base.Interact(player); 
                         Debug.Log("Picked up the item from the chop station.");
                         animationController.SetChopping(false);
-                        // isCompleted bayraðýný sýfýrla
-                        // Chopping ile ilgili flag'ler sýfýrlanmalý
                         isChopStart = false;
                         isChopping = false;
                         chopProgress = 0f;
@@ -110,7 +105,6 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
         }
     }
 
-    // Implement IHoldInteractable
     public bool CanHoldInteract(GameObject player)
     {
         if (placedObject != null)
@@ -120,16 +114,15 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             {
                 if (isChopping)
                 {
-                    // Chop devam ediyorsa basýlý tutabilir
+     
                     return true;
                 }
                 else if (choppable.IsFull)
                 {
-                    // Eðer item full ise chop baþlatýlabilir
+                   
                     return true;
                 }
-                // Eðer chopped item ise, chop yapýlamaz ama oyuncu basýlý tutmasý gerekmiyor
-                // Bu durumda chopped item ile OnHoldInteract'tan bir iþlem yapmayýz.
+              
             }
         }
         return false;
@@ -162,7 +155,6 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                     isChopStart = false;
                     if (choppableItem != null)
                     {
-                        // Choppable item türüne göre doðru metodlarý tetikle
                         if (choppableItem is Lime)
                         {
                             animationController.SetChopping(false);
@@ -171,7 +163,6 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                         {
                             animationController.SetChopping(false);
                         }
-                        // Diðer choppable item'lar için eklemeler yapýlabilir
                     }
                 }
                 player.GetComponent<Animator>().Play("Chop", 0, normalizedTime);
@@ -215,7 +206,6 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                 {
                     isChopStart = true;
                     animationController.SetChopping(true);
-                    // Chopping animasyonunu tetikleyin. Örneðin:
                     if (choppableItem is Lime)
                     {
                         animationController.TriggerChopping();
@@ -224,11 +214,10 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                     {
                         animationController.TriggerChopping();
                     }
-                    // Diðer choppable item'lar için eklemeler yapýlabilir
+               
                 }
                 Debug.Log("Started chopping. Hold Ctrl for " + chopDuration + " seconds.");
 
-                // Fill progress UI'ý göster
                 if (fillProgressUI != null)
                 {
                     fillProgressUI.gameObject.SetActive(true);
@@ -237,7 +226,6 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             }
             else
             {
-                // Eðer item full deðilse chop baþlatýlmaz
                 Debug.Log("Object cannot be chopped (item is not full).");
             }
         }
@@ -265,7 +253,6 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
                 {
                     return true;
                 }
-                // Eðer MojitoGlass taþýyor ise (belki baþka iþlemler için)
                 if (playerInteraction.CarriedObject.GetComponent<MojitoGlass>() != null)
                 {
                     return true;
@@ -277,11 +264,10 @@ public class ChopCabinet : PlacableInteractable, IHoldInteractable
             }
             else
             {
-                // Oyuncu bir þey taþýmýyor
                 if (placedObject != null)
                 {
                     knife.SetActive(true);
-                    // Eðer chopping yapýlmýyorsa itemi alabilir
+                    
                     return !isChopping;
                 }
             }

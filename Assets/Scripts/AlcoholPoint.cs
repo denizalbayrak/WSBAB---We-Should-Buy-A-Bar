@@ -11,12 +11,11 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
     private float fillDuration = 4f;
     private MojitoGlass mojitoBeingFilled;
     private MimosaGlass mimosaBeingFilled;
-    private WhiskeyGlass whiskeyBeingFilled; // Yeni eklenen
+    private WhiskeyGlass whiskeyBeingFilled; 
 
     public Animator alcoholPointAnimator;
 
-    // UI Elements
-    public Image fillProgressUI; // Assign this in the Inspector (clock image)
+    public Image fillProgressUI; 
     private bool isClockVisible = false;
     private bool isFillStart = false;
 
@@ -27,10 +26,9 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
         {
             if (playerInteraction.CarriedObject != null)
             {
-                // Oyuncu bir nesne taþýyor
                 MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
-                WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>(); // Yeni eklenen
+                WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>();
 
                 if (mojitoGlass != null)
                 {
@@ -56,7 +54,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                         Debug.Log("Cannot place object. Placement point is already occupied.");
                     }
                 }
-                else if (whiskeyGlass != null) // Yeni eklenen
+                else if (whiskeyGlass != null) 
                 {
                     if (placedObject == null)
                     {
@@ -115,16 +113,13 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
             }
             else if (playerInteraction.CarriedObject == null)
             {
-                // Oyuncu bir þey taþýmýyor
                 if (placedObject != null)
                 {
-                    // Doldurma iþlemi baþlamadýysa, bardak alýnabilir
                     if (!isFilling)
                     {
-                        base.Interact(player); // Bu, yerleþtirilmiþ objeyi alýr
+                        base.Interact(player); 
                         Debug.Log("Picked up the glass from the alcohol station.");
 
-                        // isCompleted bayraðýný sýfýrla
                         isCompleted = false;
                         Debug.Log("isCompleted has been reset to false.");
                     }
@@ -141,25 +136,20 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
         }
     }
 
-    // Implement IHoldInteractable
     public bool CanHoldInteract(GameObject player)
     {
-        // Bardak olup olmadýðýný kontrol et
         if (placedObject != null)
         {
-            // Bardak türünü kontrol et
             MojitoGlass mojitoGlass = placedObject.GetComponent<MojitoGlass>();
             MimosaGlass mimosaGlass = placedObject.GetComponent<MimosaGlass>();
-            WhiskeyGlass whiskeyGlass = placedObject.GetComponent<WhiskeyGlass>(); // Yeni eklenen
+            WhiskeyGlass whiskeyGlass = placedObject.GetComponent<WhiskeyGlass>(); 
 
             if (isFilling)
             {
-                // Doldurma devam ediyorsa basýlý tutabilir
                 return true;
             }
-            else if (mojitoGlass != null || mimosaGlass != null || whiskeyGlass != null) // Yeni eklenen
+            else if (mojitoGlass != null || mimosaGlass != null || whiskeyGlass != null)
             {
-                // Doldurma iþlemini baþlatmak için basýlý tutulabilir
                 return true;
             }
         }
@@ -183,16 +173,13 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
 
         if (isFilling)
         {
-            // Doldurma iþlemi devam ediyor
             fillProgress += deltaTime;
             if (fillProgress > fillDuration)
             {
                 fillProgress = fillDuration;
             }
-            // Doldurma ilerlemesini UI'da güncelle
             UpdateFillProgressUI();
 
-            // Animator'ýn oynatma zamanýný güncelle
             if (placedObject != null)
             {
                 float normalizedTime = fillProgress / fillDuration;
@@ -242,7 +229,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                 if (isFillStart)
                 {
                     isFillStart = false;
-                    alcoholPointAnimator.Play("Fill", 0, 1f); // Animasyonun tamamlandýðýndan emin olun
+                    alcoholPointAnimator.Play("Fill", 0, 1f); 
                     alcoholPointAnimator.speed = 0f;
                     if (mojitoBeingFilled != null)
                     {
@@ -266,9 +253,6 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                 isClockVisible = false;
                 isCompleted = true;
 
-                // Blender görsellerini sýfýrla (Bu kýsýmlarý kendi projenize göre düzenleyin)
-                // emptyBlender.SetActive(true);
-                // orangeBlender.SetActive(false);
             }
         }
         else
@@ -304,7 +288,7 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                         animationController.SetFillingBeer(true);
                         animationController.TriggerFillingBeer();
                     }
-                    else if (whiskeyBeingFilled != null) // Yeni eklenen
+                    else if (whiskeyBeingFilled != null)
                     {
                         animationController.SetFillingBeer(true);
                         animationController.TriggerFillingBeer();
@@ -312,7 +296,6 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
                 }
                 Debug.Log("Started filling the glass. Hold Ctrl for " + fillDuration + " seconds.");
 
-                // Fill progress UI'ý göster
                 if (fillProgressUI != null)
                 {
                     fillProgressUI.gameObject.SetActive(true);
@@ -326,7 +309,6 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
     {
         if (fillProgressUI != null)
         {
-            // UI Image'in dolum miktarýný güncelle
             float fillAmount = fillProgress / fillDuration;
             fillProgressUI.fillAmount = fillAmount;
         }
@@ -339,7 +321,6 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
         {
             if (playerInteraction.CarriedObject != null)
             {
-                // Player bir þey taþýyor
                 MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
                 WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>();
@@ -357,10 +338,8 @@ public class AlcoholPoint : PlacableInteractable, IHoldInteractable
             }
             else
             {
-                // Player bir þey taþýmýyor
                 if (placedObject != null)
                 {
-                    // Doldurma iþlemi baþlamamýþsa, bardak alýnabilir
                     IBlendable blendable = placedObject.GetComponent<IBlendable>();
                     if (blendable != null && blendable.IsBlended)
                     {

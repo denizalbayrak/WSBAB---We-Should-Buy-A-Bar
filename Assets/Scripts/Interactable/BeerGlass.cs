@@ -11,9 +11,9 @@ public class BeerGlass : Carryable, IWashableGlass
     public GlassType Type => GlassType.Beer;
     public GlassState CurrentState = GlassState.DirtyEmpty;
     public GlassType glassType = GlassType.Beer;
-    public GameObject cleanVisual; // Temiz bardak görseli
-    public GameObject dirtyVisual; // Kirli bardak görseli
-    public GameObject filledVisual; // Kirli bardak görseli
+    public GameObject cleanVisual;
+    public GameObject dirtyVisual;
+    public GameObject filledVisual; 
 
     private void Start()
     {
@@ -45,7 +45,6 @@ public class BeerGlass : Carryable, IWashableGlass
         {
             CurrentState = GlassState.Filled;
             isReady = true;
-            //UpdateVisuals();
             Debug.Log("Filled the beer glass with beer.");
         }
         else

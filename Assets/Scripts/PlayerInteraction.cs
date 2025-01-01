@@ -2,9 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
-/// <summary>
-/// Manages player interaction with carryable and interactable objects.
-/// </summary>
+
 public class PlayerInteraction : MonoBehaviour
 {
     #region Public Variables
@@ -24,10 +22,9 @@ public class PlayerInteraction : MonoBehaviour
 
     [Header("Highlight Settings")]
     [Tooltip("Color multiplier when object can be carried.")]
-    public Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f); // Can carry
-
+    public Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f); 
     [Tooltip("Color multiplier when object is being carried.")]
-    public Color carriedColorMultiplier = new Color(0.4f, 0.4f, 0.4f);  // Carried
+    public Color carriedColorMultiplier = new Color(0.4f, 0.4f, 0.4f);  
 
     #endregion
 
@@ -42,8 +39,6 @@ public class PlayerInteraction : MonoBehaviour
     private Vector3 carriedObjectOriginalLocalPosition;
     private HashSet<GameObject> highlightedObjects = new HashSet<GameObject>();
     public bool isCarrying = false;
-    // public List<Renderer> objectRenderers = new List<Renderer>(); // Unused in this class
-    // private List<List<Color>> originalColors = new List<List<Color>>(); // Unused in this class
     #endregion
 
     #region Properties
@@ -60,7 +55,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Awake()
     {
-        // Component References
         rb = GetComponent<Rigidbody>();
         movementController = GetComponent<PlayerMovement>();
         animator = GetComponent<Animator>();
@@ -75,12 +69,10 @@ public class PlayerInteraction : MonoBehaviour
             Debug.LogError("Animator component is missing on the player!");
         }
 
-        // Input Setup
         inputActions = new PlayerInputActions();
         interactAction = inputActions.Player.Interact;
         interactAction.performed += ctx => Interact();
 
-        // Initialize holdAction
         holdAction = inputActions.Player.InteractHold;
     }
 
@@ -102,13 +94,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Movement and Animation Management
         HandleMovement();
     }
 
     private void Update()
     {
-        // Highlighting and Carrying State Management
         UpdateHighlighting();
         if (carriedObject != null)
         {
@@ -130,7 +120,6 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
-        // Handle holdAction input
         HandleHoldAction();
     }
 
@@ -138,12 +127,8 @@ public class PlayerInteraction : MonoBehaviour
 
     #region Interaction Methods
 
-    /// <summary>
-    /// Called when the player interacts.
-    /// </summary>
     private void Interact()
     {
-        // En uygun etkileþimli objeyi bul
         Interactable interactable = GetTopInteractableInFront();
 
         if (interactable != null)
@@ -153,7 +138,6 @@ public class PlayerInteraction : MonoBehaviour
             if (interactable.CanInteract(gameObject))
             {
                 Debug.Log("Can interact with: " + interactable.name);
-                // Objeyle etkileþime gir
                 interactable.Interact(gameObject);
             }
             else
@@ -163,73 +147,45 @@ public class PlayerInteraction : MonoBehaviour
         }
         else
         {
-            // Etkileþimli obje bulunamadýysa
             if (carriedObject != null)
             {
                 IInteractableItem interactableItem = carriedObject.GetComponent<IInteractableItem>();
                 if (interactableItem != null)
-                {
-                    // Eðer elinizde bir bardak taþýyorsanýz ve baþka bir objeyle etkileþime geçmek istiyorsanýz
-                    // Örneðin, bir blender ile etkileþim
-                    // Bu kýsmý kendi oyun mekaniklerinize göre düzenleyin
-                    // Örnek:
-                    // BlenderPoint blender = GetBlenderInFront();
-                    // if (blender != null)
-                    // {
-                    //     interactableItem.InteractWith(blender.gameObject, null);
-                    //     // Eðer nesne yok edildiyse carriedObject'i sýfýrla
-                    //     if (carriedObject == null)
-                    //     {
-                    //         isCarrying = false;
-                    //         animator.SetBool("isCarry", false);
-                    //     }
-                    //     return;
-                    // }
-
+                {                    
                     Debug.Log("Carried object can interact with something else.");
                 }
             }
             else
             {
-                // Taþýyýcý nesne yoksa, bir carryable obje olup olmadýðýný kontrol et
                 Carryable carryable = GetTopCarryableInFront();
                 if (carryable != null)
                 {
                     Debug.Log("Picking up carryable object: " + carryable.name);
-                    // Carryable objeyi al
                     PickUpObject(carryable.gameObject);
                 }
             }
         }
     }
 
-    /// <summary>
-    /// Handles the hold action input (e.g., holding the Ctrl key).
-    /// </summary>
+
     private void HandleHoldAction()
     {
         if (holdAction.IsPressed())
         {
-            // En uygun etkileþimli objeyi bul
             Interactable interactable = GetTopInteractableInFront();
 
             if (interactable != null)
             {
-                // Etkileþimli objenin hold etme yeteneði olup olmadýðýný kontrol et
                 IHoldInteractable holdInteractable = interactable as IHoldInteractable;
                 if (holdInteractable != null && holdInteractable.CanHoldInteract(gameObject))
                 {
-                    // Hold etme iþlemini objeye geçir
                     holdInteractable.OnHoldInteract(gameObject, Time.deltaTime);
                 }
             }
         }
     }
 
-    /// <summary>
-    /// Picks up the specified object.
-    /// </summary>
-    /// <param name="obj">The object to pick up.</param>
+
     public void PickUpObject(GameObject obj)
     {
         if (carriedObject != null)
@@ -241,13 +197,11 @@ public class PlayerInteraction : MonoBehaviour
         carriedObject = obj;
         carriedObjectOriginalLocalPosition = carriedObject.transform.localPosition;
 
-        // Parent the object to carryPoint
         carriedObject.transform.SetParent(carryPoint);
 
         carriedObject.transform.localRotation = Quaternion.identity;
         Debug.Log("carriedObject " + carriedObject.name);
 
-        // Objeyi doðru pozisyona yerleþtir
         if (carriedObject.GetComponent<WineGlass>() != null)
         {
             carriedObject.transform.localPosition = new Vector3(-0.621f, 0.874f, 0);
@@ -264,14 +218,11 @@ public class PlayerInteraction : MonoBehaviour
         isCarrying = true;
         animator.SetBool("isCarry", true);
 
-        // Carryable objenin durumunu ayarla
         Carryable carryable = carriedObject.GetComponent<Carryable>();
         if (carryable != null)
         {
             carryable.OnPickUp();
         }
-
-        // Highlight'ý kaldýr
         RemoveHighlightFromObject(carriedObject);
     }
 
@@ -279,10 +230,6 @@ public class PlayerInteraction : MonoBehaviour
 
     #region Detection Methods
 
-    /// <summary>
-    /// Gets the top interactable object in front of the player based on priority.
-    /// </summary>
-    /// <returns>The top Interactable object, or null if none found.</returns>
     private Interactable GetTopInteractableInFront()
     {
         Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
@@ -294,7 +241,6 @@ public class PlayerInteraction : MonoBehaviour
             interactableLayer
         );
 
-        // Objeleri uzaklýða göre sýrala
         List<Collider> sortedColliders = new List<Collider>(hitColliders);
         sortedColliders.Sort((a, b) =>
         {
@@ -318,10 +264,6 @@ public class PlayerInteraction : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Gets the top carryable object in front of the player based on priority.
-    /// </summary>
-    /// <returns>The top Carryable object, or null if none found.</returns>
     private Carryable GetTopCarryableInFront()
     {
         Vector3 boxCenter = transform.position + transform.TransformDirection(overlapBoxOffset);
@@ -333,7 +275,6 @@ public class PlayerInteraction : MonoBehaviour
             interactableLayer
         );
 
-        // Objeleri uzaklýða göre sýrala
         List<Collider> sortedColliders = new List<Collider>(hitColliders);
         sortedColliders.Sort((a, b) =>
         {
@@ -361,12 +302,9 @@ public class PlayerInteraction : MonoBehaviour
 
     #region Highlighting Methods
 
-    /// <summary>
-    /// Detects and highlights the top interactable or carryable object.
-    /// </summary>
+
     private void UpdateHighlighting()
     {
-        // En uygun objeyi bul
         Interactable topInteractable = GetTopInteractableInFront();
         Carryable topCarryable = GetTopCarryableInFront();
 
@@ -389,13 +327,11 @@ public class PlayerInteraction : MonoBehaviour
 
             if (!highlightedObjects.Contains(selectedObject))
             {
-                // Highlight the object
                 HighlightObject(selectedObject);
                 highlightedObjects.Add(selectedObject);
             }
         }
 
-        // Unhighlight objects that are no longer detected
         HashSet<GameObject> objectsToUnhighlight = new HashSet<GameObject>(highlightedObjects);
         objectsToUnhighlight.ExceptWith(detectedObjects);
 
@@ -442,9 +378,7 @@ public class PlayerInteraction : MonoBehaviour
 
     #region Movement and Animation
 
-    /// <summary>
-    /// Manages player movement and updates animation parameters.
-    /// </summary>
+
     private void HandleMovement()
     {
         Vector2 moveInput;
@@ -468,12 +402,9 @@ public class PlayerInteraction : MonoBehaviour
 
     #region Carried Object Positioning
 
-    /// <summary>
-    /// Updates the position of the carried object.
-    /// </summary>
+
     private void UpdateCarriedObjectPosition()
     {
-        // Keep the carried object at the carry point
         carriedObject.transform.localPosition = Vector3.zero;
         carriedObject.transform.localRotation = Quaternion.identity;
     }

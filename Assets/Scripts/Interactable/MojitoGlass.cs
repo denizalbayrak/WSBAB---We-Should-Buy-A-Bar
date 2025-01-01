@@ -13,9 +13,9 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     public GlassType Type => GlassType.Mojito;
     public GlassState CurrentState = GlassState.CleanEmpty;
     public GlassType glassType = GlassType.Mojito;
-    public GameObject cleanVisual; // Temiz bardak görseli
-    public GameObject dirtyVisual; // Kirli bardak görseli
-    public GameObject filledVisual; // Kirli bardak görseli
+    public GameObject cleanVisual; 
+    public GameObject dirtyVisual; 
+    public GameObject filledVisual; 
     public GameObject ice;
     public GameObject lime;
     public GameObject juice;
@@ -77,7 +77,6 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
     }
     public void InteractWith(GameObject target, EmptyCabinet cabinet)
     {
-        // Hedef nesne Ice ise
         Ice ice = target.GetComponent<Ice>();
         if (ice != null)
         {
@@ -86,10 +85,8 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
                 AddIce();
                 Debug.Log("Ice added to the glass.");
 
-                // Kabindeki buzu yok et
                 Destroy(target);
 
-                // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
                 PlaceGlassOnCabinet(cabinet);
             }
             else
@@ -99,7 +96,6 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
             return;
         }
 
-        // Hedef nesne Lime ise
         Lime lime = target.GetComponent<Lime>();
         if (lime != null && lime.CurrentState == Lime.LimeState.ChoppedLime)
         {
@@ -108,10 +104,8 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
                 AddLime();
                 Debug.Log("Lime added to the glass.");
 
-                // Kabindeki lime'ý yok et
                 Destroy(target);
 
-                // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
                 PlaceGlassOnCabinet(cabinet);
             }
             else
@@ -126,19 +120,16 @@ public class MojitoGlass : Carryable, IWashableGlass, IInteractableItem
 
     private void PlaceGlassOnCabinet(EmptyCabinet cabinet)
     {
-        // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
         PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
         if (playerInteraction != null)
         {
-            // Oyuncunun elindeki bardaðý býrak
             playerInteraction.DropCarriedObject();
 
-            // Bardak kabine yerleþtirilir
             if (cabinet != null)
             {
                 cabinet.PlaceObject(gameObject);
                 playerInteraction.CarriedObject = null;
-                playerInteraction.isCarrying = false; // Merkezi yönetim için
+                playerInteraction.isCarrying = false; 
                 playerInteraction.animator.SetBool("isCarry", false);
                 Debug.Log("Placed glass on cabinet.");
             }
@@ -159,7 +150,6 @@ public void Fill()
         {
             CurrentState = GlassState.Filled;
             isReady = true;
-            //UpdateVisuals();
             Debug.Log("Filled the mojito glass with wine.");
         }
         else

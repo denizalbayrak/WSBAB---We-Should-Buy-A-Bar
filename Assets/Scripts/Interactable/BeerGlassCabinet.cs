@@ -17,7 +17,6 @@ public class BeerGlassCabinet : PlacableInteractable
     {
         yield return new WaitForSeconds(delay);
 
-        // Find an inactive glass slot
         foreach (GameObject glass in beerGlassObjects)
         {
             if (!glass.activeSelf)
@@ -48,7 +47,6 @@ public class BeerGlassCabinet : PlacableInteractable
             }
         }
 
-        // Default respawn position (modify as needed)
         return transform.position;
     }
     public override void Interact(GameObject player)
@@ -58,14 +56,12 @@ public class BeerGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Player wants to take a beer glass
                 if (GetAvailableBeerGlassCount() <= 0)
                 {
                     Debug.Log("The cabinet is empty. No more beer glasses available.");
                     return;
                 }
 
-                // Disable one of the active beer glass objects
                 for (int i = 0; i < beerGlassObjects.Length; i++)
                 {
                     if (beerGlassObjects[i].activeSelf)
@@ -75,15 +71,12 @@ public class BeerGlassCabinet : PlacableInteractable
                     }
                 }
 
-                // Instantiate a new beer glass and give it to the player
                 GameObject newBeerGlass = Instantiate(beerGlassPrefab);
                 BeerGlass beerGlass = newBeerGlass.GetComponent<BeerGlass>();
                 if (beerGlass != null)
                 {
-                    // Set the beer glass to be clean and empty
                     beerGlass.CurrentState = BeerGlass.GlassState.CleanEmpty;
 
-                    // Have the player pick up the beer glass
                     playerInteraction.PickUpObject(newBeerGlass);
 
                     Debug.Log("Picked up a beer glass from the cabinet.");
@@ -96,8 +89,6 @@ public class BeerGlassCabinet : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty beer glass
                 BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
                 if (beerGlass != null && beerGlass.CurrentState == BeerGlass.GlassState.CleanEmpty)
                 {
@@ -107,13 +98,10 @@ public class BeerGlassCabinet : PlacableInteractable
                         return;
                     }
 
-                    // Destroy the beer glass (remove it from the game)
                     Destroy(playerInteraction.CarriedObject);
 
-                    // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
 
-                    // Enable one of the disabled beer glass objects
                     for (int i = 0; i < beerGlassObjects.Length; i++)
                     {
                         if (!beerGlassObjects[i].activeSelf)
@@ -145,12 +133,10 @@ public class BeerGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Can interact if the cabinet has beer glasses to give
                 return GetAvailableBeerGlassCount() > 0;
             }
             else
             {
-                // Can place a clean, empty beer glass if there's room in the cabinet
                 BeerGlass beerGlass = playerInteraction.CarriedObject.GetComponent<BeerGlass>();
                 return beerGlass != null &&
                        beerGlass.CurrentState == BeerGlass.GlassState.CleanEmpty &&

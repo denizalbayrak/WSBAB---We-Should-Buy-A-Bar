@@ -5,11 +5,11 @@ using System.Collections.Generic;
 public class Level : ScriptableObject
 {
     public string levelName;
-    public float levelDuration; // Level time (seconds)
+    public float levelDuration; 
     public List<Order> availableOrders; 
     public GameObject levelMapPrefab;
 
-    public int scoreFor1Star; // one star score
-    public int scoreFor2Stars; // two star score
-    public int scoreFor3Stars; // three star score
+    public int scoreFor1Star; 
+    public int scoreFor2Stars; 
+    public int scoreFor3Stars; 
 }

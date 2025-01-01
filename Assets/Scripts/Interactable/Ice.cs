@@ -13,7 +13,7 @@ public class Ice : Carryable, IInteractableItem
         {
             glass.AddIce();
             Debug.Log("Ice added to the glass.");
-            Destroy(gameObject); // Buzu yok et
+            Destroy(gameObject);
         }
         else
         {

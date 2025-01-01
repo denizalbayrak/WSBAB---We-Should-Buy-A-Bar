@@ -27,34 +27,27 @@ public class Trash : PlacableInteractable
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         if (playerInteraction != null)
         {
-            // Player is carrying something
+            
             if (playerInteraction.CarriedObject != null)
             {
-                // Attempt to get the IWashableGlass interface
                 if (playerInteraction.CarriedObject.TryGetComponent<IWashableGlass>(out IWashableGlass washableGlass))
                 {
-                    // Store the glass type before destroying
                     GlassType trashedGlassType = washableGlass.Type;
 
-                    // Destroy the carried glass
                     Destroy(playerInteraction.CarriedObject);
 
-                    // Reset the player's carried object and state
                     playerInteraction.isCarrying = false;
                     playerInteraction.animator.SetBool("isCarry", false);
                     playerInteraction.CarriedObject = null;
 
                     Debug.Log($"Trashed a {trashedGlassType} glass.");
 
-                    // Notify the appropriate cabinet to respawn the glass
                     RespawnGlassInCabinet(trashedGlassType);
                 }
                 else
                 {
-                    // The carried object is not a washable glass
                     Destroy(playerInteraction.CarriedObject);
 
-                    // Reset the player's carried object and state
                     playerInteraction.isCarrying = false;
                     playerInteraction.animator.SetBool("isCarry", false);
                     playerInteraction.CarriedObject = null;

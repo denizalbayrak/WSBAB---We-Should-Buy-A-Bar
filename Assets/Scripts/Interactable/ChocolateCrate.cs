@@ -17,12 +17,10 @@ public class ChocolateCrate : PlacableInteractable
             if (playerInteraction.CarriedObject == null)
             {
 
-                // Instantiate a new chocolate and give it to the player
                 GameObject chocolateObj = Instantiate(chocolatePrefab);
                 Chocolate chocolate = chocolateObj.GetComponent<Chocolate>();
                 if (chocolate != null)
                 {
-                    // Have the player pick up the wine glass
                     playerInteraction.PickUpObject(chocolateObj);
 
                     Debug.Log("Picked up a chocolate from the crate.");
@@ -35,15 +33,12 @@ public class ChocolateCrate : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty wine glass
                 Chocolate chocolate = playerInteraction.CarriedObject.GetComponent<Chocolate>();
                 if (chocolate != null)
                 {
                     Destroy(playerInteraction.CarriedObject);
                     playerInteraction.isCarrying = false;
                     playerInteraction.animator.SetBool("isCarry", false);
-                    // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
 
                     Debug.Log("Placed a chocolate into the cabinet.");

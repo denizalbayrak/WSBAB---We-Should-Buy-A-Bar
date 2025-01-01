@@ -43,13 +43,10 @@ public static class SaveSystem
         }
     }
 
-    /// <summary>
-    /// Varolan save slot'larýný döner.
-    /// </summary>
     public static List<int> GetExistingSaveSlots()
     {
         List<int> slots = new List<int>();
-        for (int i = 1; i <= 3; i++) // 3 slot olarak varsayýyoruz
+        for (int i = 1; i <= 3; i++) 
         {
             if (File.Exists(GetSavePath(i)))
             {
@@ -59,9 +56,6 @@ public static class SaveSystem
         return slots;
     }
 
-    /// <summary>
-    /// Herhangi bir save dosyasý var mý kontrol eder.
-    /// </summary>
     public static bool HasAnySave()
     {
         for (int i = 1; i <= 3; i++)
@@ -74,9 +68,7 @@ public static class SaveSystem
         return false;
     }
 
-    /// <summary>
-    /// Yeni bir save slotu için uygun slot numarasýný döner.
-    /// </summary>
+
     public static int GetNextAvailableSlot()
     {
         for (int i = 1; i <= 3; i++)
@@ -86,6 +78,6 @@ public static class SaveSystem
                 return i;
             }
         }
-        return -1; // Tüm slotlar dolu
+        return -1; 
     }
 }

@@ -18,14 +18,12 @@ public class MojitoGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Player wants to take a mojito glass
                 if (GetAvailableMojitoGlassCount() <= 0)
                 {
                     Debug.Log("The cabinet is empty. No more mojito glasses available.");
                     return;
                 }
 
-                // Disable one of the active mojito glass objects
                 for (int i = 0; i < mojitoGlassObjects.Length; i++)
                 {
                     if (mojitoGlassObjects[i].activeSelf)
@@ -35,15 +33,12 @@ public class MojitoGlassCabinet : PlacableInteractable
                     }
                 }
 
-                // Instantiate a new mojito glass and give it to the player
                 GameObject newMojitoGlass = Instantiate(mojitoGlassPrefab);
                 MojitoGlass mojitoGlass = newMojitoGlass.GetComponent<MojitoGlass>();
                 if (mojitoGlass != null)
                 {
-                    // Set the mojito glass to be clean and empty
                     mojitoGlass.CurrentState = MojitoGlass.GlassState.CleanEmpty;
 
-                    // Have the player pick up the mojito glass
                     playerInteraction.PickUpObject(newMojitoGlass);
 
                     Debug.Log("Picked up a mojito glass from the cabinet.");
@@ -56,8 +51,6 @@ public class MojitoGlassCabinet : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty mojito glass
                 MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 if (mojitoGlass != null && mojitoGlass.CurrentState == MojitoGlass.GlassState.CleanEmpty)
                 {
@@ -67,13 +60,10 @@ public class MojitoGlassCabinet : PlacableInteractable
                         return;
                     }
 
-                    // Destroy the mojitoGlass glass (remove it from the game)
                     Destroy(playerInteraction.CarriedObject);
 
-                    // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
 
-                    // Enable one of the disabled mojitoGlass glass objects
                     for (int i = 0; i < mojitoGlassObjects.Length; i++)
                     {
                         if (!mojitoGlassObjects[i].activeSelf)
@@ -105,12 +95,10 @@ public class MojitoGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Can interact if the cabinet has mojito glasses to give
                 return GetAvailableMojitoGlassCount() > 0;
             }
             else
             {
-                // Can place a clean, empty mojito glass if there's room in the cabinet
                 MojitoGlass mojitoGlass = playerInteraction.CarriedObject.GetComponent<MojitoGlass>();
                 return mojitoGlass != null &&
                        mojitoGlass.CurrentState == MojitoGlass.GlassState.CleanEmpty &&
@@ -154,7 +142,6 @@ public class MojitoGlassCabinet : PlacableInteractable
     {
         yield return new WaitForSeconds(delay);
 
-        // Find an inactive glass slot
         foreach (GameObject glass in mojitoGlassObjects)
         {
             if (!glass.activeSelf)
@@ -185,7 +172,6 @@ public class MojitoGlassCabinet : PlacableInteractable
             }
         }
 
-        // Default respawn position (modify as needed)
         return transform.position;
     }
 }

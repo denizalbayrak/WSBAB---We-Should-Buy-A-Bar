@@ -10,8 +10,8 @@ public class GameUIManager : MonoBehaviour
     public static GameUIManager Instance;
     public static GameManager gameManager;
 
-    public GameObject WarningPanel; // Reference to the warning panel
-    public TextMeshProUGUI WarningPanelText; // Reference to the warning panel
+    public GameObject WarningPanel;
+    public TextMeshProUGUI WarningPanelText; 
 
     public float countdownTime = 3f;
     public TextMeshProUGUI countdownText;
@@ -44,7 +44,7 @@ public class GameUIManager : MonoBehaviour
         }
         gameManager = GameManager.Instance;
     }
-    // Pause fonksiyonlarý
+
     public void PauseGame()
     {
 
@@ -83,14 +83,14 @@ public class GameUIManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         gameManager.currentGameState = GameState.InGame;
-        SceneManager.LoadScene("MainMenuScene"); // Ana menü sahnenizin adýný yazýn
+        SceneManager.LoadScene("MainMenuScene"); 
     }
     public void StartLevelTimer(float duration)
     {
         levelDuration = duration;
         timeRemaining = duration;
 
-        // Slider ayarlarý
+
         if (levelTimerSlider != null)
         {
             levelTimerSlider.maxValue = duration;
@@ -102,39 +102,36 @@ public class GameUIManager : MonoBehaviour
 
     private IEnumerator Countdown()
     {
-        // Oyunu duraklat
+    
         Debug.Log("countdown started");
         Time.timeScale = 0f;
         countdownText.transform.parent.parent.gameObject.SetActive(true);
         float remainingTime = countdownTime;
         while (remainingTime > 0)
         {
-            // Metni güncelle
+      
             if (countdownText != null)
             {
                 countdownText.text = Mathf.CeilToInt(remainingTime).ToString();
             }
 
-            // Bir sonraki kareye kadar bekle
             yield return new WaitForSecondsRealtime(1f);
 
             remainingTime--;
         }
 
-        // Geri sayým bittiðinde
+
         if (countdownText != null)
         {
             countdownText.text = "GO!";
         }
         yield return new WaitForSecondsRealtime(1f);
 
-        // Oyunu baþlat
+
         Time.timeScale = 1f;
-        //     countdownText.transform.parent.gameObject.SetActive(false);
         countdownText.transform.parent.parent.gameObject.SetActive(false);
         gameManager.currentGameState = GameState.InGame;
 
-        // Level süresini baþlat
         StartLevelTimer(LevelManager.Instance.currentLevel.levelDuration);
         Debug.Log("GameStarted!");
     }
@@ -160,7 +157,6 @@ public class GameUIManager : MonoBehaviour
         {
             timeRemaining -= Time.deltaTime;
 
-            // Metni güncelle
             if (levelTimerText != null)
             {
                 int minutes = Mathf.FloorToInt(timeRemaining / 60);
@@ -168,7 +164,6 @@ public class GameUIManager : MonoBehaviour
                 levelTimerText.text = $"{minutes:00}:{seconds:00}";
             }
 
-            // Slider'ý güncelle
             if (levelTimerSlider != null)
             {
                 levelTimerSlider.value = timeRemaining;
@@ -177,7 +172,6 @@ public class GameUIManager : MonoBehaviour
             yield return null;
         }
 
-        // Süre dolduðunda bir þey yap
         if (levelTimerText != null)
         {
             levelTimerText.text = "00:00";
@@ -200,10 +194,8 @@ public class GameUIManager : MonoBehaviour
             return;
         }
 
-        // Yýldýz sayýsýný hesapla
         int starCount = CalculateStarCount(score, currentLevel);
 
-        // Yýldýz görsellerini güncelle
         for (int i = 0; i < stars.Length; i++)
         {
             if (i == 0)
@@ -233,7 +225,6 @@ public class GameUIManager : MonoBehaviour
             }
         }
 
-        // Baþarýlý veya baþarýsýz UI'ý göster
         if (starCount > 0)
         {
             LevelManager.Instance.CompleteLevel();
@@ -248,7 +239,6 @@ public class GameUIManager : MonoBehaviour
             }
             failurePanel.SetActive(false);
 
-            // Next Level butonu sadece baþarýlý olduðunda aktif
             if (nextLevelButton != null)
             {
                 nextLevelButton.interactable = true;
@@ -259,7 +249,6 @@ public class GameUIManager : MonoBehaviour
             successPanel.SetActive(false);
             failurePanel.SetActive(true);
 
-            // Baþarýsýz olursa next level butonu pasif
             if (nextLevelButton != null)
             {
                 nextLevelButton.interactable = false;

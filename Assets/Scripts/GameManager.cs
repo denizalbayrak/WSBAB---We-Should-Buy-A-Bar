@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Wsbab.Enums; // CharacterType enumýný kullanmak için
+using Wsbab.Enums; 
 using System.Collections.Generic;
 using TMPro;
-using System.Collections; // Eðer TextMeshPro kullanýyorsanýz
+using System.Collections; 
 
 public enum GameState
 {
@@ -23,9 +23,9 @@ public class GameManager : MonoBehaviour
     public GameObject femaleCharacterPrefab;
     public CharacterType selectedCharacter = CharacterType.Female;
 
-    public List<PortableObject> defaultInventoryItems; // Default items for each player
-    public List<Recipe> availableRecipes; // All recipes available in the game
-    public List<Level> levels; // Levels with specific recipes and requirements
+    public List<PortableObject> defaultInventoryItems; 
+    public List<Recipe> availableRecipes; 
+    public List<Level> levels; 
     public int selectedLevelIndex = 0;
     private GameObject playerInstance;
     private bool isSubscribed = false;
@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnGameSceneLoaded; // Aboneliði burada yapýyoruz
+            SceneManager.sceneLoaded += OnGameSceneLoaded; 
             isSubscribed = true;
         }
         else
@@ -61,11 +61,9 @@ public class GameManager : MonoBehaviour
             playTime = 0f,
             playerName = "Player",
             selectedCharacter = selectedCharacter,
-            ownedRecipeNames = new List<string>() // Store recipe names for owned recipes
+            ownedRecipeNames = new List<string>() 
         };
         SaveGame();
-        //SceneManager.sceneLoaded += OnGameSceneLoaded;
-        //SceneManager.LoadScene("GameScene");
         SceneManager.LoadScene("MapScene");
     }
 
@@ -78,8 +76,6 @@ public class GameManager : MonoBehaviour
         {
             selectedCharacter = currentSaveData.selectedCharacter;
 
-            //SceneManager.sceneLoaded += OnGameSceneLoaded;
-            //SceneManager.LoadScene("GameScene");
             SceneManager.LoadScene("MapScene");
         }
         else
@@ -137,7 +133,7 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject characterPrefab = (selectedCharacter == CharacterType.Male) ? maleCharacterPrefab : femaleCharacterPrefab;
-        Vector3 spawnPosition = Vector3.zero; // Adjust spawn position as needed
+        Vector3 spawnPosition = Vector3.zero;
         playerInstance = Instantiate(characterPrefab, spawnPosition, Quaternion.identity);
     }
     public void DestroyPlayerCharacter()

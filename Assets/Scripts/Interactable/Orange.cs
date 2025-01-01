@@ -66,7 +66,7 @@ public class Orange : Carryable, IInteractableItem, IChoppable, IBlendable
                 {
                     glass.AddOrangeJuice();
                     Debug.Log("Lime added to the glass.");
-                    Destroy(gameObject); // BlendedOrange'ý yok et
+                    Destroy(gameObject); 
                 }
                 else
                 {

@@ -20,10 +20,8 @@ public class EmptyCabinet : PlacableInteractable
 
             if (carriedObject != null)
             {
-                // Oyuncu bir nesne taþýyor
                 if (placedObject != null)
                 {
-                    // Kabinde bir nesne var, etkileþimi kabindeki nesneye yönlendir
                     IInteractableItem carriedItem = carriedObject.GetComponent<IInteractableItem>();
 
                     if (carriedItem != null)
@@ -31,7 +29,6 @@ public class EmptyCabinet : PlacableInteractable
                         carriedItem.InteractWith(placedObject, this);
                         playerInteraction.isCarrying = false;
                         playerInteraction.animator.SetBool("isCarry", false);
-                        // Eðer taþýdýðý nesne etkileþim sonrasý yok edildiyse, carriedObject'i sýfýrla
                         if (playerInteraction.CarriedObject == null)
                         {
                             playerInteraction.isCarrying = false;
@@ -45,17 +42,17 @@ public class EmptyCabinet : PlacableInteractable
                 }
                 else
                 {
-                    // Kabin boþ, nesneyi kabine yerleþtir
+                 
                     base.Interact(player);
                     Debug.Log("Placed object on cabinet.");
                 }
             }
             else
             {
-                // Oyuncu bir þey taþýmýyor
+              
                 if (placedObject != null)
                 {
-                    // Nesneyi al
+                    
                     playerInteraction.PickUpObject(placedObject);
                     placedObject = null;
                     Debug.Log("Picked up object from cabinet.");
@@ -70,7 +67,7 @@ public class EmptyCabinet : PlacableInteractable
 
     public override bool CanInteract(GameObject player)
         {
-            return true; // Etkileþime her zaman izin veriyoruz
+            return true; 
         }
     }
 

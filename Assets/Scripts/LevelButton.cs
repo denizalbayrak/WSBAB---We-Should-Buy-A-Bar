@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelButton : MonoBehaviour
 {
-    public int levelIndex; // The level number this button represents
+    public int levelIndex; 
     private Button button;
 
     private void Start()
@@ -16,7 +16,6 @@ public class LevelButton : MonoBehaviour
     private void OnButtonClick()
     {
         GameManager.Instance.selectedLevelIndex = levelIndex;
-        // Load the GameScene
         SceneManager.LoadScene("GameScene");
     }
 }

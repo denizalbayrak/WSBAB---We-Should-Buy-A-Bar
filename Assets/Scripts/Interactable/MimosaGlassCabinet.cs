@@ -18,14 +18,12 @@ public class MimosaGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Player wants to take a mojito glass
                 if (GetAvailableMimosaGlassCount() <= 0)
                 {
                     Debug.Log("The cabinet is empty. No more mojito glasses available.");
                     return;
                 }
 
-                // Disable one of the active mimosa glass objects
                 for (int i = 0; i < mimosaGlassObjects.Length; i++)
                 {
                     if (mimosaGlassObjects[i].activeSelf)
@@ -35,15 +33,12 @@ public class MimosaGlassCabinet : PlacableInteractable
                     }
                 }
 
-                // Instantiate a new mimosaGlass and give it to the player
                 GameObject newMimosaGlass = Instantiate(mimosaGlassPrefab);
                 MimosaGlass mimosaGlass = newMimosaGlass.GetComponent<MimosaGlass>();
                 if (mimosaGlass != null)
                 {
-                    // Set the mmimosaGlass to be clean and empty
                     mimosaGlass.CurrentState = MimosaGlass.GlassState.CleanEmpty;
 
-                    // Have the player pick up the mimosaGlass
                     playerInteraction.PickUpObject(newMimosaGlass);
 
                     Debug.Log("Picked up a mojito glass from the cabinet.");
@@ -56,8 +51,6 @@ public class MimosaGlassCabinet : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty mimosaGlass
                 MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
                 if (mimosaGlass != null && mimosaGlass.CurrentState == MimosaGlass.GlassState.CleanEmpty)
                 {
@@ -67,13 +60,10 @@ public class MimosaGlassCabinet : PlacableInteractable
                         return;
                     }
 
-                    // Destroy the mimosaGlass glass (remove it from the game)
                     Destroy(playerInteraction.CarriedObject);
 
-                    // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
 
-                    // Enable one of the disabled mimosaGlass glass objects
                     for (int i = 0; i < mimosaGlassObjects.Length; i++)
                     {
                         if (!mimosaGlassObjects[i].activeSelf)
@@ -105,12 +95,10 @@ public class MimosaGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Can interact if the cabinet has mimosaGlass to give
                 return GetAvailableMimosaGlassCount() > 0;
             }
             else
             {
-                // Can place a clean, empty mimosaGlass if there's room in the cabinet
                 MimosaGlass mimosaGlass = playerInteraction.CarriedObject.GetComponent<MimosaGlass>();
                 return mimosaGlass != null &&
                        mimosaGlass.CurrentState == MimosaGlass.GlassState.CleanEmpty &&
@@ -154,7 +142,6 @@ public class MimosaGlassCabinet : PlacableInteractable
     {
         yield return new WaitForSeconds(delay);
 
-        // Find an inactive glass slot
         foreach (GameObject glass in mimosaGlassObjects)
         {
             if (!glass.activeSelf)
@@ -185,7 +172,6 @@ public class MimosaGlassCabinet : PlacableInteractable
             }
         }
 
-        // Default respawn position (modify as needed)
         return transform.position;
     }
 }

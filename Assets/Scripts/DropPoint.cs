@@ -22,14 +22,14 @@ public class DropPoint : MonoBehaviour
         isEmpty = false;
         deliveredObject = obj;
         obj.transform.SetParent(this.transform);
-        obj.transform.localPosition = Vector3.zero;  // Place the object exactly at the drop point
+        obj.transform.localPosition = Vector3.zero;  
     }
 
     public void RemoveObject()
     {
         if (deliveredObject != null)
         {
-            deliveredObject.transform.SetParent(null); // Detach the object
+            deliveredObject.transform.SetParent(null); 
             Destroy(deliveredObject);
             deliveredObject = null;
             isEmpty = true;

@@ -17,12 +17,10 @@ public class LimeCrate : PlacableInteractable
             if (playerInteraction.CarriedObject == null)
             {
 
-                // Instantiate a new lime and give it to the player
                 GameObject limeObj = Instantiate(limePrefab);
                 Lime lime = limeObj.GetComponent<Lime>();
                 if (lime != null)
                 {
-                    // Have the player pick up the wine glass
                     playerInteraction.PickUpObject(limeObj);
 
                     Debug.Log("Picked up a lime from the crate.");
@@ -35,15 +33,12 @@ public class LimeCrate : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty wine glass
                 Lime lime = playerInteraction.CarriedObject.GetComponent<Lime>();
                 if (lime != null)
                 {
                     Destroy(playerInteraction.CarriedObject);
                     playerInteraction.isCarrying = false;
                     playerInteraction.animator.SetBool("isCarry", false);
-                    // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
 
                     Debug.Log("Placed a lime into the cabinet.");

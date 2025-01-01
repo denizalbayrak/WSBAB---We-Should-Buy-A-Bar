@@ -18,14 +18,12 @@ public class WhiskeyGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Player wants to take a mojito glass
                 if (GetAvailableWhiskeyGlassCount() <= 0)
                 {
                     Debug.Log("The cabinet is empty. No more whiskey glasses available.");
                     return;
                 }
 
-                // Disable one of the active whiskey glass objects
                 for (int i = 0; i < whiskeyGlassObjects.Length; i++)
                 {
                     if (whiskeyGlassObjects[i].activeSelf)
@@ -35,15 +33,14 @@ public class WhiskeyGlassCabinet : PlacableInteractable
                     }
                 }
 
-                // Instantiate a new whiskeyGlass and give it to the player
                 GameObject newWhiskeyGlass = Instantiate(whiskeyGlassPrefab);
                 WhiskeyGlass whiskeyGlass = newWhiskeyGlass.GetComponent<WhiskeyGlass>();
                 if (whiskeyGlass != null)
                 {
-                    // Set the whiskeyGlass to be clean and empty
+                    
                     whiskeyGlass.CurrentState = WhiskeyGlass.GlassState.CleanEmpty;
 
-                    // Have the player pick up the whiskeyGlass
+                 
                     playerInteraction.PickUpObject(newWhiskeyGlass);
 
                     Debug.Log("Picked up a whiskey glass from the cabinet.");
@@ -56,8 +53,7 @@ public class WhiskeyGlassCabinet : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty mimosaGlass
+                
                 WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>();
                 if (whiskeyGlass != null && whiskeyGlass.CurrentState == WhiskeyGlass.GlassState.CleanEmpty)
                 {
@@ -67,13 +63,13 @@ public class WhiskeyGlassCabinet : PlacableInteractable
                         return;
                     }
 
-                    // Destroy the whiskeyGlass glass (remove it from the game)
+                    
                     Destroy(playerInteraction.CarriedObject);
 
-                    // Reset the player's carried object
+                
                     playerInteraction.CarriedObject = null;
 
-                    // Enable one of the disabled whiskeyGlass glass objects
+                  
                     for (int i = 0; i < whiskeyGlassObjects.Length; i++)
                     {
                         if (!whiskeyGlassObjects[i].activeSelf)
@@ -105,12 +101,10 @@ public class WhiskeyGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Can interact if the cabinet has whiskeyGlass to give
                 return GetAvailableWhiskeyGlassCount() > 0;
             }
             else
             {
-                // Can place a clean, empty whiskeyGlass if there's room in the cabinet
                 WhiskeyGlass whiskeyGlass = playerInteraction.CarriedObject.GetComponent<WhiskeyGlass>();
                 return whiskeyGlass != null &&
                        whiskeyGlass.CurrentState == WhiskeyGlass.GlassState.CleanEmpty &&
@@ -154,7 +148,6 @@ public class WhiskeyGlassCabinet : PlacableInteractable
     {
         yield return new WaitForSeconds(delay);
 
-        // Find an inactive glass slot
         foreach (GameObject glass in whiskeyGlassObjects)
         {
             if (!glass.activeSelf)
@@ -185,7 +178,6 @@ public class WhiskeyGlassCabinet : PlacableInteractable
             }
         }
 
-        // Default respawn position (modify as needed)
         return transform.position;
     }
 }

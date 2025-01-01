@@ -18,14 +18,12 @@ public class WineGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Player wants to take a wine glass
                 if (GetAvailableWineGlassCount() <= 0)
                 {
                     Debug.Log("The cabinet is empty. No more wine glasses available.");
                     return;
                 }
 
-                // Disable one of the active wine glass objects
                 for (int i = 0; i < wineGlassObjects.Length; i++)
                 {
                     if (wineGlassObjects[i].activeSelf)
@@ -35,15 +33,14 @@ public class WineGlassCabinet : PlacableInteractable
                     }
                 }
 
-                // Instantiate a new wine glass and give it to the player
                 GameObject newWineGlass = Instantiate(wineGlassPrefab);
                 WineGlass wineGlass = newWineGlass.GetComponent<WineGlass>();
                 if (wineGlass != null)
                 {
-                    // Set the wine glass to be clean and empty
+                   
                     wineGlass.CurrentState = WineGlass.GlassState.CleanEmpty;
 
-                    // Have the player pick up the wine glass
+                
                     playerInteraction.PickUpObject(newWineGlass);
 
                     Debug.Log("Picked up a wine glass from the cabinet.");
@@ -56,8 +53,6 @@ public class WineGlassCabinet : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty wine glass
                 WineGlass wineGlass = playerInteraction.CarriedObject.GetComponent<WineGlass>();
                 if (wineGlass != null && wineGlass.CurrentState == WineGlass.GlassState.CleanEmpty)
                 {
@@ -67,13 +62,12 @@ public class WineGlassCabinet : PlacableInteractable
                         return;
                     }
 
-                    // Destroy the wine glass (remove it from the game)
+                    
                     Destroy(playerInteraction.CarriedObject);
 
-                    // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
 
-                    // Enable one of the disabled wine glass objects
+                    
                     for (int i = 0; i < wineGlassObjects.Length; i++)
                     {
                         if (!wineGlassObjects[i].activeSelf)
@@ -105,12 +99,10 @@ public class WineGlassCabinet : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Can interact if the cabinet has wine glasses to give
                 return GetAvailableWineGlassCount() > 0;
             }
             else
             {
-                // Can place a clean, empty wine glass if there's room in the cabinet
                 WineGlass wineGlass = playerInteraction.CarriedObject.GetComponent<WineGlass>();
                 return wineGlass != null &&
                        wineGlass.CurrentState == WineGlass.GlassState.CleanEmpty &&
@@ -153,7 +145,6 @@ public class WineGlassCabinet : PlacableInteractable
     {
         yield return new WaitForSeconds(delay);
 
-        // Find an inactive glass slot
         foreach (GameObject glass in wineGlassObjects)
         {
             if (!glass.activeSelf)
@@ -184,7 +175,6 @@ public class WineGlassCabinet : PlacableInteractable
             }
         }
 
-        // Default respawn position (modify as needed)
         return transform.position;
     }
 }

@@ -13,9 +13,9 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
     public GlassType Type => GlassType.Mimosa;
     public GlassState CurrentState = GlassState.CleanEmpty;
     public GlassType glassType = GlassType.Mimosa;
-    public GameObject cleanVisual; // Temiz bardak görseli
-    public GameObject dirtyVisual; // Kirli bardak görseli
-    public GameObject filledVisual; // Kirli bardak görseli
+    public GameObject cleanVisual; 
+    public GameObject dirtyVisual; 
+    public GameObject filledVisual;
     public GameObject orangeJuice;
     public GameObject champagne;
     public bool HasOrangeJuice = false;
@@ -72,7 +72,6 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
     }
     public void InteractWith(GameObject target, EmptyCabinet cabinet)
     {
-        // Hedef nesne Orange ise
         Orange orange = target.GetComponent<Orange>();
         if (orange != null && orange.CurrentState == Orange.OrangeState.ChoppedOrange)
         {
@@ -81,10 +80,8 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
                 AddOrangeJuice();
                 Debug.Log("Orange added to the glass.");
 
-                // Kabindeki orange'ý yok et
                 Destroy(target);
 
-                // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
                 PlaceGlassOnCabinet(cabinet);
             }
             else
@@ -99,19 +96,16 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
 
     private void PlaceGlassOnCabinet(EmptyCabinet cabinet)
     {
-        // Oyuncunun elindeki bardaðý býrak ve kabine yerleþtir
         PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
         if (playerInteraction != null)
         {
-            // Oyuncunun elindeki bardaðý býrak
             playerInteraction.DropCarriedObject();
 
-            // Bardak kabine yerleþtirilir
             if (cabinet != null)
             {
                 cabinet.PlaceObject(gameObject);
                 playerInteraction.CarriedObject = null;
-                playerInteraction.isCarrying = false; // Merkezi yönetim için
+                playerInteraction.isCarrying = false; 
                 playerInteraction.animator.SetBool("isCarry", false);
                 Debug.Log("Placed glass on cabinet.");
             }
@@ -132,7 +126,6 @@ public class MimosaGlass : Carryable, IWashableGlass, IInteractableItem
         {
             CurrentState = GlassState.Filled;
             isReady = true;
-            //UpdateVisuals();
             Debug.Log("Filled the mojito glass with wine.");
         }
         else

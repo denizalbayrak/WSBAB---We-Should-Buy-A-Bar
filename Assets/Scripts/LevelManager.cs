@@ -24,8 +24,6 @@ public class LevelManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            // Optionally, you can keep the LevelManager alive across scenes
-            // DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -56,7 +54,6 @@ public class LevelManager : MonoBehaviour
             UnloadCurrentLevel();
             currentLevel = levels[levelIndex];
             Debug.Log($"Loading Level: {currentLevel.levelName}");
-            // Clean up previous level if any
             if (currentLevel.levelMapPrefab != null)
             {
                 currentLevelInstance = Instantiate(currentLevel.levelMapPrefab);
@@ -66,7 +63,6 @@ public class LevelManager : MonoBehaviour
                 Debug.LogError("Current level prefab is null!");
             }
 
-            // Load the level in OrderManager
             OrderManager.Instance.ResetOrderManager();
             OrderManager.Instance.LoadLevel(currentLevel);
         }
@@ -98,7 +94,6 @@ public class LevelManager : MonoBehaviour
             Debug.Log("Unlocked Level: " + GameManager.Instance.currentSaveData.level);
             GameManager.Instance.SaveGame();
         }
-        // Baþarý ekraný gösterme vb.
     }
 
     public void LoadNextLevel()
@@ -112,7 +107,6 @@ public class LevelManager : MonoBehaviour
         else
         {
             Debug.Log("No more levels!");
-            // Oyunun sonuna geldiniz, isterseniz bir bitiþ ekraný gösterebilirsiniz
         }
     }
 

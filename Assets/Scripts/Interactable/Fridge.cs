@@ -16,12 +16,10 @@ public class Fridge : PlacableInteractable
         {
             if (playerInteraction.CarriedObject == null)
             {
-                // Instantiate a new Ice and give it to the player
                 GameObject IceObj = Instantiate(IcePrefab);
                 Ice Ice = IceObj.GetComponent<Ice>();
                 if (Ice != null)
                 {
-                    // Have the player pick up the wine glass
                     playerInteraction.PickUpObject(IceObj);
 
                     Debug.Log("Picked up a Ice from the crate.");
@@ -34,14 +32,11 @@ public class Fridge : PlacableInteractable
             }
             else
             {
-                // Player is carrying something
-                // Check if it's a clean, empty wine glass
                 Ice Ice = playerInteraction.CarriedObject.GetComponent<Ice>();
                 if (Ice != null)
                 {
                     Destroy(playerInteraction.CarriedObject);
 
-                    // Reset the player's carried object
                     playerInteraction.CarriedObject = null;
                     playerInteraction.isCarrying = false;
                     playerInteraction.animator.SetBool("isCarry", false);

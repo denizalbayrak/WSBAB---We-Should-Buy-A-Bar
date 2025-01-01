@@ -3,21 +3,19 @@ using System.Collections.Generic;
 
 public class Highlightable : MonoBehaviour
 {
-    public List<Renderer> objectRenderers = new List<Renderer>(); // Tüm Renderer'lar
-    public List<List<Color>> originalColors = new List<List<Color>>(); // Her Renderer için orijinal renkler listesi
+    public List<Renderer> objectRenderers = new List<Renderer>(); 
+    public List<List<Color>> originalColors = new List<List<Color>>(); 
 
     private void Awake()
     {
-        // Sadece ana objedeki Renderer bileþenlerini al
         objectRenderers.AddRange(GetComponentsInChildren<Renderer>());
 
-        // Tüm materyallerin orijinal renklerini sakla
         foreach (var renderer in objectRenderers)
         {
             List<Color> colors = new List<Color>();
             foreach (var mat in renderer.materials)
             {
-                colors.Add(mat.color); // Orijinal rengi kaydet
+                colors.Add(mat.color); 
             }
             originalColors.Add(colors);
         }
@@ -28,10 +26,6 @@ public class Highlightable : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Objeye vurgu yapar veya vurguyu kaldýrýr.
-    /// </summary>
-    /// <param name="highlightColor">Vurgu rengi. Orijinal renge çarpan olarak uygulanýr. Vurguyu kaldýrmak için Color.white kullanýlabilir.</param>
     public void SetHighlight(Color highlightColor)
     {
         for (int rendererIndex = 0; rendererIndex < objectRenderers.Count; rendererIndex++)
@@ -41,22 +35,18 @@ public class Highlightable : MonoBehaviour
 
             for (int i = 0; i < mats.Length; i++)
             {
-                mats[i] = new Material(mats[i]); // Her materyalin bir kopyasýný oluþtur
+                mats[i] = new Material(mats[i]); 
 
-                // Orijinal rengi kullanarak highlight rengini uygula
                 Color originalColor = originalColors[rendererIndex][i];
                 Color newColor = originalColor * highlightColor;
                 mats[i].color = newColor;
             }
 
-            // Deðiþiklikleri Renderer'a geri ata
             renderer.materials = mats;
         }
     }
 
-    /// <summary>
-    /// Objeyi orijinal rengine döndürür.
-    /// </summary>
+
     public void ResetHighlight()
     {
         for (int rendererIndex = 0; rendererIndex < objectRenderers.Count; rendererIndex++)

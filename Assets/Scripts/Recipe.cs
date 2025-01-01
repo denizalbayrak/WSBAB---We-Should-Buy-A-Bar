@@ -22,7 +22,7 @@ public class RequiredObject
     public int quantity;
 
     [Tooltip("Bu obje bara taþýnmalý mý?")]
-    public bool moveToBar; // Newly added property
+    public bool moveToBar; 
 
    
 }

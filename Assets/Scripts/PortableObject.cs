@@ -3,35 +3,35 @@ using System.Collections.Generic;
 
 public enum HighlightState
 {
-    None,       // Orijinal renk
-    CanCarry,   // Taþýma ihtimali durumu
-    Carried     // Taþýma durumu
+    None,       
+    CanCarry,   
+    Carried     
 }
 
 public class PortableObject : MonoBehaviour
 {
-    public string itemName;             // Obje adý, örneðin: "Çöp Kutusu"
-    public bool isMandatory;            // Görev için zorunlu mu?
+    public string itemName;             
+    public bool isMandatory;            
     public float dropYOffset = 0f;
 
-    public List<Renderer> objectRenderers = new List<Renderer>(); // Tüm Renderer'lar
-    private List<List<Color>> originalColors = new List<List<Color>>(); // Her Renderer için orijinal renkler listesi
+    public List<Renderer> objectRenderers = new List<Renderer>(); 
+    private List<List<Color>> originalColors = new List<List<Color>>(); 
 
-    // Renk çarpanlarý
+
     private Color canCarryColorMultiplier = new Color(0.6f, 0.6f, 0.6f);
 
     private void Awake()
     {
-        // Tüm child objelerdeki Renderer bileþenlerini al
+        
         objectRenderers.AddRange(GetComponentsInChildren<Renderer>());
 
-        // Tüm materyallerin orijinal renklerini sakla
+        
         foreach (var renderer in objectRenderers)
         {
             List<Color> colors = new List<Color>();
             foreach (var mat in renderer.materials)
             {
-                colors.Add(mat.color); // Orijinal rengi kaydet
+                colors.Add(mat.color); 
             }
             originalColors.Add(colors);
         }
@@ -55,9 +55,9 @@ public class PortableObject : MonoBehaviour
 
             for (int i = 0; i < mats.Length; i++)
             {
-                mats[i] = new Material(mats[i]); // Her materyalin bir kopyasýný oluþtur
+                mats[i] = new Material(mats[i]); 
 
-                // Orijinal rengi kullanarak highlight durumuna göre çarpan uygula
+               
                 switch (state)
                 {
                     case HighlightState.None:
@@ -72,7 +72,7 @@ public class PortableObject : MonoBehaviour
                 }
             }
 
-            // Deðiþiklikleri Renderer'a geri ata
+            
             renderer.materials = mats;
         }
     }

@@ -1,30 +1,27 @@
 using UnityEngine;
-using UnityEngine.UI; // Eðer UI öðeleri kullanacaksanýz
+using UnityEngine.UI; 
 
 public class Sink : PlacableInteractable, IHoldInteractable
 {
     private bool isWashing = false;
     private bool isWashingAnimStarted = false;
     private float washProgress = 0f;
-    private float washDuration = 4f; // Sabit yýkama süresi (örneðin 5 saniye)
+    private float washDuration = 4f; 
     private IWashableGlass glassBeingWashed;
     [SerializeField] private Animator animator;
-    public Image washProgressUI; // Yýkama ilerlemesini göstermek için
+    public Image washProgressUI; 
     private void Awake()
     {
         animator = GetComponent<Animator>();
     }
-    // UI Elements
 
     public override void Interact(GameObject player)
     {
         PlayerInteraction playerInteraction = player.GetComponent<PlayerInteraction>();
         if (playerInteraction != null && playerInteraction.CarriedObject != null)
         {
-            // Ýlk olarak, nesneyi yerleþtirin
             base.Interact(player);
 
-            // Yerleþtirilen nesneyi alýn
             if (placedObject != null)
             {
                 IWashableGlass washableGlass = placedObject.GetComponent<IWashableGlass>();
@@ -32,13 +29,11 @@ public class Sink : PlacableInteractable, IHoldInteractable
                 {
                     if (washableGlass.IsDirty)
                     {
-                        // Yýkama iþlemini baþlat
                         isWashing = true;
                         washProgress = 0f;
                         glassBeingWashed = washableGlass;
                         Debug.Log("Started washing the glass. Hold Ctrl for " + washDuration + " seconds.");
 
-                        // Yýkama ilerleme UI'sini göster
                         if (washProgressUI != null)
                         {
                             washProgressUI.gameObject.SetActive(true);
@@ -58,7 +53,6 @@ public class Sink : PlacableInteractable, IHoldInteractable
         }
         else if (playerInteraction != null && playerInteraction.CarriedObject == null && placedObject != null)
         {
-            // Oyuncu bir þey taþýmýyorsa ve yýkama yapýlmýyorsa, bardaðý alabilir
             if (!isWashing)
             {
                 base.Interact(player);
@@ -77,10 +71,9 @@ public class Sink : PlacableInteractable, IHoldInteractable
         }
     }
 
-    // Implement IHoldInteractable
+  
     public bool CanHoldInteract(GameObject player)
     {
-        // Check if there is a glass on the sink and washing is in progress
         return isWashing;
     }
 
@@ -94,14 +87,12 @@ public class Sink : PlacableInteractable, IHoldInteractable
         }
         if (isWashing)
         {         
-            // Washing process in progress
             washProgress += deltaTime;
             if (washProgress > washDuration)
             {
                 washProgress = washDuration;
             }
 
-            // Update the wash progress UI
             UpdateWashProgressUI();
 
                 float normalizedTime = washProgress / washDuration;
@@ -116,7 +107,6 @@ public class Sink : PlacableInteractable, IHoldInteractable
 
             if (washProgress >= washDuration)
             {
-                // Washing completed
                 isWashing = false;
                 glassBeingWashed.Clean();
                 glassBeingWashed = null;
@@ -126,12 +116,10 @@ public class Sink : PlacableInteractable, IHoldInteractable
                     isWashingAnimStarted = false;
                     animationController.SetFillingBeer(false);
                 }
-                // Yýkama ilerleme UI'sini gizle
                 if (washProgressUI != null)
                 {
                     washProgressUI.gameObject.SetActive(false);
                 }
-                // Hide the fill progress UI
                 if (washProgressUI != null)
                 {
                     washProgressUI.gameObject.SetActive(false);
@@ -171,13 +159,11 @@ public class Sink : PlacableInteractable, IHoldInteractable
         {
             if (playerInteraction.CarriedObject != null)
             {
-                // Eðer oyuncu bir þey taþýyorsa ve yerleþtirme noktasý boþsa, kirli bir bardak yerleþtirebilir
                 IWashableGlass washableGlass = playerInteraction.CarriedObject.GetComponent<IWashableGlass>();
                 return placedObject == null && washableGlass != null && washableGlass.IsDirty;
             }
             else
             {
-                // Eðer oyuncu bir þey taþýmýyorsa ve yýkama yapýlmýyorsa, bardaðý alabilir
                 return placedObject != null && !isWashing;
             }
         }

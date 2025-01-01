@@ -58,7 +58,7 @@ public class Chocolate : Carryable, IInteractableItem, IChoppable
                 {
                     glass.AddChocolate();
                     Debug.Log("chocolate added to the glass.");
-                    Destroy(gameObject); // chocolate'ý yok et
+                    Destroy(gameObject);
                 }
                 else
                 {

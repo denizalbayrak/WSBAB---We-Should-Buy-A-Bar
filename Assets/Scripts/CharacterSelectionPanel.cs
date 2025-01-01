@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Wsbab.Enums; // CharacterType enumýný kullanmak için
+using Wsbab.Enums; 
 
 public class CharacterSelectionPanel : MonoBehaviour
 {
@@ -11,14 +11,12 @@ public class CharacterSelectionPanel : MonoBehaviour
     public Image maleSelectionHighlight;
     public Image femaleSelectionHighlight;
 
-    private CharacterType selectedCharacter; // Varsayýlan seçimi kaldýrdýk
+    private CharacterType selectedCharacter; 
 
     private void Start()
     {
-        // Kaydedilen karakter seçimini yükle
         LoadCharacterSelection();
 
-        // UI'ý güncelle
         UpdateSelectionUI();
     }
 
@@ -38,10 +36,8 @@ public class CharacterSelectionPanel : MonoBehaviour
 
     public void OnConfirmSelection()
     {
-        // Seçimi kaydet
         SaveCharacterSelection();
 
-        // Paneli kapat
         gameObject.SetActive(false);
     }
 
@@ -55,7 +51,6 @@ public class CharacterSelectionPanel : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            // GameManager'daki selectedCharacter deðerini güncelle
             GameManager.Instance.selectedCharacter = selectedCharacter;
             Debug.Log("Character selection saved in GameManager: " + selectedCharacter);
         }
@@ -69,13 +64,11 @@ public class CharacterSelectionPanel : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            // Eðer GameManager'da selectedCharacter varsa, onu kullan
             selectedCharacter = GameManager.Instance.selectedCharacter;
             Debug.Log("Character selection loaded from GameManager: " + selectedCharacter);
         }
         else
         {
-            // Varsayýlan olarak Female seç
             selectedCharacter = CharacterType.Female;
             Debug.LogWarning("GameManager instance not found. Defaulting to Female.");
         }

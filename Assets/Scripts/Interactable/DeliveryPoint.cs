@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 public class DeliveryPoint : PlacableInteractable
 {
-    public float dirtyGlassSpawnDelay = 5f; // Teslimattan sonra kirli bardaðýn spawn olma süresi
+    public float dirtyGlassSpawnDelay = 5f; 
     public GameObject prefabToSpawn;
-    // Bira ve þarap için ayrý DirtyPoint'ler
     public DirtyPoint beerDirtyPoint;
     public DirtyPoint wineDirtyPoint;
     public DirtyPoint mojitoDirtyPoint;
@@ -27,22 +26,18 @@ public class DeliveryPoint : PlacableInteractable
                     return;
                 }
 
-                // Player'ýn taþýdýðý objeyi bir deðiþkende saklayýn
                 GameObject deliveredObject = playerInteraction.CarriedObject;
 
-                // Teslimat iþlemi
                 if (placedObject == null)
                 {
-                    base.Interact(player); // Objeyi yerleþtirir, CarriedObject null olur
-                                           //   Destroy(placedObject); // Teslimat sonrasý objeyi yok eder
-                    placedObject.SetActive(false); // Teslimat sonrasý objeyi yok eder
+                    base.Interact(player);
+                                           
+                    placedObject.SetActive(false); 
                     Debug.Log("Delivered object at DeliveryPoint.");
 
-                    // Sipariþi iþle
                     OrderManager.Instance.ProcessDeliveredItem(deliveredObject);
                     StartCoroutine(SpawnDirtyGlassAfterDelay(deliveredObject));
 
-                    // Kirli bardaðýn spawn olmasýný zamanla
                 }
                 else
                 {
@@ -62,16 +57,12 @@ public class DeliveryPoint : PlacableInteractable
 
     private IEnumerator SpawnDirtyGlassAfterDelay(GameObject deliveredObject)
     {
-        // Teslim edilen objenin prefab'ýný saklamak için referansý alýn
          prefabToSpawn = deliveredObject;
 
-        // Nesneyi hemen yok etmiyoruz, Coroutine çalýþmaya devam ediyor
         yield return new WaitForSeconds(dirtyGlassSpawnDelay);
 
-        // Prefab referansý üzerinden yeni nesne oluþtur
         if (prefabToSpawn != null)
         {
-            // DirtyPoint için uygun hedefi belirleme (örneðin bira için farklý, þarap için farklý DirtyPoint)
             DirtyPoint targetDirtyPoint = null;
 
             if (prefabToSpawn.name.Contains("Beer"))
@@ -97,23 +88,19 @@ public class DeliveryPoint : PlacableInteractable
 
             if (targetDirtyPoint != null)
             {
-                // DirtyPoint'in kapasitesini kontrol et
                 if (targetDirtyPoint.placedObjects.Count >= targetDirtyPoint.maxCapacity)
                 {
                     Debug.Log("DirtyPoint is full. Cannot add more dirty glasses.");
                     yield break;
                 }
-                // Yeni bir nesne oluþtur ve DirtyPoint'e yerleþtir
                 GameObject dirtyGlassObj = Instantiate(prefabToSpawn, targetDirtyPoint.transform.position, Quaternion.identity, targetDirtyPoint.transform);
-                dirtyGlassObj.name = prefabToSpawn.name; // Ýsimlendirmeyi koru
+                dirtyGlassObj.name = prefabToSpawn.name;
                 Destroy(prefabToSpawn);   
-                // Bardak durumunu kirli olarak ayarla
                 Carryable dirtyGlass = dirtyGlassObj.GetComponent<Carryable>();
                 if (dirtyGlass != null)
                 {
                     dirtyGlass.isReady = false;
                 }
-                // DirtyPoint'e bardaðý ekle
                 targetDirtyPoint.AddPlacedObject(dirtyGlassObj);
             }
             else
@@ -132,12 +119,11 @@ public class DeliveryPoint : PlacableInteractable
         {
             if (playerInteraction.CarriedObject != null)
             {
-                // Can deliver if DeliveryPoint is empty
                 return placedObject == null;
             }
             else
             {
-                // Can interact only if carrying something to deliver
+                
                 return false;
             }
         }
